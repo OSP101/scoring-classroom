@@ -1,9 +1,10 @@
 import React from 'react'
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Input, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Input, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar } from "@nextui-org/react";
 import { signOut } from 'next-auth/react';
 import { useSession, signIn } from "next-auth/react"
 import { useRouter } from 'next/router'
 import { Prompt } from "next/font/google";
+import Link from 'next/link';
 
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
 
@@ -16,7 +17,7 @@ export default function NavbarComponent() {
         <Navbar isBordered maxWidth="2xl">
             <NavbarContent justify="start">
                 <NavbarBrand className="mr-4">
-                    <p className="sm:block font-bold text-inherit">Scoring <span className='from-[#FF1CF7] to-[#b249f8] bg-clip-text text-transparent bg-gradient-to-b inline'>Classroom</span></p>
+                    <Link href='/'><p className="sm:block font-bold text-inherit">Scoring <span className='from-[#FF1CF7] to-[#b249f8] bg-clip-text text-transparent bg-gradient-to-b inline'>Classroom</span></p></Link>
                 </NavbarBrand>
             </NavbarContent>
 

@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+  
+  @font-face {
+    font-family: "Kanit-Light";
+    src: url("./fonts/Kanit-Light.ttf");
+    font-weight: light;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: "Kanit";
+    src: url("./fonts/Kanit-Regular.ttf");
+    font-weight: normal;
+    font-style: normal;
+  }
+  

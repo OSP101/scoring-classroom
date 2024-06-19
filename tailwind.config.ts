@@ -18,6 +18,9 @@ const config: Config = {
     },
   },
   darkMode: "class",
-  plugins: [nextui()],
+  plugins: [nextui(),require('daisyui'),],
+  daisyui: {
+    themes: ["light"],
+  },
 };
 export default config;

@@ -6,7 +6,7 @@ import { NextUIProvider } from "@nextui-org/system";
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <SessionProvider session={session}>
-      <NextUIProvider>
+      <NextUIProvider >
       <Component {...pageProps}/>
       </NextUIProvider>
     </SessionProvider>

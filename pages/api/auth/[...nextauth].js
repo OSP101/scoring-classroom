@@ -1,7 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import postcss from "postcss";
-import axios from 'axios';
+import axios from 'axios'
 
 export const authOptions = {
   providers: [
@@ -11,29 +10,53 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async signIn(user, account, profile, session) {
-      const emailToCheck = user.user.email;
-      // console.log(emailToCheck)
-      const data = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/authen`, { email : emailToCheck }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': process.env.NEXT_PUBLIC_API_KEY
+    async signIn({ user, account, profile }) {
+      const emailToCheck = user.email;
+      // console.log(user.email);
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/authen`, 
+        { email: emailToCheck },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': process.env.NEXT_PUBLIC_API_KEY
+          }
         }
-      })
+      );
 
-      console.log(data && data.data && data.data.length > 0)
-
-
-      if (data && data.data && data.data.length > 0) {
-        // return Promise.resolve({ ...user, session: { ...user.session }});
+      if (response.data && response.data.length > 0) {
         return true;
       } else {
         console.error('User not found in local data');
-        return Promise.resolve("/403");
+        return "/403";  // Redirect to 403 page
       }
-    },
-  },
-  
-};
+    }, 
+    async session({session, token}) {
+      try {
+        const emailToCheck = token.email;
+      // console.log(token);
+        const apiResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/authen`, 
+          { email: emailToCheck },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': process.env.NEXT_PUBLIC_API_KEY
+            }
+          }
+        );
 
+        if (apiResponse.data) {
+          session.user = {
+            ...session.user,
+            stdid: apiResponse.data[0].stdid
+          };
+        }
+
+        return session;
+      } catch (error) {
+        console.error('Error fetching user data from API:', error);
+        return session;
+      }
+    }
+  }
+};
 export default NextAuth(authOptions);

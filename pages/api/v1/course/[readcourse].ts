@@ -8,13 +8,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         try {
         const promisePool = mysqlPool.promise()
-        const [rows, fields] = await promisePool.query('SELECT * FROM caretaker JOIN course ON course.idcourse = caretaker.idcourse WHERE stdid = ?', readcourse)
+        let rows; 
 
-        if (rows.length > 0) {
-            res.status(200).json(rows)
-        }else{
-            res.status(200).json({message: "Empty database"})
+        [rows] = await promisePool.query(
+            'SELECT * FROM caretaker JOIN course ON course.idcourse = caretaker.idcourse WHERE caretaker.stdid = ?',
+            readcourse
+        );
+
+        if (rows.length === 0) {
+            res.status(200).json({ message: "Empty database" });
+        } else {
+            res.status(200).json(rows);
         }
+
         // console.log(rows)
 
         } catch (err) {

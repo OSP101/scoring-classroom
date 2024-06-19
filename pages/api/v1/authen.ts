@@ -8,7 +8,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === 'POST') {
         const email  = req.body;
 
-        console.log(email);
+        // console.log(email);
     
         if (!email) {
           return res.status(400).json({ message: 'Missing data in request body' });
