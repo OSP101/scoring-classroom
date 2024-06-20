@@ -2,7 +2,6 @@ import React from 'react'
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Input, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar } from "@nextui-org/react";
 import { signOut } from 'next-auth/react';
 import { useSession, signIn } from "next-auth/react"
-import { useRouter } from 'next/router'
 import { Prompt } from "next/font/google";
 import Link from 'next/link';
 
@@ -43,7 +42,9 @@ export default function NavbarComponent() {
                         ออกจากระบบ</DropdownItem>
                     </DropdownMenu>
                 </Dropdown>
+                 
             </NavbarContent>
+
         </Navbar>
         </div>
     )

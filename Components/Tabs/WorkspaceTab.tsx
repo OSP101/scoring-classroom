@@ -3,7 +3,7 @@ import { Spinner, Listbox, ListboxItem, Accordion, AccordionItem, DatePicker, Da
 import { BsPlusLg } from "react-icons/bs";
 import { MdWork } from "react-icons/md";
 import { FaUserGroup, FaBookBookmark } from "react-icons/fa6";
-import { CalendarDate, parseDate, DateValue, today, getLocalTimeZone } from "@internationalized/date";
+import { parseDate, DateValue, today, getLocalTimeZone } from "@internationalized/date";
 import { VerticalDotsIcon } from "../../Components/Icons/VerticalDotsIcon"
 import { Prompt } from "next/font/google";
 // import Button from '@mui/material/Button';
@@ -12,7 +12,7 @@ import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import axios from 'axios'
-
+import LinearProgress from '@mui/material/LinearProgress';
 
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
 
@@ -20,6 +20,8 @@ export default function WorkspaceTab(idcourse: any) {
     const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
     const { isOpen: isOpenSolo, onOpen: onOpenSolo, onOpenChange: onOpenChangeSolo, onClose: onCloseSolo } = useDisclosure();
     const { isOpen: isOpenGroup, onOpen: onOpenGroup, onOpenChange: onOpenChangeGroup, onClose: onCloseGroup } = useDisclosure();
+    const { isOpen: isOpenEdit, onOpen: onOpenEdit, onOpenChange: onOpenChangeEdit, onClose: onCloseEdit } = useDisclosure();
+    const { isOpen: isOpenDelete, onOpen: onOpenDelete, onOpenChange: onOpenChangeDelete, onClose: onCloseDelete } = useDisclosure();
     const [isLoadedOne, setLoadingOne] = React.useState(false);
     const [isLoadedTwo, setLoadingTwo] = React.useState(false);
 
@@ -27,7 +29,7 @@ export default function WorkspaceTab(idcourse: any) {
         id: number;
         idcourse: string;
         name: string;
-        date: Date;
+        date: string;
         typework: number;
         maxpoint: number;
     }
@@ -45,6 +47,34 @@ export default function WorkspaceTab(idcourse: any) {
 
     const [open, setOpen] = React.useState(false);
     const [dataAlert, setDataAlert] = useState("");
+    const [idEdit, setIdEdit] = useState(0);
+    const [editDetail, setEditDetail] = useState({
+        id: 0,
+        idcourse: '',
+        name: '',
+        date: today(getLocalTimeZone()).toString(),
+        maxpoint: 0,
+        typework: 0
+    });
+    const [deleteDetail, setDeleteDetail] = useState({
+        id: 0,
+        name: ''
+    })
+
+    console.log(deleteDetail)
+
+    const [textDelete, setTextDelete] = useState("")
+    const [buttonCheck, setButtonCheck] = useState(false);
+    const deleteCheck = (e: { target: { name: any; value: string; }; }) => {
+        setTextDelete(e.target.value);
+        if (e.target.value === deleteDetail.name) {
+            setButtonCheck(true);
+        } else {
+            setButtonCheck(false);
+        }
+        console.log(textDelete)
+    };
+
     const handleClick = () => {
         setOpen(true);
     };
@@ -57,6 +87,7 @@ export default function WorkspaceTab(idcourse: any) {
         setOpen(false);
     };
 
+
     const [valueDate, setValueDate] = React.useState<DateValue>(today(getLocalTimeZone()));
 
     const { day, month, year } = valueDate;
@@ -64,7 +95,7 @@ export default function WorkspaceTab(idcourse: any) {
     const [createWork, setCreateWork] = useState({
         idcourse: '',
         name: '',
-        date: `${year}-${month}-${day}`,
+        date: `${valueDate.year}-${String(valueDate.month).padStart(2, '0')}-${String(valueDate.day).padStart(2, '0')}`,
         maxpoint: '',
         typework: ''
     });
@@ -73,10 +104,24 @@ export default function WorkspaceTab(idcourse: any) {
         setCreateWork({
             idcourse: '',
             name: '',
-            date: `${year}-${month}-${day}`,
+            date: `${valueDate.year}-${String(valueDate.month).padStart(2, '0')}-${String(valueDate.day).padStart(2, '0')}`,
             maxpoint: '',
             typework: ''
         })
+
+        setDeleteDetail({
+            id: 0,
+            name: ''
+        })
+
+        setEditDetail({
+            id: 0,
+            idcourse: '',
+            name: '',
+            date: "",
+            maxpoint: 0,
+            typework: 0
+        });
     }
 
     const handleChange = (e: { target: { name: any; value: any; }; }) => {
@@ -87,7 +132,6 @@ export default function WorkspaceTab(idcourse: any) {
     };
 
     const configData = (e: any) => {
-        console.log("Config data");
         setCreateWork({
             ...createWork,
             idcourse: idcourse.idcourse,
@@ -128,7 +172,7 @@ export default function WorkspaceTab(idcourse: any) {
         }
     }
     useEffect(() => {
-        if(dataWorkOne.length == 0){
+        if (dataWorkOne.length == 0) {
             getDataWorkOne();
         }
         getDataWorkTwo();
@@ -147,9 +191,9 @@ export default function WorkspaceTab(idcourse: any) {
             setLoadingOne(true);
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                setError(error.message);
+                console.log(error.message);
             } else {
-                setError('An unexpected error occurred');
+                console.log('An unexpected error occurred');
             }
         }
     }
@@ -167,22 +211,173 @@ export default function WorkspaceTab(idcourse: any) {
             setLoadingTwo(true);
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                setError(error.message);
+                console.log(error.message);
             } else {
-                setError('An unexpected error occurred');
+                console.log('An unexpected error occurred');
             }
         }
     }
 
-    console.log("Works : ", dataWorkOne)
+    const openDelete = (idDelete: number) => {
+        const resultDelete1 = dataWorkOne.find(work => work.id == idDelete);
+        const resultDelete2 = dataWorkTwo.find(work => work.id == idDelete);
+
+        console.log(resultDelete1)
+        console.log(resultDelete2)
+
+        if (resultDelete1) {
+            setDeleteDetail({
+                id: idDelete,
+                name: resultDelete1.name
+            })
+        } else if (resultDelete2) {
+            setDeleteDetail({
+                id: idDelete,
+                name: resultDelete2.name
+            })
+        } else {
+            setDeleteDetail({
+                id: 0,
+                name: ''
+            })
+        }
+
+        onOpenDelete();
+    }
+
+    const openEdit = (idtitel: number) => {
+        setIdEdit(idtitel);
+        const resultEdit = dataWorkOne.find(work => work.id === idtitel);
+        const resultEdit2 = dataWorkTwo.find(work => work.id === idtitel);
+
+        if (resultEdit) {
+            setEditDetail({
+                id: resultEdit.id,
+                idcourse: resultEdit.idcourse,
+                name: resultEdit.name,
+                date: resultEdit.date,
+                maxpoint: resultEdit.maxpoint,
+                typework: resultEdit.typework
+            });
+            setEditValueDate(parseDate(resultEdit.date))
+        } else if (resultEdit2) {
+            setEditDetail({
+                id: resultEdit2.id,
+                idcourse: resultEdit2.idcourse,
+                name: resultEdit2.name,
+                date: resultEdit2.date,
+                maxpoint: resultEdit2.maxpoint,
+                typework: resultEdit2.typework
+            });
+            setEditValueDate(parseDate(resultEdit2.date))
+
+        }
+
+
+        else {
+            // กำหนดค่าเริ่มต้นหากไม่พบข้อมูล
+            setEditDetail({
+                id: 0,
+                idcourse: '',
+                name: '',
+                date: "",
+                maxpoint: 0,
+                typework: 0
+            });
+        }
+
+        onOpenEdit();
+    }
+
+    const [editValueDate, setEditValueDate] = React.useState<DateValue>(parseDate("2020-02-02"));
+    // console.log(editValueDate);
+
+    const handleChangeEdit = (e: { target: { name: any; value: any; }; }) => {
+        const { name, value } = e.target;
+        setEditDetail(prevState => ({ ...prevState, [name]: value }));
+        const dateEditSave = `${editValueDate.year}-${String(editValueDate.month).padStart(2, '0')}-${String(editValueDate.day).padStart(2, '0')}`;
+        setEditDetail(prevState => ({ ...prevState, date: dateEditSave }));
+    };
+
+
+    const handleEditWork = async (e: any) => {
+        const dateEditSave = `${e.year}-${String(e.month).padStart(2, '0')}-${String(e.day).padStart(2, '0')}`;
+        setEditDetail(prevState => ({ ...prevState, date: dateEditSave }));
+        setEditValueDate(e);
+
+    }
+
+    const editWorksubmit = async () => {
+        setStatusUpdate(true);
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/work/edit`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ""
+                },
+                body: JSON.stringify(editDetail)
+            });
+
+            if (response.ok) {
+                setStatusUpdate(false);
+                const result = await response.json();
+                setDataAlert("แก้ไขงานสำเร็จ !")
+                setOpen(true);
+                onCloseEdit();
+                setzero();
+                getDataWorkTwo();
+                getDataWorkOne();
+
+            } else {
+
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while submitting the data');
+        }
+    }
+
+    const deleteWorksubmit = async () => {
+        console.log('Deleting', deleteDetail)
+        setStatusUpdate(true);
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/work/delete`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ""
+                },
+                body: JSON.stringify(deleteDetail)
+            });
+
+            if (response.ok) {
+                setStatusUpdate(false);
+                const result = await response.json();
+                setDataAlert("ลบงานสำเร็จ !")
+                setOpen(true);
+                onCloseDelete();
+                setzero();
+                getDataWorkTwo();
+                getDataWorkOne();
+
+            } else {
+
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while submitting the data');
+        }
+    }
+
 
     return (
-        <div className={`container mx-auto w-full max-w-4xl ${kanit.className}`}>
+        <div className={`container mx-auto w-full max-w-4xl pt-0 ${kanit.className}`}>
 
-            <div className={`px-2 pb-4 ${kanit.className}`}>
+            <div className={`px-2 pb-4 pt-0 ${kanit.className}`}>
                 <Dropdown>
                     <DropdownTrigger>
-                        <Button className={`bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg ${kanit.className}`}>
+                        <Button className={`bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg mt-3 ${kanit.className}`}>
                             <BsPlusLg /> สร้าง
                         </Button>
                     </DropdownTrigger>
@@ -251,8 +446,8 @@ export default function WorkspaceTab(idcourse: any) {
                                                             </Button>
                                                         </DropdownTrigger>
                                                         <DropdownMenu>
-                                                            <DropdownItem onClick={() => { setOpen(true); }}>แก้ไข</DropdownItem>
-                                                            <DropdownItem className="text-danger" color="danger">ลบ</DropdownItem>
+                                                            <DropdownItem onClick={() => { openEdit(item.id) }}>แก้ไข</DropdownItem>
+                                                            <DropdownItem className="text-danger" color="danger" onClick={() => { openDelete(item.id) }}>ลบ</DropdownItem>
                                                         </DropdownMenu>
                                                     </Dropdown>
                                                 }
@@ -312,8 +507,8 @@ export default function WorkspaceTab(idcourse: any) {
                                                             </Button>
                                                         </DropdownTrigger>
                                                         <DropdownMenu>
-                                                            <DropdownItem onClick={() => { setOpen(true); }}>แก้ไข</DropdownItem>
-                                                            <DropdownItem className="text-danger" color="danger">ลบ</DropdownItem>
+                                                            <DropdownItem onClick={() => { openEdit(item.id) }}>แก้ไข</DropdownItem>
+                                                            <DropdownItem className="text-danger" color="danger" onClick={() => { openDelete(item.id) }}>ลบ</DropdownItem>
                                                         </DropdownMenu>
                                                     </Dropdown>
                                                 }
@@ -399,7 +594,7 @@ export default function WorkspaceTab(idcourse: any) {
                                         ปิด
                                     </Button>
                                     <Button className={`bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg ${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={handleSubmitWork}>
-                                        {statusUpdate ? "กำลังสร้าง..." : "สร้าง"}
+                                        {statusUpdate ? (<><Spinner /> <p> กำลังสร้าง...</p></>) : "สร้าง"}
                                     </Button>
 
                                 </ModalFooter>
@@ -440,8 +635,84 @@ export default function WorkspaceTab(idcourse: any) {
                                         ปิด
                                     </Button>
                                     <Button className={`bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg ${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={handleSubmitWork}>
-                                        {statusUpdate ? "กำลังสร้าง..." : "สร้าง"}
+                                        {statusUpdate ? (<><Spinner /> <p> กำลังสร้าง...</p></>) : "สร้าง"}
                                     </Button>
+                                </ModalFooter>
+                            </form>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
+
+            {/* Modal แก้ไขงาน */}
+            <Modal isOpen={isOpenEdit} onOpenChange={onOpenChangeEdit} placement="center" className={kanit.className}>
+                <ModalContent>
+                    {(onCloseEdit) => (
+                        <>
+                            <form>
+                                <ModalHeader className="flex flex-col gap-1">แก้ไขงาน</ModalHeader>
+
+                                <ModalBody>
+                                    <Input
+                                        autoFocus
+                                        label="ชื่อปฏิบัติการ"
+                                        variant="bordered"
+                                        isRequired
+                                        name="name" value={editDetail.name} onChange={handleChangeEdit}
+                                    />
+                                    <Input
+                                        label="คะแนนเต็ม"
+                                        type="number"
+                                        variant="bordered"
+                                        isRequired
+                                        name="maxpoint" value={String(editDetail.maxpoint)} onChange={handleChangeEdit}
+                                    />
+                                    <DatePicker label="วันเริ่มสอน" isRequired name="date" value={editValueDate} onChange={handleEditWork} />
+                                </ModalBody>
+                                <ModalFooter>
+                                    <Button color="danger" variant="flat" onPress={onCloseEdit}>
+                                        ปิด
+                                    </Button>
+                                    <Button className={`bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg ${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={editWorksubmit}>
+                                        {statusUpdate ? (<><Spinner /> <p> กำลังบันทึก...</p></>) : "บันทึก"}
+                                    </Button>
+
+                                </ModalFooter>
+                            </form>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
+
+            {/* Modal ลบงาน */}
+            <Modal isOpen={isOpenDelete} onOpenChange={onOpenChangeDelete} placement="center" className={kanit.className}>
+                <ModalContent>
+                    {(onCloseDelete) => (
+                        <>
+                            <form>
+                                <ModalHeader className="flex flex-col gap-1">ลบงาน
+                                    <Alert variant="filled" severity="error">
+                                        ลบงานแล้วจะไม่สามารถกู้คืนได้
+                                    </Alert>
+                                </ModalHeader>
+
+                                <ModalBody>
+                                    <p>พิมพ์ชื่องาน <b>{deleteDetail.name}</b> เพื่อลบงาน</p>
+                                    <Input
+                                        type="text"
+                                        variant="bordered"
+                                        isRequired
+                                        name="maxpoint" value={textDelete} onChange={deleteCheck}
+                                    />
+                                </ModalBody>
+                                <ModalFooter>
+                                    <Button color="default" variant="light" onPress={onCloseDelete}>
+                                        ปิด
+                                    </Button>
+                                    <Button color="danger" onClick={deleteWorksubmit} isDisabled={buttonCheck ? false : true} className={statusUpdate ? 'opacity-50 cursor-not-allowed' : ''}>
+                                        {statusUpdate ? (<><Spinner /> <p> กำลังลบ...</p></>) : "ลบ"}
+                                    </Button>
+
                                 </ModalFooter>
                             </form>
                         </>
@@ -450,8 +721,4 @@ export default function WorkspaceTab(idcourse: any) {
             </Modal>
         </div>
     )
-}
-
-function setError(message: string) {
-    throw new Error("Function not implemented.");
 }

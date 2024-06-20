@@ -12,7 +12,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         let rows; 
 
         [rows] = await promisePool.query(
-            'SELECT * FROM titelwork WHERE idcourse = ? AND typework = ?',
+            'SELECT * FROM titelwork WHERE idcourse = ? AND typework = ? AND delete_at IS NULL',
             [readwork, type]
         );
 
