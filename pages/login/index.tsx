@@ -6,9 +6,8 @@ import { useSession, signIn, signOut } from "next-auth/react"
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { css } from '@emotion/react'
-import ImageLogoGoogle from '../../public/Google__G__logo.svg'
-import CustomImage from '../../Components/CustomImage';
 import { Prompt } from "next/font/google";
+import Typography from '@mui/material/Typography';
 
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
 
@@ -44,7 +43,7 @@ export default function App() {
         if (session) {
             router.push("/");
         }
-    }, [ session, router]);
+    }, [session, router]);
 
     const handleSelectionChange = (key: Key) => {
         setSelected(String(key));
@@ -158,7 +157,9 @@ export default function App() {
             <p css={copyrightStyle}>
                 © 2024 Scoring Classroom v0.4 All Rights Reserved. made with by{' '}
                 <a href="http://github.com/OSP101" target="_blank" rel="noopener noreferrer">
-                    OSP101
+                    <Typography variant="caption" gutterBottom>
+                        OSP101
+                    </Typography>
                 </a>
             </p>
         </div>
