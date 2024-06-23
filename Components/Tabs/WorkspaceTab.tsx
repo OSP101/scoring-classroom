@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Spinner, Listbox, ListboxItem, Accordion, AccordionItem, DatePicker, DateInput, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, DropdownSection, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Checkbox, Input, Link } from "@nextui-org/react";
+import { Chip, Spinner, Listbox, ListboxItem, Accordion, AccordionItem, DatePicker, DateInput, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, DropdownSection, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Checkbox, Input, Link } from "@nextui-org/react";
 import { BsPlusLg } from "react-icons/bs";
 import { MdWork } from "react-icons/md";
 import { FaUserGroup, FaBookBookmark } from "react-icons/fa6";
@@ -13,6 +13,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import axios from 'axios'
 import LinearProgress from '@mui/material/LinearProgress';
+const CryptoJS = require('crypto-js');
+
 
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
 
@@ -34,8 +36,16 @@ export default function WorkspaceTab(idcourse: any) {
         maxpoint: number;
     }
 
+    interface Topics {
+        id: number;
+        name: string;
+        des: string;
+        status: number;
+    }
+
     const [dataWorkOne, sedDataWorkOne] = useState<Works[]>([])
     const [dataWorkTwo, sedDataWorkTwo] = useState<Works[]>([])
+    const [dataTopic, setDataTopic] = useState<Topics[]>([])
     const [visible, setVisible] = useState(false);
     const [data, setData] = useState('');
     const [statusUpdate, setStatusUpdate] = useState(false);
@@ -61,8 +71,6 @@ export default function WorkspaceTab(idcourse: any) {
         name: ''
     })
 
-    console.log(deleteDetail)
-
     const [textDelete, setTextDelete] = useState("")
     const [buttonCheck, setButtonCheck] = useState(false);
     const deleteCheck = (e: { target: { name: any; value: string; }; }) => {
@@ -72,7 +80,6 @@ export default function WorkspaceTab(idcourse: any) {
         } else {
             setButtonCheck(false);
         }
-        console.log(textDelete)
     };
 
     const handleClick = () => {
@@ -176,7 +183,27 @@ export default function WorkspaceTab(idcourse: any) {
             getDataWorkOne();
         }
         getDataWorkTwo();
+        getTopic();
     }, []);
+
+    const getTopic = async () => {
+        try {
+            const responseTopic = await axios.get<Topics[]>(`${process.env.NEXT_PUBLIC_API_URL}/topic`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': process.env.NEXT_PUBLIC_API_KEY
+                }
+            });
+
+            setDataTopic(responseTopic.data);
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                console.log(error.message);
+            } else {
+                console.log('An unexpected error occurred');
+            }
+        }
+    }
 
     const getDataWorkOne = async () => {
         try {
@@ -221,9 +248,6 @@ export default function WorkspaceTab(idcourse: any) {
     const openDelete = (idDelete: number) => {
         const resultDelete1 = dataWorkOne.find(work => work.id == idDelete);
         const resultDelete2 = dataWorkTwo.find(work => work.id == idDelete);
-
-        console.log(resultDelete1)
-        console.log(resultDelete2)
 
         if (resultDelete1) {
             setDeleteDetail({
@@ -339,7 +363,6 @@ export default function WorkspaceTab(idcourse: any) {
     }
 
     const deleteWorksubmit = async () => {
-        console.log('Deleting', deleteDetail)
         setStatusUpdate(true);
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/work/delete`, {
@@ -371,6 +394,7 @@ export default function WorkspaceTab(idcourse: any) {
     }
 
 
+
     return (
         <div className={`container mx-auto w-full max-w-4xl pt-0 ${kanit.className}`}>
 
@@ -383,25 +407,21 @@ export default function WorkspaceTab(idcourse: any) {
                     </DropdownTrigger>
                     <DropdownMenu aria-label="Static Actions" className={kanit.className}>
                         <DropdownSection title="สร้าง">
+                        {dataTopic && dataTopic.map((item) => (
                             <DropdownItem
-                                key="new"
-                                description="งานเดี่ยวสำหรับลงคะแนน"
-                                startContent={<MdWork className={iconClasses} />}
-                                onPress={onOpenSolo}
-                                onAction={() => configData("1")}
+                                key={item.id}
+                                description={item.des}
+                                startContent={item.id == 1 ? (<MdWork className={iconClasses} />) : (<FaUserGroup className={iconClasses} />)}
+                                onPress={item.id == 1 ? onOpenSolo : onOpenGroup }
+                                onAction={() => configData(item.id)}
+                                isDisabled={item.status == 0 ? true : false}
+                                textValue={item.name}
                             >
-                                งานเดี่ยว
+                                {`${item.name} `}
+                                {item.status == 0 ? <Chip color="warning" size="sm" variant="shadow">เร็ว ๆ นี้</Chip> : ""}
                             </DropdownItem>
-                            <DropdownItem
-                                key="group"
-                                description="งานกลุ่มนำเสนอ"
-                                startContent={<FaUserGroup className={iconClasses} />}
-                                onPress={onOpenGroup}
-                                onAction={() => configData("2")}
+                        ))}
 
-                            >
-                                งานนำเสนอ
-                            </DropdownItem>
                         </DropdownSection>
                     </DropdownMenu>
                 </Dropdown>
@@ -721,4 +741,11 @@ export default function WorkspaceTab(idcourse: any) {
             </Modal>
         </div>
     )
+}
+
+
+function encrypt(data: any) {
+    const key = process.env.NEXT_PUBLIC_API_HASH
+    const ciphertext = CryptoJS.AES.encrypt(data, key).toString();
+    return ciphertext;
 }

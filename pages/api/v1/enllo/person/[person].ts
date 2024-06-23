@@ -4,12 +4,12 @@ import { authenticateApiKey } from '../../../../../lib/auth';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "GET") {
-        const { teachall } = req.query;
+        const { person } = req.query;
         try {
             const promisePool = mysqlPool.promise()
             const [ResultTeacher] = await promisePool.query(
-                'SELECT * FROM caretaker JOIN users ON caretaker.stdid = users.stdid WHERE caretaker.idcourse = ?',
-                [teachall]
+                'SELECT * FROM enllo JOIN users ON enllo.stdid = users.stdid WHERE enllo.idcourse = ?',
+                [person]
             );
 
             res.status(201).json(ResultTeacher);

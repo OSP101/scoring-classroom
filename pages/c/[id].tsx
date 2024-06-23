@@ -9,7 +9,8 @@ import dynamic from 'next/dynamic'
 import LinearProgress from '@mui/material/LinearProgress';
 import { purple } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
-import PersonTab from '@/Components/Tabs/PersonTab';
+import PointTab from '@/Components/Tabs/PointTab';
+// import PersonTab from '@/Components/Tabs/PersonTab';
 
 const theme = createTheme({
   palette: {
@@ -26,6 +27,10 @@ const theme = createTheme({
 const colorPurple = purple[500];
 
 const WorkspaceTab = dynamic(() => import('@/Components/Tabs/WorkspaceTab'), {
+    loading: () => <LinearProgress color="secondary"/>,
+  });
+
+  const PersonTab = dynamic(() => import('@/Components/Tabs/PersonTab'), {
     loading: () => <LinearProgress color="secondary"/>,
   });
 
@@ -92,7 +97,7 @@ export default function CourseDetail() {
                                     </div>
                                 }
                             >
-                                <PersonTab/>
+                                <PersonTab idcouesr={id} className="px-4"/>
                             </Tab>
                             <Tab
                                 key="point"
@@ -101,7 +106,9 @@ export default function CourseDetail() {
                                         <span>คะแนน</span>
                                     </div>
                                 }
-                            >4</Tab>
+                            >
+                                <PointTab/>
+                            </Tab>
                         </Tabs>
                     </div>
             </>

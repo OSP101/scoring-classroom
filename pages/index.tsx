@@ -1,21 +1,13 @@
-import Image from "next/image";
 import { Suspense } from 'react';
-import NavbarComponent from "@/Components/Navbar/Nav";
 import Head from 'next/head'
 import { useSession, signIn, signOut } from "next-auth/react"
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-
-import axios from 'axios'
-import { useState } from "react";
-import { Skeleton, Card } from "@nextui-org/react";
 import React from "react";
 import dynamic from 'next/dynamic'
-// import CourseAll from "@/Components/CourseAll";
+import CourseAll from "@/Components/CourseAll";
 
-const CourseAll = dynamic(() => import('@/Components/CourseAll'), {
-    loading: () => <p>Loading...</p>,
-  })
+// const CourseAll = dynamic(() => import('@/Components/CourseAll'), {
+//     loading: () => <p>Loading...</p>,
+//   })
 
 export default function Home() {
   const { data: session, status } = useSession();
