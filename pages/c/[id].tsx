@@ -66,15 +66,15 @@ export default function CourseDetail() {
                 </Head>
                 {/* <NavbarComponent /> */}
 
-                    <div className={`flex w-full flex-col ${kanit.className}`}>
+                    <div className={`flex w-full flex-col ${kanit.className} static `}>
                         <Tabs
                             aria-label="Options"
                             variant="underlined"
                             classNames={{
                                 tabList: "w-full relative rounded-none p-0 border-b border-divider pl-5",
-                                cursor: "w-full bg-[#b249f8]",
-                                tab: "max-w-fit h-12 px-5",
-                                tabContent: "group-data-[selected=true]:text-[#b249f8]"
+                                cursor: "w-full bg-[#b249f8] ",
+                                tab: "max-w-fit h-12 px-5 ",
+                                tabContent: "group-data-[selected=true]:text-[#b249f8] "
                             }}
                         >
                             {/* <LinearProgress /> */}
@@ -97,7 +97,9 @@ export default function CourseDetail() {
                                     </div>
                                 }
                             >
+                                <div className='overflow-y-scroll custom-h-screen-minus-16'>
                                 <PersonTab idcouesr={id} className="px-4"/>
+                                </div>
                             </Tab>
                             <Tab
                                 key="point"

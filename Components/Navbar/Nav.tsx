@@ -12,8 +12,8 @@ export default function NavbarComponent() {
     const { data: session } = useSession()
 
     return (
-        <div className={kanit.className}>
-        <Navbar isBordered maxWidth="2xl">
+        <div className={`${kanit.className} sticky top-0`}>
+        <Navbar isBordered maxWidth="2xl" isBlurred={false}>
             <NavbarContent justify="start">
                 <NavbarBrand className="mr-4">
                     <Link href='/'><p className="sm:block font-bold text-inherit">Scoring <span className='from-[#FF1CF7] to-[#b249f8] bg-clip-text text-transparent bg-gradient-to-b inline'>Classroom</span></p></Link>
