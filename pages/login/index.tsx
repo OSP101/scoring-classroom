@@ -49,15 +49,6 @@ export default function App() {
         setSelected(String(key));
     };
 
-    // if (loading) {
-    //     return <div>
-    //         <Head>
-    //             <title>กำลังเปลี่ยนเส้นทาง...</title>
-    //         </Head>
-    //     </div>
-    // }
-
-    // if (!session) {
     return (
         <div className={`flex flex-col items-center justify-center mt-20 ${kanit.className}`}>
             <Head>
@@ -106,13 +97,6 @@ export default function App() {
                                     css={css`&:hover {color: #b249f8; border-color: #b249f8}`}
                                     className="inline-flex h-10 items-center justify-center gap-2 bg-white font-medium text-black outline-none focus:ring-2 focus:ring-[#b249f8] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
                                 >
-                                    {/* <CustomImage
-                                        src={ImageLogoGoogle}
-                                        alt="Google"
-                                        width={18}
-                                        height={18}
-                                        fetchPriority="high"
-                                    /> */}
                                     <Image
                                         src="Google__G__logo.svg"
                                         alt="Google"
@@ -165,5 +149,3 @@ export default function App() {
         </div>
     );
 }
-
-// }
