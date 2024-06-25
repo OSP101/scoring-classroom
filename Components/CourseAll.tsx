@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import Skeleton from '@mui/material/Skeleton';
 import Box from '@mui/material/Box';
 
+
 const CardCourse = dynamic(() => import('@/Components/CardCourse'), {
     loading: () => <Loading />,
 })
@@ -39,7 +40,7 @@ export default function CourseAll({ session }: { session: any }) {
         }
     }, [session]);
 
-    console.log('Fetching courses', dataCourses);
+    // console.log('Fetching courses', dataCourses);
     return (
         <>
             {dataCourses.map((course) => (

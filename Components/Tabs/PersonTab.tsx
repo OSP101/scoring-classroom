@@ -44,7 +44,7 @@ export default function PersonTab(idcouesr: any) {
                 }
             });
 
-            console.log(responseone.data);
+            // console.log(responseone.data);
 
             setDataTeacher(responseone.data);
             setStatusLoadTeach(true);
@@ -66,7 +66,7 @@ export default function PersonTab(idcouesr: any) {
                 }
             });
 
-            console.log(responseone.data);
+            // console.log(responseone.data);
 
             setDataStudent(responseone.data);
             setStatusLoadStudent(true);
@@ -79,7 +79,7 @@ export default function PersonTab(idcouesr: any) {
         }
     }
 
-    console.log("dataTeacher : ", dataTeacher);
+    // console.log("dataTeacher : ", dataTeacher);
     // console.log(idcouesr.idcouesr)
 
     return (

@@ -1,16 +1,26 @@
 import { Suspense } from 'react';
 import Head from 'next/head'
 import { useSession, signIn, signOut } from "next-auth/react"
-import React from "react";
+import React,{useEffect} from "react";
 import dynamic from 'next/dynamic'
 import CourseAll from "@/Components/CourseAll";
+import { useRouter } from 'next/router';
+import { Prompt } from "next/font/google";
 
-// const CourseAll = dynamic(() => import('@/Components/CourseAll'), {
-//     loading: () => <p>Loading...</p>,
-//   })
+const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
+
 
 export default function Home() {
   const { data: session, status } = useSession();
+  const loading = status === "loading";
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !session) {
+        router.push("/login");
+    }
+
+}, [loading, session, router]);
 
   if (session) {
     return (

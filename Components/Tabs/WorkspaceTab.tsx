@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Chip, Spinner, Listbox, ListboxItem, Accordion, AccordionItem, DatePicker, DateInput, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, DropdownSection, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Checkbox, Input, Link } from "@nextui-org/react";
+import { Tabs, Tab, Card, CardBody, CardHeader, Chip, Spinner, Listbox, ListboxItem, Accordion, AccordionItem, DatePicker, DateInput, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, DropdownSection, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Checkbox, Input, Link } from "@nextui-org/react";
 import { BsPlusLg } from "react-icons/bs";
 import { MdWork } from "react-icons/md";
 import { FaUserGroup, FaBookBookmark } from "react-icons/fa6";
@@ -12,14 +12,21 @@ import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import axios from 'axios'
-import LinearProgress from '@mui/material/LinearProgress';
+import FormEnter from '../Forms/FormEnter';
 const CryptoJS = require('crypto-js');
+import { FaStar } from "react-icons/fa";
+// import FormExtra from '../Forms/FormExtra';
+import dynamic from 'next/dynamic'
+
+const FormExtra = dynamic(() => import('../Forms/FormExtra'), {
+    loading: () => <Spinner  color="secondary"/>,
+  });
 
 
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
 
 export default function WorkspaceTab(idcourse: any) {
-    const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
+    const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0 hover:";
     const { isOpen: isOpenSolo, onOpen: onOpenSolo, onOpenChange: onOpenChangeSolo, onClose: onCloseSolo } = useDisclosure();
     const { isOpen: isOpenGroup, onOpen: onOpenGroup, onOpenChange: onOpenChangeGroup, onClose: onCloseGroup } = useDisclosure();
     const { isOpen: isOpenEdit, onOpen: onOpenEdit, onOpenChange: onOpenChangeEdit, onClose: onCloseEdit } = useDisclosure();
@@ -47,12 +54,21 @@ export default function WorkspaceTab(idcourse: any) {
     const [dataWorkTwo, sedDataWorkTwo] = useState<Works[]>([])
     const [dataTopic, setDataTopic] = useState<Topics[]>([])
     const [visible, setVisible] = useState(false);
-    const [data, setData] = useState('');
+    const [extraPoint, setExtraPoint] = useState(false);
+    const [data, setData] = useState<Works>();
     const [statusUpdate, setStatusUpdate] = useState(false);
+    const [selected, setSelected] = React.useState("enter");
 
-    const openModalWithData = (newData: React.SetStateAction<string>) => {
-        setData(newData);
+    const handleSelectionChange = (key: any) => {
+        setSelected(String(key));
+    };
+
+
+    const openModalWithData = (newData: string) => {
+        const dataFind = dataWorkOne.find(work => work.id == parseInt(newData, 10));
+        setData(dataFind);
         setVisible(true);
+        // console.log(dataFind)
     };
 
     const [open, setOpen] = React.useState(false);
@@ -407,27 +423,41 @@ export default function WorkspaceTab(idcourse: any) {
                     </DropdownTrigger>
                     <DropdownMenu aria-label="Static Actions" className={kanit.className}>
                         <DropdownSection title="สร้าง">
-                        {dataTopic && dataTopic.map((item) => (
-                            <DropdownItem
-                                key={item.id}
-                                description={item.des}
-                                startContent={item.id == 1 ? (<MdWork className={iconClasses} />) : (<FaUserGroup className={iconClasses} />)}
-                                onPress={item.id == 1 ? onOpenSolo : onOpenGroup }
-                                onAction={() => configData(item.id)}
-                                isDisabled={item.status == 0 ? true : false}
-                                textValue={item.name}
-                            >
-                                {`${item.name} `}
-                                {item.status == 0 ? <Chip color="warning" size="sm" variant="shadow">เร็ว ๆ นี้</Chip> : ""}
-                            </DropdownItem>
-                        ))}
+                            {dataTopic && dataTopic.map((item) => (
+                                <DropdownItem
+                                    key={item.id}
+                                    description={item.des}
+                                    startContent={item.id == 1 ? (<MdWork className={iconClasses} />) : (<FaUserGroup className={iconClasses} />)}
+                                    onPress={item.id == 1 ? onOpenSolo : onOpenGroup}
+                                    onAction={() => configData(item.id)}
+                                    isDisabled={item.status == 0 ? true : false}
+                                    textValue={item.name}
+                                >
+                                    {`${item.name} `}
+                                    {item.status == 0 ? <Chip color="warning" size="sm" variant="shadow">เร็ว ๆ นี้</Chip> : ""}
+                                </DropdownItem>
+                            ))}
 
                         </DropdownSection>
                     </DropdownMenu>
                 </Dropdown>
             </div>
 
-
+            <Listbox
+                aria-label="Actions"
+                onAction={(key) => setExtraPoint(true)}
+            >
+                <ListboxItem
+                    key="extra"
+                    description={`คะแนนพิเศษตอบคำถามในชั้นเรียน`}
+                    startContent={<FaStar className='text-xl text-default-500 pointer-events-none flex-shrink-0 star-icon' />}
+                    className='py-3 my-3 bg-white shadow-sm border border-x-gray-200 border-y-gray-200'
+                    color='secondary'
+                    variant='flat'
+                >
+                    คะแนนพิเศษ (Extra points)
+                </ListboxItem>
+            </Listbox>
 
             <Accordion variant="splitted" selectionMode="multiple" defaultExpandedKeys={["1", "2"]}>
                 <AccordionItem key="1" aria-label="งานเดี่ยว" title="งานเดี่ยว">
@@ -443,7 +473,7 @@ export default function WorkspaceTab(idcourse: any) {
                                 <Listbox
                                     items={dataWorkOne}
                                     aria-label="Dynamic Actions"
-                                    onAction={(label) => openModalWithData(`Hello from Button ${label}`)}
+                                    onAction={(label) => openModalWithData(label.toString())}
                                     className={kanit.className}
                                 >
                                     {dataWorkOne.map((item) => {
@@ -504,7 +534,7 @@ export default function WorkspaceTab(idcourse: any) {
                                 <Listbox
                                     items={dataWorkTwo}
                                     aria-label="Dynamic Actions"
-                                    onAction={(label) => openModalWithData(`Hello from Button ${label}`)}
+                                    onAction={(label) => openModalWithData(label.toString())}
                                     className={kanit.className}
                                 >
                                     {dataWorkTwo.map((item) => {
@@ -567,17 +597,41 @@ export default function WorkspaceTab(idcourse: any) {
             </Snackbar>
 
             {/* Modal สำหรับกรอกคะแนน แก้ไขคะแนน */}
-            <Modal isOpen={visible} onClose={() => setVisible(false)} placement="center" className={kanit.className}>
+            <Modal isOpen={visible} onClose={() => setVisible(false)} placement="center" className={kanit.className} isDismissable={false} isKeyboardDismissDisabled={true}>
                 <ModalContent>
-                    <ModalHeader className="flex flex-col gap-1">สร้างงานเดี่ยว</ModalHeader>
+                    <ModalHeader className="flex flex-col gap-1">{data?.name}</ModalHeader>
                     <ModalBody>
-                        <p>{data}</p>
+                        <div className="flex flex-col w-full">
+                            <Tabs
+                                fullWidth
+                                size="md"
+                                aria-label="Tabs form"
+                                selectedKey={selected}
+                                onSelectionChange={handleSelectionChange}
+                            >
+                                <Tab key="enter" title="ลงคะแนน" className={kanit.className}>
+                                    <FormEnter idcourse={idcourse.idcourse} />
+
+                                </Tab>
+                                <Tab key="edit" title="แก้ไขคะแนน">
+                                    <FormEnter idcourse={idcourse.idcourse} />
+                                </Tab>
+                            </Tabs>
+                        </div>
                     </ModalBody>
-                    <ModalFooter>
-                        <Button color="danger" variant="flat" onPress={() => setVisible(false)}>
-                            ปิด
-                        </Button>
-                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+
+
+            {/* Modal สำหรับกรอกคะแนนพิเศษ */}
+            <Modal isOpen={extraPoint} onClose={() => setExtraPoint(false)} placement="center" className={kanit.className} isDismissable={false} isKeyboardDismissDisabled={true}>
+                <ModalContent>
+                    <ModalHeader className="flex flex-col gap-1">คะแนนพิเศษ {idcourse.idcourse} (Extra points)</ModalHeader>
+                    
+                        <div className="flex flex-col w-full">
+                            <FormExtra idcourse={idcourse.idcourse} />
+                        </div>
+
                 </ModalContent>
             </Modal>
 

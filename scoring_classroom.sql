@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 24, 2024 at 03:50 PM
+-- Generation Time: Jun 25, 2024 at 04:04 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.0.25
 
@@ -77,9 +77,9 @@ CREATE TABLE `course` (
 --
 
 INSERT INTO `course` (`idcourse`, `name`, `image`, `description`) VALUES
-('CP341005', 'Software design and analysis', '4eve-1.jpg', 'Test create SA for 4eve'),
-('SC362102', 'Software engineering', '4evebody1.jpg', 'Test create SA for 4eve'),
-('SC363001', 'Systems analysis and design', '4evebody2.jpg', 'Test create SA for 4eve');
+('CP341005', 'Software design and analysis', '4eve-1.jpg', 'การวิเคราะห์และออกแบบซอฟต์แวร์'),
+('SC362102', 'Software engineering', '4evebody1.jpg', ' วิศวกรรมซอฟต์แวร์'),
+('SC363001', 'Systems analysis and design', '4evebody2.jpg', 'การวิเคราะห์และออกแบบระบบ');
 
 -- --------------------------------------------------------
 
@@ -108,7 +108,77 @@ INSERT INTO `enllo` (`id`, `idcourse`, `stdid`, `type`) VALUES
 (9, 'SC363001', '653380008-6', NULL),
 (10, 'SC363001', '653380009-4', NULL),
 (11, 'SC363001', '653380010-9', NULL),
-(12, 'SC363001', '653380011-7', NULL);
+(12, 'SC363001', '653380011-7', NULL),
+(13, 'SC363001', '653380012-5', NULL),
+(14, 'SC363001', '653380013-3', NULL),
+(15, 'SC363001', '653380085-8', NULL),
+(16, 'SC363001', '653380086-6', NULL),
+(17, 'SC363001', '653380087-4', NULL),
+(18, 'SC363001', '653380088-2', NULL),
+(19, 'SC363001', '653380089-0', NULL),
+(20, 'SC363001', '653380090-5', NULL),
+(21, 'SC363001', '653380091-3', NULL),
+(22, 'SC363001', '653380092-1', NULL),
+(23, 'SC363001', '653380093-9', NULL),
+(24, 'SC363001', '653380094-7', NULL),
+(25, 'SC363001', '653380095-5', NULL),
+(26, 'SC363001', '653380096-3', NULL),
+(27, 'SC363001', '653380099-7', NULL),
+(28, 'SC363001', '653380100-8', NULL),
+(29, 'SC363001', '653380101-6', NULL),
+(30, 'SC363001', '653380102-4', NULL),
+(31, 'SC363001', '653380104-0', NULL),
+(32, 'SC363001', '653380105-8', NULL),
+(33, 'SC363001', '653380106-6', NULL),
+(34, 'SC363001', '653380107-4', NULL),
+(35, 'SC363001', '653380108-2', NULL),
+(36, 'SC363001', '653380109-0', NULL),
+(37, 'SC363001', '653380110-5', NULL),
+(38, 'SC363001', '653380111-3', NULL),
+(39, 'SC363001', '653380112-1', NULL),
+(40, 'SC363001', '653380113-9', NULL),
+(41, 'SC363001', '653380115-5', NULL),
+(42, 'SC363001', '653380116-3', NULL),
+(43, 'SC363001', '653380118-9', NULL),
+(44, 'SC363001', '653380119-7', NULL),
+(45, 'SC363001', '653380245-2', NULL),
+(46, 'SC363001', '653380246-0', NULL),
+(47, 'SC363001', '653380248-6', NULL),
+(48, 'SC363001', '653380249-4', NULL),
+(49, 'SC363001', '653380250-9', NULL),
+(50, 'SC363001', '653380251-7', NULL),
+(51, 'SC363001', '653380252-5', NULL),
+(52, 'SC363001', '653380253-3', NULL),
+(53, 'SC363001', '653380254-1', NULL),
+(54, 'SC363001', '653380256-7', NULL),
+(55, 'SC363001', '653380257-5', NULL),
+(56, 'SC363001', '653380260-6', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `extra_point`
+--
+
+CREATE TABLE `extra_point` (
+  `id` int(11) NOT NULL,
+  `stdid` varchar(11) NOT NULL,
+  `idcourse` varchar(8) NOT NULL,
+  `teachid` varchar(11) NOT NULL,
+  `point` int(11) NOT NULL,
+  `create_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `extra_point`
+--
+
+INSERT INTO `extra_point` (`id`, `stdid`, `idcourse`, `teachid`, `point`, `create_at`) VALUES
+(1, '123456789-0', 'SC363001', '633020334-8', 1, '2024-06-24 21:50:28'),
+(2, '653380002-8', 'SC363001', '633020334-8', 1, '2024-06-24 21:54:32'),
+(3, '653380003-6', 'SC363001', '633020334-8', 1, '2024-06-24 21:55:48'),
+(5, '653380005-2', 'SC363001', '633020334-8', 1, '2024-06-24 22:06:17'),
+(6, '653380002-8', 'SC363001', '633020334-8', 1, '2024-06-25 01:22:19');
 
 -- --------------------------------------------------------
 
@@ -136,6 +206,31 @@ INSERT INTO `opencourse` (`id`, `name`, `idcourse`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `points`
+--
+
+CREATE TABLE `points` (
+  `id` int(11) NOT NULL,
+  `stdid` varchar(11) NOT NULL,
+  `teachid` varchar(11) NOT NULL,
+  `idtitelwork` int(11) NOT NULL,
+  `point` int(11) NOT NULL,
+  `create_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `update_at` timestamp NOT NULL DEFAULT '1998-12-31 17:00:00' ON UPDATE current_timestamp(),
+  `delete_at` timestamp NOT NULL DEFAULT '1998-12-31 17:00:00'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `points`
+--
+
+INSERT INTO `points` (`id`, `stdid`, `teachid`, `idtitelwork`, `point`, `create_at`, `update_at`, `delete_at`) VALUES
+(1, '643020402-8', '633020334-8', 1, 10, '2024-06-24 17:09:26', '1998-12-31 17:00:00', '1998-12-31 17:00:00'),
+(2, '643020402-8', '633020334-8', 1, 10, '2024-06-24 17:15:19', '1998-12-31 17:00:00', '1998-12-31 17:00:00');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `titelwork`
 --
 
@@ -154,7 +249,7 @@ CREATE TABLE `titelwork` (
 --
 
 INSERT INTO `titelwork` (`id`, `name`, `date`, `typework`, `maxpoint`, `idcourse`, `delete_at`) VALUES
-(1, 'Lab 1', '2024-06-18', 1, 10, 'SC363001', NULL),
+(1, 'Lab 1', '2024-06-18', 1, 10, 'SC363001', 'deleted'),
 (2, 'Lab 2', '2024-06-18', 1, 10, 'CP341005', NULL),
 (3, 'Lab 3', '2024-06-19', 1, 10, 'CP341005', NULL),
 (4, 'Lab 4', '2024-06-19', 1, 10, 'CP341005', 'deleted'),
@@ -224,7 +319,51 @@ INSERT INTO `users` (`stdid`, `name`, `email`, `section`, `image`, `track`, `typ
 ('653380008-6', 'นายพีระพงศ์ เต้าประจิม', 'peeraphong.t@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjX3MHJOnuG5Z2PtDXCMtH5ZVPBbWWpTg6VN6dkyEVwW_07VZkdR', 'Network', 1),
 ('653380009-4', 'นายมานพ เวียนเทียน', 'manop.v@kkumail.com', 1, 'https://lh3.googleusercontent.com/a/ACg8ocLWTgWGn2FD50oJDTs70DqGRexCBihjv-aXSs_eyvZrVyQx', 'Web and Mobile', 1),
 ('653380010-9', 'นายรพีพัฒน์ ศรีสวัสดิ์', 'rapeepat.s@kkumail.com', 1, 'https://lh3.googleusercontent.com/a/ACg8ocJjGpgfHf1uRTJOkN4l_PzLXwsHYBsVx2wrzQZSPf9UKwMrtA', 'Network', 1),
-('653380011-7', 'นางสาววรรณภา บุษบง', 'wannapa.bu@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjVmz8kilOeAiXXxZHybDrzpN46o01WCkFknj5Tt8y9W1FGk-BU', 'Web and Mobile', 1);
+('653380011-7', 'นางสาววรรณภา บุษบง', 'wannapa.bu@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjVmz8kilOeAiXXxZHybDrzpN46o01WCkFknj5Tt8y9W1FGk-BU', 'Web and Mobile', 1),
+('653380012-5', 'นายวรวุธ โคตรนาแพง', 'worawut.kh@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjVPY55jeSYFOxv8KziDA23JoKUDU0sTzfFoHG8KuRrMJoq8pg8', 'Network', 1),
+('653380013-3', 'นางสาวอินทิรา ฤทธิพรม', 'inthira.r@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjW6xvJvooQoHlgIpdXibEfbI7fcZAdsJyhbAGGGo8wTQW9sd6U', 'Web and Mobile', 1),
+('653380085-8', 'นางสาวขวัญเนตร สุวรรณศรี', 'khwannet.s@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjXQQ6ns6TmlwO6ZQgyxButOmM9GYVoqopLYBarWxMS7NT2nzC0', 'Web and Mobile', 1),
+('653380086-6', 'นายเจษฎา สมพร', 'jetsada.som@kkumail.com', 1, 'https://lh3.googleusercontent.com/a/ACg8ocJMwJc9znpIXpEutPDayXkXiFb882rSk84lKXgQU0sb5domDq4', 'BIT', 1),
+('653380087-4', 'นายชนวีร์ คงพรม', 'chanawee.k@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjWqUljYEAbWVJH2_0PHoIutHJ1ZJPce-oFtI2EkeMX43ZK92g', 'BIT', 1),
+('653380088-2', 'นายชนินทร์ บุตรรอด', 'chanin.bu@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjUB3t--M3QamiC2y9Y3cS8CG_1PFBzNwPM9HjVwjqiJGIxWOA', 'Network', 1),
+('653380089-0', 'นางสาวณัฐชา แสงไชยา', 'nattacha.sa@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjWemZqmR0dPw-_cP1ZHzcfJ9qUWytASa6sdgWQ5h4vVAkgpa6U', 'BIT', 1),
+('653380090-5', 'นางสาวณัฐทิยา แสนนา', 'nattiya.sa@kkumail.com', 1, 'https://lh3.googleusercontent.com/a/ACg8ocIuHFxoTnTLxD9sga7qovASupifD8B0qKhFV6bZlfbSLf2GIQ', 'Web and Mobile', 1),
+('653380091-3', 'นายณัฐพล ลักษณะ', 'nattapon.la@kkumail.com', 1, 'https://lh3.googleusercontent.com/a/ACg8ocJuVkruvo-ehDe9_jM0_ZYEYLFdGbxB2-PYcuXBlQCvf91vYg', 'BIT', 1),
+('653380092-1', 'นายณัฐวิชร์ แก้วเบ้า', 'natthawit.k@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjVDvnSgZA79BAyyK7P7Mtp5HRqvHrxIEEaF_0LEwIC4I_v2nKs', 'Network', 1),
+('653380093-9', 'นางสาวตรีรัตน์ ตรีพงษ์', 'treerat.t@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjUvNckF1HTFHvhJR02c5pHnMrVohxW9_2ccgoB7yv3VKRptrS0', 'Web and Mobile', 1),
+('653380094-7', 'นายธนกฤต แก้วสุวรรณ', 'thanakrit.kaew@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjWtTX5UiixFc1gzCAI4Mx2bAlCym5KbQUt6N8Ku1L8mRxlMew', 'BIT', 1),
+('653380095-5', 'นายธฤต สุทธิธรรม', 'tharit.s@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjVD62Bl9t8SHV4HcU6t7V2Du2mYJBahQ6exvQ-nrROsJ788zLI', 'Network', 1),
+('653380096-3', 'นางสาวธัญชนก พละกรณ์', 'thunchanok.p@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjWlVLpamQPhulQJ9f3VShh-v_n_y8H-YgpaY8DJB7GKDuPUbLo', 'BIT', 1),
+('653380099-7', 'นางสาวเบญจพร พันธโคตร', 'benjaporn.pan@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjVJYDpSFwgRAhnRf6bfzUgPyBRRh_PYWZPxZ1tsG2D8FvfY7ur4', 'Network', 1),
+('653380100-8', 'นายปณิธิ เสือสุภาพ', 'panithi.s@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjWVWMOZ9KdfWDJlZJNq-4kTYxQaXQAkUYCzRBoywJaycQi5ZeE', 'BIT', 1),
+('653380101-6', 'นางสาวปิยะณัฐ รูปสูง', 'piyanat.r@kkumail.com', 1, 'https://lh3.googleusercontent.com/a/ACg8ocIokWyT20l-gWq71NfkhtUqfzAtxSymeBLKzTzzYRs9-ybB_A', 'Web and Mobile', 1),
+('653380102-4', 'นางสาวพรทิพย์ ชมจันทร์', 'phornthip.c@kkumail.com', 1, 'https://lh3.googleusercontent.com/a/ACg8ocLHpXu6MYsxUQyB0CiqfLH7hsCzyco-mTueHEb43UksdtlK8w', 'BIT', 1),
+('653380104-0', 'นายพัชรพงษ์ พูนทรัพย์อมร', 'patcharapong.ph@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjVmkGqvyQI2_jP9_k0LT0wqVggF5YyE0Wm6wjOgRyfUnjsixSg', 'Web and Mobile', 1),
+('653380105-8', 'นายพิสิษฐ์ จินานิกร', 'pisit.j@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjWgcIk4ozQSRb8lsNlxtsxyoV6bIdMp5k4ca2gZS_ntUYqmodU', 'Network', 1),
+('653380106-6', 'นายพีรพล จริยานุกูลวงศ์', 'pheeraphon.j@kkumail.com', 1, 'https://lh3.googleusercontent.com/a/ACg8ocIAspf5D50MDEi_WeINOJTQ_VHRNZ3r325LMC-ZpsFJTtlOhg', 'Network', 1),
+('653380107-4', 'นายพีรพล เล่าสุอังกูร', 'peeraphol.l@kkumail.com', 1, 'https://lh3.googleusercontent.com/a/ACg8ocLLOXdWR67PpF3UDbCXL-snkpeZ3lvwZhSGon-67Vhb1z76sg', 'Web and Mobile', 1),
+('653380108-2', 'นางสาวพุธิตา งาพาณิชย์วัฒน์', 'phutthita.n@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjWCKA2907sb_zOCepJjh1HbUQdBj3Ds4ctzDYA1GFV-qj6HaR8', 'BIT', 1),
+('653380109-0', 'นายภูมิรพี เกษรไพบูลย์', 'phumrapee.k@kkumail.com', 1, 'https://lh3.googleusercontent.com/a/ACg8ocKoRVMo9hFoVuWVCH_GGMQeVPreQyXJNc0EmUROT6mJZAxJgg', 'Web and Mobile', 1),
+('653380110-5', 'นายวชิรวิทย์ แท่งทองหลาง', 'wachirawit.ta@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjWT0MOoLYsj7fNfZSu-NQnUE5G6fHxZY9TEOjqgn10ML7XxJ30', 'Web and Mobile', 1),
+('653380111-3', 'นางสาวศศิปรียา สีราช', 'sasipreya.s@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjU_i-y5h-nyrkW6MrN4GRGFQ9MCupLRDygDyFkNoo_87baM30g', 'BIT', 1),
+('653380112-1', 'นางสาวศศิวิมล ผ่องใส', 'sasiwimon.ph@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjXviRNVOwWdxfIr38j4Lht27vT0Dzq-3E1JMPIODL3pXJmW7bU', 'BIT', 1),
+('653380113-9', 'นายสัญญพงศ์ พิพัฒน์โภคิน', 'sanyaphong.p@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjVYnhLQBChCLhdvD0PY0HcGv75KGtSc9pL29Z4TvgeWZkVe0FM', 'Network', 1),
+('653380115-5', 'นางสาวสุจิตรา สีลาพัฒน์', 'sujittra.se@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjXxt0ewJmxqV_i-eqAyoFW7IqWhI8OsKlIqcfWiA9YOMbnrb1U', 'BIT', 1),
+('653380116-3', 'นางสาวสุภัสรา บุญตาท้าว', 'supatsara.b@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjVQCEezWDiXwxMmEcAHv1Xf7WbCk4X9JP8iHvI1Wi8PdMrbZBU', 'BIT', 1),
+('653380118-9', 'นายอภิชัย ทินจอง', 'apichai.ti@kkumail.com', 1, 'https://lh3.googleusercontent.com/a/ACg8ocKvGgLp6euoeR43SwDVy-H5xjZy09XSOygil_jUpW9HiGJe7g', 'Web and Mobile', 1),
+('653380119-7', 'นายอุทิศ สวัสดี', 'uthit.s@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjXoodIMgPJq99jwYvNAHHbwCX26foDzEP0EfYtw-UFPPrWEuzPC', 'BIT', 1),
+('653380245-2', 'นายฐากูร เอ็นสาร', 'thakun.e@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjVc3kBOvqfb7kxjSiwmECLC9Av6hmUOMNDoI8_Ai91co_7SpWI', 'Network', 1),
+('653380246-0', 'นางสาวฐิตาภา ไขชัยภูมิ', 'titapa.k@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjUj66ucQg501JyfFWJHwgJn6pu4m1iOjU25IBDZ8sDmg10UKaQ', 'BIT', 1),
+('653380248-6', 'นายนนทวัฒน์ วิรุณปักษี', 'nonthawat.wi@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjXnGdOl_1n46B8stYIE8aTVJu8H6Hi2MMcukTAebgeWt5D7VqyO', 'BIT', 1),
+('653380249-4', 'นายนภัทร ธันยภรสกล', 'naphat.th@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjUXxZ76uH8H4Dw14stSyqaYi5Gdq8iccdpkX67W-myuIn-iBfs', 'BIT', 1),
+('653380250-9', 'นายนวมินทร์ คำจันทร์', 'nawamin.c@kkumail.com', 1, 'https://lh3.googleusercontent.com/a/ACg8ocKcCZ82lbUEukV9Ya7c0MEcFGCTLV37KupF3vtbuqAB5aTVxw', 'BIT', 1),
+('653380251-7', 'นางสาวนิชธาวัลย์ พุกน้อย', 'nitthawan.p@kkumail.com', 1, 'https://lh3.googleusercontent.com/a/ACg8ocKrtWZ3BtA__y_T109hiFyBg_JbMggxDDnTU5w7pCx3gDMrRg', 'Web and Mobile', 1),
+('653380252-5', 'นางสาวบุษยมาส สมบูรณ์ทวง', 'bussayamas.s@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjU9IlUWO0iXhCwtBKoEy_7_CrVJLI-OE_lQa2xizWtm_dS4Ais', 'BIT', 1),
+('653380253-3', 'นางสาวพัชราพร นิลพงษ์', 'phatcharaporn.ni@kkumail.com', 1, 'https://lh3.googleusercontent.com/a/ACg8ocLfR-5WDwb4lQfdBBNup00iBJK1ZfpGuGz-WMHUvIb71TeMHA', 'Web and Mobile', 1),
+('653380254-1', 'นางสาวภรกนก ทุริดไธสง', 'pornkanok.t@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjU-3A05ITEzZJS8ISeQX-ObRzHnWwdRTG7viu5BdZOhaPZXnf0', 'BIT', 1),
+('653380256-7', 'นายภีรายุ ภัทรอร่าม', 'peerayu.p@kkumail.com', 1, 'https://lh3.googleusercontent.com/a/ACg8ocJaaWLLc39CXiiVOkpp8ObJgpEg54JKKUsDahDQe7cnePviTQ', 'BIT', 1),
+('653380257-5', 'นางสาวศรัณยา โสสุด', 'saranya.sos@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjWsUfCLNszsB8W-aF8gZbC2z0nteet6ThdQPcvHsL9K3U22Mlg', 'Web and Mobile', 1),
+('653380260-6', 'นางสาวอัญชิสา นามกันยา', 'unchisa.n@kkumail.com', 1, 'https://lh3.googleusercontent.com/a-/ALV-UjWSP8f8JS4s-RNc-naQBpf3hXVrrhWbFH48f0hntOEid4SEuQ', 'Network', 1);
 
 --
 -- Indexes for dumped tables
@@ -249,9 +388,21 @@ ALTER TABLE `enllo`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `extra_point`
+--
+ALTER TABLE `extra_point`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `opencourse`
 --
 ALTER TABLE `opencourse`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `points`
+--
+ALTER TABLE `points`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -286,13 +437,25 @@ ALTER TABLE `caretaker`
 -- AUTO_INCREMENT for table `enllo`
 --
 ALTER TABLE `enllo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+
+--
+-- AUTO_INCREMENT for table `extra_point`
+--
+ALTER TABLE `extra_point`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `opencourse`
 --
 ALTER TABLE `opencourse`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `points`
+--
+ALTER TABLE `points`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `titelwork`

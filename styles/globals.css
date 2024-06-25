@@ -20,3 +20,7 @@
   .custom-h-screen-minus-16 {
     height: calc(100vh - 138px); /* 64px คือความสูงของเมนู */
   }
+
+  .star-icon svg:hover {
+    color: #ffffff;
+  }

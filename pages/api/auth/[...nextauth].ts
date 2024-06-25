@@ -60,8 +60,33 @@ export const authOptions: NextAuthOptions = {
         console.error('Error fetching user data from API:', error);
         return session;
       }
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        const emailToCheck = user.email;
+        try {
+          const apiResponse = await axios.post(
+            `${process.env.NEXT_PUBLIC_API_URL}/authen`,
+            { email: emailToCheck },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.NEXT_PUBLIC_API_KEY || "",
+              }
+            }
+          );
+
+          if (apiResponse.data) {
+            token.stdid = apiResponse.data[0].stdid;
+          }
+        } catch (error) {
+          console.error('Error fetching user data from API:', error);
+        }
+      }
+      return token;
     }
-  }
+  },
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 export default NextAuth(authOptions);

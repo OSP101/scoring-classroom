@@ -34,6 +34,7 @@ const WorkspaceTab = dynamic(() => import('@/Components/Tabs/WorkspaceTab'), {
     loading: () => <LinearProgress color="secondary"/>,
   });
 
+
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
 
 export default function CourseDetail() {
@@ -109,7 +110,9 @@ export default function CourseDetail() {
                                     </div>
                                 }
                             >
-                                <PointTab/>
+                                <div className='overflow-y-scroll custom-h-screen-minus-16'>
+                                <PointTab idcouesr={id}/>
+                                </div>
                             </Tab>
                         </Tabs>
                     </div>
