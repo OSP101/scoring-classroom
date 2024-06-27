@@ -20,7 +20,7 @@ export default function FormExtra(idcourse: any) {
     const { data: session, status } = useSession();
     const [dataUser, setDataUser] = useState<Students[]>([]);
     const [inputData, setInputData] = useState('');
-    const [idTeach, setIdTeach] = useState(session?.user?.stdid)
+    const [idTeach, setIdTeach] = useState(session?.user?.name)
     const point = 1;
     const idc = idcourse.idcourse;
     const [open, setOpen] = React.useState(false);
