@@ -23,16 +23,25 @@ export default function CourseAll({ session }: { session: any }) {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await axios.get<Course[]>(`${process.env.NEXT_PUBLIC_API_URL}/course/${session?.user?.stdid}`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-api-key': process.env.NEXT_PUBLIC_API_KEY
-                    }
+                const headers = new Headers({
+                    'Content-Type': 'application/json',
+                    'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ''
                 });
-                setDataCourses(response.data);
+            
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/course/${session?.user?.stdid}`, {
+                    method: 'GET',
+                    headers: headers
+                });
+                if (!response.ok) {
+                    throw new Error(`Error fetching courses: ${response.statusText}`);
+                }
+                const dataCourses = await response.json();
+                setDataCourses(dataCourses);
             } catch (error) {
                 console.error('Error fetching courses:', error);
             }
+            
+            
         };
 
         if (session?.user?.stdid) {
