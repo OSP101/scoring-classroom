@@ -3,6 +3,7 @@ version: '3.4'
 services:
   scoringclassroom:
     image: scoringclassroom
+    restart: always
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -10,18 +11,19 @@ services:
       NODE_ENV: production
     ports:
       - 3000:3000
-    phpmyadmin:
-      image: phpmyadmin/phpmyadmin:latest
-      container_name: phpmyadmin
-      environment:
-        PMA_HOST: db
-        PMA_PORT: 3306
-        PMA_USER: root
-        PMA_PASSWORD: mauFJcuf5dhRMQrjj
-      ports:
-        - "8080:80"
-      depends_on:
-        - db
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: mauFJcuf5dhRMQrjj
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    restart: always      
 
   db:
     image: mysql:8.0
@@ -35,6 +37,20 @@ services:
       - '3306:3306'
     volumes:
       - db:/var/lib/mysql
+
+
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce:latest
+    ports:
+      - '8000:8000'
+      - '9443:9443'
+    volumes:
+      - 'portainer_data:/data'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    restart: always
+
+
 volumes:
   db:
     driver: local
