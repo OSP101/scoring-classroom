@@ -31,23 +31,25 @@ export default function PointTab(idcouesr: any) {
 
     const getPoint = async (idcoursess: string) => {
         try {
-            const data = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/extrapoint/getpoint`,
-                { idcourses },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-api-key': process.env.NEXT_PUBLIC_API_KEY
-                    }
-                });
 
-            setDataPoint(data.data);
-            setStatusLoadTeach(true);
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.log(error.message);
-            } else {
-                console.log('An unexpected error occurred');
+            const headers = new Headers({
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ''
+            });
+
+            const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/extrapoint/getpoint`,
+                {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(idcourses)
+                });
+            if (data.ok) {
+                const dataCourses = await data.json();
+                setDataPoint(dataCourses);
+                setStatusLoadTeach(true);
             }
+        } catch (error) {
+            console.error('Error fetching courses:', error);
         }
     }
 
@@ -62,7 +64,7 @@ export default function PointTab(idcouesr: any) {
                 </TableHeader>
                 <TableBody
                     items={dataPoint ?? []}
-                    loadingContent={<Spinner color='secondary'/>}
+                    loadingContent={<Spinner color='secondary' />}
                     loadingState={statusLoadTeach ? LoadingState.Idle : LoadingState.Loading}
                     emptyContent={"ไม่พบอาจารย์ผู้สอน"}
                 >

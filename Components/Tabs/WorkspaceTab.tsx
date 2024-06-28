@@ -204,14 +204,18 @@ export default function WorkspaceTab(idcourse: any) {
 
     const getTopic = async () => {
         try {
-            const responseTopic = await axios.get<Topics[]>(`${process.env.NEXT_PUBLIC_API_URL}/topic`, {
+            const responseTopic = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/topic`, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-api-key': process.env.NEXT_PUBLIC_API_KEY
-                }
+                    'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ""
+                },
             });
-
-            setDataTopic(responseTopic.data);
+            if (!responseTopic.ok) {
+                throw new Error(`Error fetching courses: ${responseTopic.statusText}`);
+            }
+            const dataCourses = await responseTopic.json();
+            setDataTopic(dataCourses);
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 console.log(error.message);
@@ -223,41 +227,41 @@ export default function WorkspaceTab(idcourse: any) {
 
     const getDataWorkOne = async () => {
         try {
-            const responseone = await axios.get<Works[]>(`${process.env.NEXT_PUBLIC_API_URL}/work/typeone/${idcourse.idcourse}`, {
+            const responseone = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/work/typeone/${idcourse.idcourse}`, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-api-key': process.env.NEXT_PUBLIC_API_KEY
-                }
+                    'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ""
+                },
             });
-
-            sedDataWorkOne(responseone.data);
+            if (!responseone.ok) {
+                throw new Error(`Error fetching courses: ${responseone.statusText}`);
+            }
+            const dataCourses = await responseone.json();
+            sedDataWorkOne(dataCourses);
             setLoadingOne(true);
         } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.log(error.message);
-            } else {
-                console.log('An unexpected error occurred');
-            }
+            console.error('Error fetching courses:', error);
         }
     }
 
     const getDataWorkTwo = async () => {
         try {
-            const responsetwo = await axios.get<Works[]>(`${process.env.NEXT_PUBLIC_API_URL}/work/typetwo/${idcourse.idcourse}`, {
+            const responsetwo = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/work/typetwo/${idcourse.idcourse}`, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-api-key': process.env.NEXT_PUBLIC_API_KEY
-                }
+                    'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ""
+                },
             });
-
-            sedDataWorkTwo(responsetwo.data);
+            if (!responsetwo.ok) {
+                throw new Error(`Error fetching courses: ${responsetwo.statusText}`);
+            }
+            const dataCourses = await responsetwo.json();
+            sedDataWorkTwo(dataCourses);
             setLoadingTwo(true);
         } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.log(error.message);
-            } else {
-                console.log('An unexpected error occurred');
-            }
+            console.error('Error fetching courses:', error);
         }
     }
 

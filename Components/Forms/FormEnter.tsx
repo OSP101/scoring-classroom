@@ -25,22 +25,20 @@ export default function FormEnter(idcourse: any) {
 
     const getUser = async (stdid: string, idcourse: string) => {
         try {
-            const data = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/score/getuser`,
-                { stdid, idcourse },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-api-key': process.env.NEXT_PUBLIC_API_KEY
-                    }
-                });
-
-            setDataUser(data.data);
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.log(error.message);
-            } else {
-                console.log('An unexpected error occurred');
+            const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/score/getuser`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ""
+                },
+                body: JSON.stringify({ stdid, idcourse })
+            });
+            if (data.ok) {
+                const dataCourses = await data.json();
+                setDataUser(dataCourses);
             }
+        } catch (error) {
+            console.error('Error fetching courses:', error);
         }
     }
 
@@ -56,9 +54,9 @@ export default function FormEnter(idcourse: any) {
         <div>
 
 
-                <Typography variant="h6" gutterBottom align="center">
+            <Typography variant="h6" gutterBottom align="center">
                 coming soon huff!!
-                </Typography>
+            </Typography>
 
             {/* <form className={`flex flex-col gap-4 ${kanit.className}`}>
                 <Autocomplete

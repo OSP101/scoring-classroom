@@ -37,45 +37,45 @@ export default function PersonTab(idcouesr: any) {
 
     const getDataTeacher = async () => {
         try {
-            const responseone = await axios.get<Persons[]>(`${process.env.NEXT_PUBLIC_API_URL}/enllo/teacher/${idcouesr.idcouesr}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-api-key': process.env.NEXT_PUBLIC_API_KEY
-                }
+
+            const headers = new Headers({
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ''
+            });
+
+            const responseone = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/enllo/teacher/${idcouesr.idcouesr}`, {
+                method: 'GET',
+                headers: headers
             });
 
             // console.log(responseone.data);
-
-            setDataTeacher(responseone.data);
+            const dataCourses = await responseone.json();
+            setDataTeacher(dataCourses);
             setStatusLoadTeach(true);
         } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.log(error.message);
-            } else {
-                console.log('An unexpected error occurred');
-            }
+            console.error('Error fetching courses:', error);
         }
     }
 
     const getDataStudent = async () => {
         try {
-            const responseone = await axios.get<Persons[]>(`${process.env.NEXT_PUBLIC_API_URL}/enllo/person/${idcouesr.idcouesr}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-api-key': process.env.NEXT_PUBLIC_API_KEY
-                }
+
+            const headers = new Headers({
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ''
+            });
+
+            const responseone = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/enllo/person/${idcouesr.idcouesr}`, {
+                method: 'GET',
+                headers: headers
             });
 
             // console.log(responseone.data);
-
-            setDataStudent(responseone.data);
+            const dataCourses = await responseone.json();
+            setDataStudent(dataCourses);
             setStatusLoadStudent(true);
         } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.log(error.message);
-            } else {
-                console.log('An unexpected error occurred');
-            }
+            console.error('Error fetching courses:', error);
         }
     }
 

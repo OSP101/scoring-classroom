@@ -1,26 +1,10 @@
-# Base image
-FROM node:20-alpine
-
-# Set working directory
-WORKDIR /app
-
-# Copy package.json and package-lock.json
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the source code
-COPY . .
-
-# Build the application
-RUN npm run build
-
-# Set environment to production
+FROM node:lts-alpine
 ENV NODE_ENV=production
-
-# Expose the port the app runs on
+WORKDIR /usr/src/app
+COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
+RUN npm install --production --silent && mv node_modules ../
+COPY . .
 EXPOSE 3000
-
-# Start the application
+RUN chown -R node /usr/src/app
+USER node
 CMD ["npm", "start"]

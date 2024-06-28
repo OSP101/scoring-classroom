@@ -35,22 +35,22 @@ export default function FormExtra(idcourse: any) {
 
     const getUser = async (stdid: string, idcourse: string) => {
         try {
-            const data = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/score/getuser`,
-                { stdid, idcourse },
+            const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/score/getuser`,
                 {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'x-api-key': process.env.NEXT_PUBLIC_API_KEY
-                    }
+                        'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ""
+                    },
+                    body: JSON.stringify({ stdid, idcourse })
                 });
 
-            setDataUser(data.data);
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.log(error.message);
-            } else {
-                console.log('An unexpected error occurred');
+            if (data.ok) {
+                const dataCourses = await data.json();
+                setDataUser(dataCourses);
             }
+        } catch (error) {
+            console.error('Error fetching courses:', error);
         }
     }
 
@@ -162,8 +162,8 @@ export default function FormExtra(idcourse: any) {
             </ModalBody>
             <ModalFooter>
 
-                <Button className={`bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg ${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''} `} isDisabled={inputData.length === 0 ? true : false}  onClick={handleSubmitWork}>
-                    {statusUpdate ? (<><Spinner color="default"/> <p> กำลังบันทึก...</p></>) : "บันทึก"}
+                <Button className={`bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg ${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''} `} isDisabled={inputData.length === 0 ? true : false} onClick={handleSubmitWork}>
+                    {statusUpdate ? (<><Spinner color="default" /> <p> กำลังบันทึก...</p></>) : "บันทึก"}
                 </Button>
 
             </ModalFooter>

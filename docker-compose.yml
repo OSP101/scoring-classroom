@@ -1,48 +1,27 @@
-version: '3.9'
+version: '3.4'
 
 services:
-  webapp:
-    build: .
-    container_name: webapp
-    ports:
-      - "3000:3000"
+  scoringclassroom:
+    image: scoringclassroom
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     environment:
-      GOOGLE_ID: 606064697392-q25vic5ns5lvk3et9t49ffi56rlsnh0k.apps.googleusercontent.com
-      GOOGLE_SECRET: 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
-      MYSQL_HOST: db
-      MYSQL_USER: root
-      MYSQL_PASSWORD: mauFJcuf5dhRMQrjj
-      MYSQL_DATABASE: scoring_classroom
-      NEXT_PUBLIC_API_URL: https://sc.osp101.dev/api/v1
-      NEXT_PUBLIC_API_KEY: asdfghjkl
-      NEXTAUTH_URL: https://sc.osp101.dev
-      NEXTAUTH_SECRET: asdfghjkl
-#   db:
-#     image: mysql:latest
-#     container_name: db
-#     environment:
-#       MYSQL_ROOT_PASSWORD: supphitan # Set root mysql password
-#       MYSQL_DATABASE: scoring_classroom # Set initial database
-#     ports:
-#       - "3306:3306"
-#     volumes:
-#       - mysql_data_test:/var/run/mysqld
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
-    container_name: phpmyadmin
-    environment:
-      PMA_HOST: db # ระบุ host ที่จะให้ phpmyadmin ไปจัดการ ซึ่งสามารถใส่เป็นชื่อ container name (db) ได้เลย
-      PMA_PORT: 3306 # ระบุ port ของ Database
-      PMA_USER: root # ระบุ user ของ Database
-      PMA_PASSWORD: mauFJcuf5dhRMQrjj # ระบุ password ของ Database
+      NODE_ENV: production
     ports:
-      - "8080:80"
-    depends_on:
-      - db
-
-# volumes:
-#   mysql_data_test: # กำหนดชื่อ volume ที่ต้องการจะสร้าง
-#     driver: local
+      - 3000:3000
+    phpmyadmin:
+      image: phpmyadmin/phpmyadmin:latest
+      container_name: phpmyadmin
+      environment:
+        PMA_HOST: db
+        PMA_PORT: 3306
+        PMA_USER: root
+        PMA_PASSWORD: mauFJcuf5dhRMQrjj
+      ports:
+        - "8080:80"
+      depends_on:
+        - db
 
   db:
     image: mysql:8.0
