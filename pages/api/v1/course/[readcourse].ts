@@ -1,34 +1,44 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { mysqlPool } from "../../../../utils/db";
 import { authenticateApiKey } from '../../../../lib/auth';
+import Cors from 'cors';
+import runMiddleware from '../../../../lib/cors';
+
+const cors = Cors({
+    methods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    origin: 'https://sc.osp101.dev',
+});
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-    if (req.method === "GET") {
-        const { readcourse } = req.query;
 
-        try {
-        const promisePool = mysqlPool.promise()
-        let rows; 
 
-        [rows] = await promisePool.query(
-            'SELECT * FROM caretaker JOIN course ON course.idcourse = caretaker.idcourse WHERE caretaker.stdid = ?',
-            readcourse
-        );
+    try {
+        await runMiddleware(req, res, cors);
+        if (req.method === "GET") {
 
-        if (rows.length === 0) {
-            res.status(200).json({ message: "Empty database" });
+            const { readcourse } = req.query;
+            const promisePool = mysqlPool.promise()
+            let rows;
+
+            [rows] = await promisePool.query(
+                'SELECT * FROM caretaker JOIN course ON course.idcourse = caretaker.idcourse WHERE caretaker.stdid = ?',
+                readcourse
+            );
+
+            if (rows.length === 0) {
+                res.status(200).json({ message: "Empty database" });
+            } else {
+                res.status(200).json(rows);
+            }
+
+            // console.log(rows)
         } else {
-            res.status(200).json(rows);
+            res.status(405).json({ error: 'Method not allowed' });
         }
-
-        // console.log(rows)
-
-        } catch (err) {
-            res.status(500).json({ error: err });
-        }
-    }else {
-        res.status(405).json({ error: 'Method not allowed' });
+    } catch (err) {
+        res.status(500).json({ error: err });
     }
+
 }
 
 export default authenticateApiKey(handler);

@@ -9,6 +9,7 @@ services:
       dockerfile: ./Dockerfile
     environment:
       NODE_ENV: production
+      NEXT_PUBLIC_API_KEY: asdfghjkl
     ports:
       - 3000:3000
   phpmyadmin:
@@ -39,18 +40,20 @@ services:
       - db:/var/lib/mysql
 
 
-  portainer:
-    container_name: portainer
-    image: portainer/portainer-ce:latest
-    ports:
-      - '8000:8000'
-      - '9443:9443'
-    volumes:
-      - 'portainer_data:/data'
-      - '/var/run/docker.sock:/var/run/docker.sock'
-    restart: always
+  # portainer:
+  #   container_name: portainer
+  #   image: portainer/portainer-ce:latest
+  #   ports:
+  #     - '8000:8000'
+  #     - '9443:9443'
+  #   volumes:
+  #     - 'portainer_data:/data'
+  #     - '/var/run/docker.sock:/var/run/docker.sock'
+  #   restart: always
 
 
 volumes:
   db:
+    driver: local
+  portainer_data:
     driver: local
