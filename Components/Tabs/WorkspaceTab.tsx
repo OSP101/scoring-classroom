@@ -113,8 +113,6 @@ export default function WorkspaceTab(idcourse: any) {
 
     const [valueDate, setValueDate] = React.useState<DateValue>(today(getLocalTimeZone()));
 
-    const { day, month, year } = valueDate;
-
     const [createWork, setCreateWork] = useState({
         idcourse: '',
         name: '',
@@ -204,12 +202,15 @@ export default function WorkspaceTab(idcourse: any) {
 
     const getTopic = async () => {
         try {
+
+            const headers = new Headers({
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ''
+            });
+        
             const responseTopic = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/topic`, {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ""
-                },
+                headers: headers
             });
             if (!responseTopic.ok) {
                 throw new Error(`Error fetching courses: ${responseTopic.statusText}`);
@@ -217,22 +218,20 @@ export default function WorkspaceTab(idcourse: any) {
             const dataCourses = await responseTopic.json();
             setDataTopic(dataCourses);
         } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.log(error.message);
-            } else {
-                console.log('An unexpected error occurred');
-            }
+            console.error('Error fetching courses:', error);
         }
     }
 
     const getDataWorkOne = async () => {
         try {
+            const headers = new Headers({
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ''
+            });
+        
             const responseone = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/work/typeone/${idcourse.idcourse}`, {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ""
-                },
+                headers: headers
             });
             if (!responseone.ok) {
                 throw new Error(`Error fetching courses: ${responseone.statusText}`);
@@ -246,13 +245,16 @@ export default function WorkspaceTab(idcourse: any) {
     }
 
     const getDataWorkTwo = async () => {
+
         try {
+            const headers = new Headers({
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ''
+            });
+        
             const responsetwo = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/work/typetwo/${idcourse.idcourse}`, {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ""
-                },
+                headers: headers
             });
             if (!responsetwo.ok) {
                 throw new Error(`Error fetching courses: ${responsetwo.statusText}`);
