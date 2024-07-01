@@ -1,15 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState, useEffect } from 'react';
+import {  useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useSession, signIn, signOut } from "next-auth/react"
 import Head from 'next/head'
-import { Breadcrumbs, BreadcrumbItem, Tabs, Tab, Chip } from "@nextui-org/react";
+import {  Tabs, Tab } from "@nextui-org/react";
 import { Prompt } from "next/font/google";
 import dynamic from 'next/dynamic'
 import LinearProgress from '@mui/material/LinearProgress';
 import { purple } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
-import PointTab from '@/Components/Tabs/PointTab';
+// import PointTab from '@/Components/Tabs/PointTab';
 // import PersonTab from '@/Components/Tabs/PersonTab';
 
 const theme = createTheme({
@@ -22,15 +22,17 @@ const theme = createTheme({
     },
   },
 });
-// const NavbarComponent = dynamic(() => import('@/Components/Navbar/Nav'));
 
-const colorPurple = purple[500];
 
 const WorkspaceTab = dynamic(() => import('@/Components/Tabs/WorkspaceTab'), {
     loading: () => <LinearProgress color="secondary"/>,
   });
 
   const PersonTab = dynamic(() => import('@/Components/Tabs/PersonTab'), {
+    loading: () => <LinearProgress color="secondary"/>,
+  });
+
+  const PointTab = dynamic(() => import('@/Components/Tabs/PointTab'), {
     loading: () => <LinearProgress color="secondary"/>,
   });
 

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { Autocomplete, AutocompleteItem, Avatar, Button, Input, Spinner, Divider } from "@nextui-org/react";
+import React, { useState, useEffect } from 'react'
+import { Autocomplete, AutocompleteItem, Avatar, Button, Input, Spinner, Divider, Textarea } from "@nextui-org/react";
 import axios from 'axios';
 import { Prompt } from "next/font/google";
 import { useSession } from "next-auth/react"
@@ -13,7 +13,7 @@ interface FormEnterProps {
     idtitelwork: any;
 }
 
-const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork }) => {
+const FormEdit: React.FC<FormEnterProps> = ({ idcourse, idtitelwork }) => {
 
     interface Students {
         stdid: string;
@@ -39,28 +39,32 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork }) => {
         delete_at: string;
     }
 
-    const [dataPoint, setDataPoint] = useState<Point>();
     const [dataUser, setDataUser] = useState<Students[]>([]);
     const [statusUpdate, setStatusUpdate] = useState(false);
     const [pointInput, setPointInput] = useState("");
     const [stdidInput, setStdidInput] = useState("")
     const [statusCheck, setStatusCheck] = useState(false);
-    const [dataCheck, setDataCheck] = useState<DataCheck>();
+    const [dataCheck, setDataCheck] = useState("");
     const { data: session, status } = useSession();
     const [idTeach, setIdTeach] = useState(session?.user?.name)
+    const [desInput, setDesInput] = React.useState("");
     const [open, setOpen] = React.useState(false);
     const [dataAlert, setDataAlert] = useState("");
-
-    const autocompleteRef = useRef<HTMLInputElement>(null); // Set the initial type
-
-    const handleClear = () => {
-        (autocompleteRef.current as HTMLInputElement).value = ''; // Type assertion
-    };
+    const [dataChecks, setDataChecks] = useState<DataCheck>();
 
     useEffect(() => {
         getUser("0", idcourse);
         // onInputChange("")
     }, [])
+
+
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    };
 
     const getUser = async (stdid: string, idcourse: string) => {
         try {
@@ -94,7 +98,7 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork }) => {
         }
     };
 
-    const statusButton = pointInput.length < 1 || stdidInput.length != 11;
+    const statusButton = pointInput.length < 1 || stdidInput.length != 11 || desInput.length == 0;
 
 
     const checkuser = async (value: string) => {
@@ -114,11 +118,14 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork }) => {
                 }
             );
             console.log(response.data.length);
-            setDataCheck(response.data.data);
+            setDataCheck(value);
             if (response.data.length > 0) {
-                setStatusCheck(true)
-            } else {
                 setStatusCheck(false)
+                setDataChecks(response.data.data)
+            } else {
+                setStatusCheck(true)
+                setDataChecks(response.data.data)
+
             }
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -127,21 +134,18 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork }) => {
 
     const submitpoint = async () => {
         setStatusUpdate(true)
+
         const formData = {
             stdid: stdidInput,
             teachid: idTeach,
             idtitelwork,
-            point: pointInput
+            point: pointInput,
+            des: desInput
         }
 
-
-        // console.log('submitpoint', formData)
-
-        // onInputChange("");
-        // setPointInput("");
         try {
             const response = await axios.post(
-                `${process.env.NEXT_PUBLIC_API_URL}/score/enterscore`,
+                `${process.env.NEXT_PUBLIC_API_URL}/score/edit/sendedit`,
                 {
                     formData
                 },
@@ -158,38 +162,25 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork }) => {
             if (response.status === 201) {
                 onInputChange("");
                 setPointInput("");
-                handleClear();
+                setDesInput("");
                 setStatusUpdate(false)
-                setDataAlert("ลงคะแนนสำเร็จ !")
+                setDataAlert("[บันทึกขอการแก้ไขคะแนนสำเร็จ !")
                 setOpen(true);
             }
         } catch (error) {
             console.error('Error fetching data:', error);
         }
 
+
     }
 
 
-    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        setOpen(false);
-    };
 
     return (
         <div>
-
-
-            {/* <Typography variant="h6" gutterBottom align="center">
-                coming soon huff!!
-            </Typography> */}
-
             <form className={`flex flex-col gap-4 ${kanit.className}`}>
                 <Divider className="my-1" />
                 <Autocomplete
-                    ref={autocompleteRef}
                     inputValue={stdidInput}
                     onInputChange={onInputChange}
                     defaultItems={dataUser}
@@ -250,8 +241,20 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork }) => {
                     )}
                 </Autocomplete>
 
+                <Input type="number" label="คะแนน" size='md' variant="bordered" placeholder='กรอกคะแนนตัวเลขเท่านั้น' color={pointInput.length > 0 ? statusCheck ? "danger" : "success" : "secondary"} value={pointInput} onValueChange={setPointInput} isInvalid={statusCheck} errorMessage={`รหัสนักศึกษา ${stdidInput} ยังไม่มีการลงคะแนน`} isDisabled={statusCheck} isRequired/>
 
-                <Input type="number" label="คะแนน" size='md' variant="bordered" placeholder='กรอกคะแนนตัวเลขเท่านั้น' color={pointInput.length > 0 ? statusCheck ? "danger" : "success" : "secondary"} value={statusCheck ? dataCheck?.point.toString() : pointInput} onValueChange={setPointInput} isInvalid={statusCheck} errorMessage={`รหัสนักศึกษา ${stdidInput} มีการลงคะแนนโดย ${dataCheck?.teachid} เรียบร้อยแล้ว`} isDisabled={statusCheck} />
+                <Textarea
+                    label="เหตุผล"
+                    placeholder="ต้องระบุเหตุผลการแก้ไขคะแนน"
+                    className="max-w-xs"
+                    variant="bordered"
+                    isRequired
+                    onValueChange={setDesInput}
+                    value={desInput}
+                    isInvalid={statusCheck}
+                    isDisabled={statusCheck}
+                    color={desInput.length > 0 ? statusCheck ? "danger" : "success" : "secondary"}
+                />
 
                 <Button className={`bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg ${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''} `} isDisabled={statusButton} onClick={submitpoint}>
                     {statusUpdate ? (<><Spinner color="default" /> <p> กำลังบันทึก...</p></>) : "บันทึก"}
@@ -272,4 +275,4 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork }) => {
         </div>
     )
 }
-export default FormEnter;
+export default FormEdit;

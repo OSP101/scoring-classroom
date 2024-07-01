@@ -1,11 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { mysqlPool } from "../../../../utils/db";
 import { authenticateApiKey } from '../../../../lib/auth';
-import runMiddleware from '../../../../lib/cors';
-import cors from "../../../../lib/cors";
+
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-    await runMiddleware(req, res, cors);
+
     if (req.method === "POST") {
         const { inputData, idc, idTeach, point } = req.body;
         console.log(inputData, idc, idTeach, point)

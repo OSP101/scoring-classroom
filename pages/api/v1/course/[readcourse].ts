@@ -1,19 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { mysqlPool } from "../../../../utils/db";
 import { authenticateApiKey } from '../../../../lib/auth';
-import Cors from 'cors';
-import runMiddleware from '../../../../lib/cors';
 
-const cors = Cors({
-    methods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    origin: 'https://sc.osp101.dev',
-});
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
 
     try {
-        await runMiddleware(req, res, cors);
         if (req.method === "GET") {
 
             const { readcourse } = req.query;

@@ -120,6 +120,7 @@ export default function FormExtra(idcourse: any) {
                                     "data-[focus-visible=true]:ring-default-500",
                                 ],
                             },
+                            emptyContent: 'ไม่พบนักศึกษาในวิชานี้'
                         }}
                         aria-label="Select an employee"
                         placeholder="กรุณากรอกรหัสนักศึกษา"
@@ -158,17 +159,16 @@ export default function FormExtra(idcourse: any) {
                             </AutocompleteItem>
                         )}
                     </Autocomplete>
+
+                    <Button className={`bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] mb-2 text-white shadow-lg ${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''} `} isDisabled={inputData.length === 0 ? true : false} onClick={handleSubmitWork}>
+                        {statusUpdate ? (<><Spinner color="default" /> <p> กำลังบันทึก...</p></>) : "บันทึก"}
+                    </Button>
                 </form>
             </ModalBody>
-            <ModalFooter>
 
-                <Button className={`bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg ${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''} `} isDisabled={inputData.length === 0 ? true : false} onClick={handleSubmitWork}>
-                    {statusUpdate ? (<><Spinner color="default" /> <p> กำลังบันทึก...</p></>) : "บันทึก"}
-                </Button>
 
-            </ModalFooter>
 
-            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
                 <Alert
                     onClose={handleClose}
                     severity="success"

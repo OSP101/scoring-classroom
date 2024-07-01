@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, User, Spinner } from "@nextui-org/react";
+import { Tooltip } from "@nextui-org/react";
 import axios from 'axios';
+import { users } from '@/data/point';
+import Image from 'next/image';
 
 export default function PointTab(idcouesr: any) {
 
@@ -17,19 +19,31 @@ export default function PointTab(idcouesr: any) {
         Idle = "idle"
     }
 
+    interface StudentData {
+        stdid: string;
+        titelname: string | null;
+        point: string;
+        name: string;
+        image: string;
+        teachid: string;
+    }
 
+    interface LabData {
+        idtitelwork: number;
+        namework: string;
+        length: number;
+        data: StudentData[];
+    }
 
-    const [dataPoint, setDataPoint] = useState<Points[]>([]);
     const [statusLoadTeach, setStatusLoadTeach] = useState(false);
-    const idcourses = idcouesr.idcouesr;
-
-    console.log(idcouesr)
+    const [labsData, setLabsData] = useState<LabData[]>([]);
 
     useEffect(() => {
-        getPoint(idcourses);
+        getPoint(idcouesr.idcouesr);
+
     }, [])
 
-    const getPoint = async (idcoursess: string) => {
+    const getPoint = async (idcourses: string) => {
         try {
 
             const headers = new Headers({
@@ -37,15 +51,15 @@ export default function PointTab(idcouesr: any) {
                 'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ''
             });
 
-            const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/extrapoint/getpoint`,
+            const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/score/get/${idcourses}`,
                 {
-                    method: 'POST',
-                    headers: headers,
-                    body: JSON.stringify(idcourses)
+                    method: 'GET',
+                    headers: headers
                 });
             if (data.ok) {
                 const dataCourses = await data.json();
-                setDataPoint(dataCourses);
+                // console.log(dataCourses)
+                setLabsData(dataCourses);
                 setStatusLoadTeach(true);
             }
         } catch (error) {
@@ -55,42 +69,58 @@ export default function PointTab(idcouesr: any) {
 
 
     return (
-        <div>
-            <Table removeWrapper aria-label="Example static collection table">
-                <TableHeader>
-                    <TableColumn>ชื่อ - นามสกุล</TableColumn>
-                    <TableColumn>คะแนนพิเศษ (Extra point)</TableColumn>
-                    <TableColumn>Lab01</TableColumn>
-                </TableHeader>
-                <TableBody
-                    items={dataPoint ?? []}
-                    loadingContent={<Spinner color='secondary' />}
-                    loadingState={statusLoadTeach ? LoadingState.Idle : LoadingState.Loading}
-                    emptyContent={"ไม่พบอาจารย์ผู้สอน"}
-                >
-                    {(item) => (
-                        <TableRow key={item.stdid}>
-                            <TableCell>
-                                <User
-                                    avatarProps={{ radius: "lg", src: item.image }}
-                                    description={item.stdid}
-                                    name={item.name}
-                                >
-                                </User></TableCell>
-                            <TableCell>
-                                <div className="flex flex-col">
-                                    <p className="text-bold text-sm ">{item.count}</p>
+        <div className="overflow-x-auto">
+            <table className="table table-pin-rows table-pin-cols" >
+                {/* head */}
+                <thead>
+                    <tr>
+                        <th>ชื่อ - นามสกุล</th>
+                        {labsData.length > 0 ? (
+                            labsData.map((item) => (
+                                <th key={item.idtitelwork}>{item.namework}</th>
+                            ))
+                        ) : null}
+                    </tr>
+                </thead>
+                <tbody>
+                    {/* row 1 */}
+                    {labsData[0]?.data.map((head) => (
+                        <tr key={head.stdid} className="hover">
+                            <td>
+                                <div className="flex items-center gap-3">
+                                    <div className="avatar">
+                                        <div className="mask mask-squircle h-12 w-12">
+                                            <Image
+                                                src={head.image}
+                                                alt={`Image ${head.name}`}
+                                                width={12}
+                                                height={12} />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div >{head.name}</div>
+                                        <div className="text-sm opacity-50">{head.stdid}</div>
+                                    </div>
                                 </div>
-                            </TableCell>
-                            <TableCell>
-                                <div className="flex flex-col">
-                                    <p className="text-bold text-sm ">-</p>
-                                </div>
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
+                            </td>
+                            {labsData.map((lab, index) => {
+                                const item = lab.data.find((data) => data.stdid === head.stdid);
+                                return (
+
+                                    <td key={index}>
+                                        {item?.teachid == null ? item?.point : <Tooltip key={index} color="secondary" content={`ผู้ตรวจ: ${item?.teachid}`} className="capitalize" placement="top">
+                                            {item?.point}
+                                        </Tooltip>}
+
+                                    </td>
+
+                                )
+                            })}
+
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     )
 }

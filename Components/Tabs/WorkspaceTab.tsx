@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from 'react'
-import { Tabs, Tab, Card, CardBody, CardHeader, Chip, Spinner, Listbox, ListboxItem, Accordion, AccordionItem, DatePicker, DateInput, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, DropdownSection, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Checkbox, Input, Link } from "@nextui-org/react";
+import { Tabs, Tab, Chip, Spinner, Listbox, ListboxItem, Accordion, AccordionItem, DatePicker, DateInput, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, DropdownSection, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input } from "@nextui-org/react";
 import { BsPlusLg } from "react-icons/bs";
 import { MdWork } from "react-icons/md";
 import { FaUserGroup, FaBookBookmark } from "react-icons/fa6";
 import { parseDate, DateValue, today, getLocalTimeZone } from "@internationalized/date";
 import { VerticalDotsIcon } from "../../Components/Icons/VerticalDotsIcon"
 import { Prompt } from "next/font/google";
-// import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
-import axios from 'axios'
-import FormEnter from '../Forms/FormEnter';
-const CryptoJS = require('crypto-js');
 import { FaStar } from "react-icons/fa";
-// import FormExtra from '../Forms/FormExtra';
 import dynamic from 'next/dynamic'
 
 const FormExtra = dynamic(() => import('../Forms/FormExtra'), {
+    loading: () => <Spinner  color="secondary"/>,
+  });
+const FormEnter = dynamic(() => import('../Forms/FormEnter'), {
+    loading: () => <Spinner  color="secondary"/>,
+  });
+const FormEdit = dynamic(() => import('../Forms/FormEdit'), {
     loading: () => <Spinner  color="secondary"/>,
   });
 
@@ -64,7 +65,9 @@ export default function WorkspaceTab(idcourse: any) {
     };
 
 
+    var idtitel = "";
     const openModalWithData = (newData: string) => {
+        idtitel = newData;
         const dataFind = dataWorkOne.find(work => work.id == parseInt(newData, 10));
         setData(dataFind);
         setVisible(true);
@@ -415,8 +418,6 @@ export default function WorkspaceTab(idcourse: any) {
         }
     }
 
-
-
     return (
         <div className={`container mx-auto w-full max-w-4xl pt-0 ${kanit.className}`}>
 
@@ -590,7 +591,7 @@ export default function WorkspaceTab(idcourse: any) {
             </Accordion>
 
             {/* Alrt สำหรับแจ้งว่าสร้างสำเร็จ */}
-            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
                 <Alert
                     onClose={handleClose}
                     severity="success"
@@ -603,7 +604,7 @@ export default function WorkspaceTab(idcourse: any) {
             </Snackbar>
 
             {/* Modal สำหรับกรอกคะแนน แก้ไขคะแนน */}
-            <Modal isOpen={visible} onClose={() => setVisible(false)} placement="center" className={kanit.className} isDismissable={false} isKeyboardDismissDisabled={true}>
+            <Modal isOpen={visible} onClose={() => setVisible(false)} placement="center" className={kanit.className} isDismissable={false} isKeyboardDismissDisabled={true} >
                 <ModalContent>
                     <ModalHeader className="flex flex-col gap-1">{data?.name}</ModalHeader>
                     <ModalBody>
@@ -614,13 +615,14 @@ export default function WorkspaceTab(idcourse: any) {
                                 aria-label="Tabs form"
                                 selectedKey={selected}
                                 onSelectionChange={handleSelectionChange}
+                                color="secondary"
                             >
                                 <Tab key="enter" title="ลงคะแนน" className={kanit.className}>
-                                    <FormEnter idcourse={idcourse.idcourse} />
+                                    <FormEnter idcourse={idcourse.idcourse} idtitelwork={data?.id}/>
 
                                 </Tab>
                                 <Tab key="edit" title="แก้ไขคะแนน">
-                                    <FormEnter idcourse={idcourse.idcourse} />
+                                    <FormEdit idcourse={idcourse.idcourse} idtitelwork={data?.id}/>
                                 </Tab>
                             </Tabs>
                         </div>
@@ -801,11 +803,4 @@ export default function WorkspaceTab(idcourse: any) {
             </Modal>
         </div>
     )
-}
-
-
-function encrypt(data: any) {
-    const key = process.env.NEXT_PUBLIC_API_HASH
-    const ciphertext = CryptoJS.AES.encrypt(data, key).toString();
-    return ciphertext;
 }

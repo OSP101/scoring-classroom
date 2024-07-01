@@ -1,13 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { mysqlPool } from "../../../../utils/db";
 import { authenticateApiKey } from '../../../../lib/auth';
-import runMiddleware from '../../../../lib/cors';
-import cors from "../../../../lib/cors";
+
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-    await runMiddleware(req, res, cors);
+
     if (req.method === "POST") {
-        const { stdid, idtitelwork } = req.body;
+        const { stdidInput, idtitelwork } = req.body;
 
         try {
         const promisePool = mysqlPool.promise()
@@ -15,13 +14,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         [rows] = await promisePool.query(
             'SELECT * FROM `points` WHERE stdid = ? AND idtitelwork = ?',
-            [ stdid, idtitelwork ]
+            [ stdidInput, idtitelwork ]
         );
 
         if (rows.length === 0) {
-            res.status(200).json({ message: "Empty database" });
+            res.status(200).json({length:rows.length, data: rows});
         } else {
-            res.status(200).json(rows);
+            res.status(200).json({length:rows.length, data: rows[0]});
         }
 
         // console.log(rows)
