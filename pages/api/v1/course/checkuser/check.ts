@@ -1,24 +1,29 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { mysqlPool } from "../../../../../utils/db";
 import { authenticateApiKey } from '../../../../../lib/auth';
-import runMiddleware from '../../../../../lib/cors';
-import cors from "../../../../../lib/cors";
+
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-    await runMiddleware(req, res, cors);
+
     if (req.method === "POST") {
-        const { stdid, teachid, idtitelwork, point, des, idcourse } = req.body.formData;
-        const status = 1
+        const { email, idcourse } = req.body;
+        // console.log(email, idcourse)
         try {
         const promisePool = mysqlPool.promise()
         let rows; 
 
         [rows] = await promisePool.query(
-            'INSERT INTO `edit_point`( `stdid`, `teachid`, `idtitelwork`, `point`, `des`, `status`,`idcourse`) VALUES (?,?,?,?,?,?,?)',
-            [ stdid, teachid, idtitelwork, point, des, status, idcourse]
+            'SELECT caretaker.id FROM users JOIN caretaker ON caretaker.stdid = users.stdid WHERE users.email = ? AND caretaker.idcourse = ?',
+            [ email , idcourse ]
         );
 
-        res.status(201).json({ message: 'Edited successfully' });
+        if (rows.length > 0){
+            res.status(200).json({menubar: true})
+        }else{
+            res.status(200).json({menubar: false});
+        }
+
+        // console.log(rows)
 
         } catch (err) {
             res.status(500).json({ error: err });

@@ -5,11 +5,12 @@ import { authenticateApiKey } from '../../../../../lib/auth';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "GET") {
         const { idscore } = req.query;
+        console.log(idscore)
         var dataPoint = []
         try {
             const promisePool = mysqlPool.promise();
             let [rows] = await promisePool.query('SELECT id, name FROM titelwork WHERE idcourse = ? AND delete_at IS NULL', [idscore]);
-            let [data1] = await promisePool.query(`SELECT users.stdid,users.name,users.image, COALESCE(COUNT(extra_point.stdid), 0) AS point FROM users LEFT JOIN extra_point ON users.stdid = extra_point.stdid AND extra_point.idcourse = ? JOIN enllo ON enllo.stdid = users.stdid GROUP BY users.stdid`, [idscore]);
+            let [data1] = await promisePool.query(`SELECT users.stdid,users.name,users.image, COALESCE(COUNT(extra_point.stdid), 0) AS point FROM users LEFT JOIN extra_point ON users.stdid = extra_point.stdid AND extra_point.idcourse = ? JOIN enllo ON enllo.stdid = users.stdid AND enllo.idcourse = ? GROUP BY users.stdid`, [idscore,idscore]);
             
             dataPoint.push({
                 idtitelwork: 0,

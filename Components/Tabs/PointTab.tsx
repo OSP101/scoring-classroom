@@ -1,23 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Tooltip } from "@nextui-org/react";
-import axios from 'axios';
-import { users } from '@/data/point';
 import Image from 'next/image';
 
 export default function PointTab(idcouesr: any) {
-
-    interface Points {
-        "stdid": string;
-        "name": string;
-        "image": string;
-        "count": number;
-    }
-
-    enum LoadingState {
-        Loading = "loading",
-        Error = "error",
-        Idle = "idle"
-    }
 
     interface StudentData {
         stdid: string;
@@ -111,12 +96,9 @@ export default function PointTab(idcouesr: any) {
                                         {item?.teachid == null ? item?.point : <Tooltip key={index} color="secondary" content={`ผู้ตรวจ: ${item?.teachid}`} className="capitalize" placement="top">
                                             {item?.point}
                                         </Tooltip>}
-
                                     </td>
-
                                 )
                             })}
-
                         </tr>
                     ))}
                 </tbody>

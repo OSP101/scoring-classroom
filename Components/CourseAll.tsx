@@ -1,9 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from "react";
-import axios from 'axios'
 import dynamic from 'next/dynamic'
-import Skeleton from '@mui/material/Skeleton';
-import Box from '@mui/material/Box';
+
 
 
 const CardCourse = dynamic(() => import('@/Components/CardCourse'), {

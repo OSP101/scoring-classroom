@@ -140,7 +140,8 @@ const FormEdit: React.FC<FormEnterProps> = ({ idcourse, idtitelwork }) => {
             teachid: idTeach,
             idtitelwork,
             point: pointInput,
-            des: desInput
+            des: desInput,
+            idcourse: idcourse
         }
 
         try {
@@ -246,7 +247,7 @@ const FormEdit: React.FC<FormEnterProps> = ({ idcourse, idtitelwork }) => {
                 <Textarea
                     label="เหตุผล"
                     placeholder="ต้องระบุเหตุผลการแก้ไขคะแนน"
-                    className="max-w-xs"
+                    className=""
                     variant="bordered"
                     isRequired
                     onValueChange={setDesInput}
