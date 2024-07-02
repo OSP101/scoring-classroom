@@ -618,11 +618,11 @@ export default function WorkspaceTab(idcourse: any) {
                                 color="secondary"
                             >
                                 <Tab key="enter" title="ลงคะแนน" className={kanit.className}>
-                                    <FormEnter idcourse={idcourse.idcourse} idtitelwork={data?.id}/>
+                                    <FormEnter idcourse={idcourse.idcourse} idtitelwork={data?.id} maxpoint={data?.maxpoint}/>
 
                                 </Tab>
                                 <Tab key="edit" title="แก้ไขคะแนน">
-                                    <FormEdit idcourse={idcourse.idcourse} idtitelwork={data?.id}/>
+                                    <FormEdit idcourse={idcourse.idcourse} idtitelwork={data?.id} maxpoint={data?.maxpoint}/>
                                 </Tab>
                             </Tabs>
                         </div>

@@ -1,4 +1,4 @@
-import * as CryptoJS from 'crypto-js';
+
 import { NextApiRequest, NextApiResponse, NextApiHandler } from 'next';
 
 

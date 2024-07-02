@@ -11,9 +11,10 @@ const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', 
 interface FormEnterProps {
     idcourse: any;
     idtitelwork: any;
+    maxpoint: any;
 }
 
-const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork }) => {
+const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }) => {
 
     interface Students {
         stdid: string;
@@ -251,7 +252,7 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork }) => {
                 </Autocomplete>
 
 
-                <Input type="number" label="คะแนน" size='md' variant="bordered" placeholder='กรอกคะแนนตัวเลขเท่านั้น' color={pointInput.length > 0 ? statusCheck ? "danger" : "success" : "secondary"} value={statusCheck ? dataCheck?.point.toString() : pointInput} onValueChange={setPointInput} isInvalid={statusCheck} errorMessage={`รหัสนักศึกษา ${stdidInput} มีการลงคะแนนโดย ${dataCheck?.teachid} เรียบร้อยแล้ว`} isDisabled={statusCheck} />
+                <Input type="number" label="คะแนน"  size='md' variant="bordered" placeholder='กรอกคะแนนตัวเลขเท่านั้น' color={pointInput.length > 0 ? statusCheck ? "danger" : "success" : "secondary"} value={statusCheck ? dataCheck?.point.toString() : pointInput} onValueChange={setPointInput} isInvalid={statusCheck} errorMessage={`รหัสนักศึกษา ${stdidInput} มีการลงคะแนนโดย ${dataCheck?.teachid} เรียบร้อยแล้ว`} isDisabled={statusCheck} />
 
                 <Button className={`bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg ${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''} `} isDisabled={statusButton} onClick={submitpoint}>
                     {statusUpdate ? (<><Spinner color="default" /> <p> กำลังบันทึก...</p></>) : "บันทึก"}

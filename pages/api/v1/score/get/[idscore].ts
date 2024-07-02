@@ -10,7 +10,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         try {
             const promisePool = mysqlPool.promise();
             let [rows] = await promisePool.query('SELECT id, name FROM titelwork WHERE idcourse = ? AND delete_at IS NULL', [idscore]);
-            let [data1] = await promisePool.query(`SELECT users.stdid,users.name,users.image, COALESCE(COUNT(extra_point.stdid), 0) AS point FROM users LEFT JOIN extra_point ON users.stdid = extra_point.stdid AND extra_point.idcourse = ? JOIN enllo ON enllo.stdid = users.stdid AND enllo.idcourse = ? GROUP BY users.stdid`, [idscore,idscore]);
+            let [data1] = await promisePool.query('SELECT users.stdid,users.name,users.image, COALESCE(COUNT(extra_point.stdid), 0) AS point FROM users LEFT JOIN extra_point ON users.stdid = extra_point.stdid AND extra_point.idcourse = ? JOIN enllo ON enllo.stdid = users.stdid AND enllo.idcourse = ? GROUP BY users.stdid', [idscore,idscore]);
             
             dataPoint.push({
                 idtitelwork: 0,
@@ -28,7 +28,7 @@ LEFT JOIN points p ON e.stdid = p.stdid AND p.idtitelwork = ?
 LEFT JOIN titelwork tw ON p.idtitelwork = tw.id AND tw.delete_at IS NULL
 JOIN users ON e.stdid = users.stdid
 WHERE e.idcourse = ?
-  AND (tw.id = ? OR tw.id IS NULL) GROUP BY e.stdid;`, [item.id, idscore, item.id]);
+  AND (tw.id = ? OR tw.id IS NULL);`, [item.id, idscore, item.id]);
 
                 dataPoint.push({
                     idtitelwork: item.id,

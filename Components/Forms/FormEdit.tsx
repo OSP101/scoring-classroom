@@ -11,9 +11,10 @@ const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', 
 interface FormEnterProps {
     idcourse: any;
     idtitelwork: any;
+    maxpoint: any;
 }
 
-const FormEdit: React.FC<FormEnterProps> = ({ idcourse, idtitelwork }) => {
+const FormEdit: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }) => {
 
     interface Students {
         stdid: string;

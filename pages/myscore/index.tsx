@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react"
 import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import Head from 'next/head'
 
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
 
@@ -61,6 +62,9 @@ export default function index() {
 
     return (
         <div className={kanit.className}>
+            <Head>
+                <title>Myscore - Scoring Classroom</title>
+            </Head>
             {!session ? (
                 <Navbar isBordered maxWidth="2xl" isBlurred={false}>
                     <NavbarContent justify="start">
