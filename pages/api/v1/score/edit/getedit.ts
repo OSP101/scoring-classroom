@@ -13,7 +13,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             let rows;
 
             [rows] = await promisePool.query(
-                'SELECT edit_point.id, edit_point.idtitelwork, edit_point.stdid, edit_point.teachid AS teachedit, edit_point.point AS pointedit, edit_point.des, edit_point.status, edit_point.idcourse, edit_point.create_at, edit_point.description_t, titelwork.name, edit_point.update_at, points.teachid, points.point AS pointold, users.name AS nameStd FROM titelwork JOIN edit_point ON edit_point.idtitelwork = titelwork.id JOIN points ON edit_point.stdid = points.stdid JOIN users ON users.stdid = points.stdid WHERE edit_point.idcourse = ?',
+                'SELECT points.id AS idpoint, edit_point.id, edit_point.idtitelwork, edit_point.stdid, edit_point.teachid AS teachedit, edit_point.point AS pointedit, edit_point.des, edit_point.status, edit_point.idcourse, edit_point.create_at, edit_point.description_t, titelwork.name, edit_point.update_at, points.teachid, points.point AS pointold, users.name AS nameStd FROM titelwork JOIN edit_point ON edit_point.idtitelwork = titelwork.id JOIN points ON edit_point.stdid = points.stdid JOIN users ON users.stdid = points.stdid WHERE edit_point.idcourse = ?',
                 [idcourse]
             );
 

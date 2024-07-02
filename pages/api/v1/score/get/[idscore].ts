@@ -5,7 +5,7 @@ import { authenticateApiKey } from '../../../../../lib/auth';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "GET") {
         const { idscore } = req.query;
-        console.log(idscore)
+        // console.log(idscore)
         var dataPoint = []
         try {
             const promisePool = mysqlPool.promise();
