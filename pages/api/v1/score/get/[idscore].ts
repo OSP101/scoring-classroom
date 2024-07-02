@@ -18,8 +18,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 length: data1.length,
                 data: data1
             })
-            
-            
             for (const item of rows) {
                 let [data2] = await promisePool.query(`SELECT e.stdid, 
        users.name, users.image,p.teachid,
