@@ -131,7 +131,7 @@ export default function index() {
                                                         </td>
                                                         <td>{dataUser.section}</td>
                                                         <th>
-                                                            <button className="btn btn-ghost btn-xs">{dataUser.track}</button>
+                                                            {dataUser.track}
                                                         </th>
                                                     </tr>
                                                 </tbody>
