@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Jun 25, 2024 at 04:04 AM
--- Server version: 10.4.27-MariaDB
--- PHP Version: 8.0.25
+-- Host: localhost
+-- Generation Time: Jul 02, 2024 at 05:34 AM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -80,6 +80,36 @@ INSERT INTO `course` (`idcourse`, `name`, `image`, `description`) VALUES
 ('CP341005', 'Software design and analysis', '4eve-1.jpg', 'การวิเคราะห์และออกแบบซอฟต์แวร์'),
 ('SC362102', 'Software engineering', '4evebody1.jpg', ' วิศวกรรมซอฟต์แวร์'),
 ('SC363001', 'Systems analysis and design', '4evebody2.jpg', 'การวิเคราะห์และออกแบบระบบ');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `edit_point`
+--
+
+CREATE TABLE `edit_point` (
+  `id` int(11) NOT NULL,
+  `idtitelwork` int(11) NOT NULL,
+  `stdid` varchar(11) NOT NULL,
+  `teachid` varchar(100) NOT NULL,
+  `point` int(11) NOT NULL,
+  `des` text NOT NULL,
+  `status` int(11) NOT NULL,
+  `idcourse` varchar(8) NOT NULL,
+  `create_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `description_t` text DEFAULT NULL,
+  `update_at` timestamp NOT NULL DEFAULT '1998-12-31 17:00:00' ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `edit_point`
+--
+
+INSERT INTO `edit_point` (`id`, `idtitelwork`, `stdid`, `teachid`, `point`, `des`, `status`, `idcourse`, `create_at`, `description_t`, `update_at`) VALUES
+(1, 1, '643020402-8', 'Supphitan Paksawad', 10, 'ลงคะแนนให้ผิด', 3, 'SC363001', '2024-06-30 01:01:16', 'vm', '2024-07-01 22:21:44'),
+(3, 1, '653380003-6', 'Supphitan Paksawad', 5, 'ทดสอบให้ 5 คะแนนละกันนะ', 2, 'SC363001', '2024-07-01 18:14:48', NULL, '2024-07-01 22:08:45'),
+(4, 1, '653380002-8', 'Supphitan Paksawad', 5, 'Test edit point', 2, 'SC363001', '2024-07-01 22:09:48', NULL, '2024-07-01 22:09:57'),
+(5, 1, '653380002-8', 'Supphitan Paksawad', 5, 'test อีกครั้ง', 2, 'SC363001', '2024-07-01 22:10:59', NULL, '2024-07-01 22:11:06');
 
 -- --------------------------------------------------------
 
@@ -164,7 +194,7 @@ CREATE TABLE `extra_point` (
   `id` int(11) NOT NULL,
   `stdid` varchar(11) NOT NULL,
   `idcourse` varchar(8) NOT NULL,
-  `teachid` varchar(11) NOT NULL,
+  `teachid` varchar(100) NOT NULL,
   `point` int(11) NOT NULL,
   `create_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -178,7 +208,12 @@ INSERT INTO `extra_point` (`id`, `stdid`, `idcourse`, `teachid`, `point`, `creat
 (2, '653380002-8', 'SC363001', '633020334-8', 1, '2024-06-24 21:54:32'),
 (3, '653380003-6', 'SC363001', '633020334-8', 1, '2024-06-24 21:55:48'),
 (5, '653380005-2', 'SC363001', '633020334-8', 1, '2024-06-24 22:06:17'),
-(6, '653380002-8', 'SC363001', '633020334-8', 1, '2024-06-25 01:22:19');
+(6, '653380002-8', 'SC363001', '633020334-8', 1, '2024-06-25 01:22:19'),
+(7, '643020402-8', 'SC363001', 'Supphitan Paksawad', 1, '2024-06-30 00:23:09'),
+(8, '653380002-8', 'SC363001', 'Supphitan Paksawad', 1, '2024-06-30 00:23:47'),
+(9, '643020402-8', 'SC363001', 'Supphitan Paksawad', 1, '2024-06-30 00:23:53'),
+(10, '643020402-8', 'SC363001', 'Supphitan Paksawad', 1, '2024-06-30 01:12:43'),
+(11, '643020402-8', 'SC363001', 'Supphitan Paksawad', 1, '2024-06-30 01:21:36');
 
 -- --------------------------------------------------------
 
@@ -212,7 +247,7 @@ INSERT INTO `opencourse` (`id`, `name`, `idcourse`) VALUES
 CREATE TABLE `points` (
   `id` int(11) NOT NULL,
   `stdid` varchar(11) NOT NULL,
-  `teachid` varchar(11) NOT NULL,
+  `teachid` varchar(100) NOT NULL,
   `idtitelwork` int(11) NOT NULL,
   `point` int(11) NOT NULL,
   `create_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -225,8 +260,12 @@ CREATE TABLE `points` (
 --
 
 INSERT INTO `points` (`id`, `stdid`, `teachid`, `idtitelwork`, `point`, `create_at`, `update_at`, `delete_at`) VALUES
-(1, '643020402-8', '633020334-8', 1, 10, '2024-06-24 17:09:26', '1998-12-31 17:00:00', '1998-12-31 17:00:00'),
-(2, '643020402-8', '633020334-8', 1, 10, '2024-06-24 17:15:19', '1998-12-31 17:00:00', '1998-12-31 17:00:00');
+(11, '643020402-8', 'Supphitan Paksawad', 1, 10, '2024-06-30 19:24:35', '1998-12-31 17:00:00', '1998-12-31 17:00:00'),
+(12, '653380004-4', 'Supphitan Paksawad', 10, 1, '2024-06-30 19:58:21', '1998-12-31 17:00:00', '1998-12-31 17:00:00'),
+(13, '653380005-2', 'Supphitan Paksawad', 12, 9, '2024-06-30 23:14:08', '1998-12-31 17:00:00', '1998-12-31 17:00:00'),
+(14, '653380006-0', 'Supphitan Paksawad', 1, 11, '2024-07-01 00:24:33', '1998-12-31 17:00:00', '1998-12-31 17:00:00'),
+(15, '653380003-6', 'Supphitan Paksawad', 1, 10, '2024-07-01 18:14:23', '1998-12-31 17:00:00', '1998-12-31 17:00:00'),
+(16, '653380002-8', 'Supphitan Paksawad', 1, 5, '2024-07-01 22:09:25', '2024-07-01 22:11:07', '1998-12-31 17:00:00');
 
 -- --------------------------------------------------------
 
@@ -249,14 +288,18 @@ CREATE TABLE `titelwork` (
 --
 
 INSERT INTO `titelwork` (`id`, `name`, `date`, `typework`, `maxpoint`, `idcourse`, `delete_at`) VALUES
-(1, 'Lab 1', '2024-06-18', 1, 10, 'SC363001', 'deleted'),
+(1, 'Lab 1', '2024-06-18', 1, 10, 'SC363001', NULL),
 (2, 'Lab 2', '2024-06-18', 1, 10, 'CP341005', NULL),
 (3, 'Lab 3', '2024-06-19', 1, 10, 'CP341005', NULL),
 (4, 'Lab 4', '2024-06-19', 1, 10, 'CP341005', 'deleted'),
 (5, 'Ass 2', '2024-06-19', 2, 10, 'CP341005', 'deleted'),
 (7, 'Lab 6', '2024-06-25', 1, 15, 'CP341005', 'dele'),
 (8, 'Ass 4', '2024-06-20', 2, 10, 'CP341005', NULL),
-(9, 'ทดสอบ', '2024-06-20', 2, 10, 'CP341005', 'deleted');
+(9, 'ทดสอบ', '2024-06-20', 2, 10, 'CP341005', 'deleted'),
+(10, 'Lab 2', '2024-06-30', 1, 10, 'SC363001', NULL),
+(11, 'Lab 3', '2024-07-01', 1, 10, 'SC363001', NULL),
+(12, 'Lab 4', '2024-07-01', 1, 10, 'SC363001', 'deleted'),
+(13, 'Lab 5', '2024-07-01', 1, 10, 'SC363001', 'deleted');
 
 -- --------------------------------------------------------
 
@@ -382,6 +425,12 @@ ALTER TABLE `course`
   ADD PRIMARY KEY (`idcourse`);
 
 --
+-- Indexes for table `edit_point`
+--
+ALTER TABLE `edit_point`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `enllo`
 --
 ALTER TABLE `enllo`
@@ -434,6 +483,12 @@ ALTER TABLE `caretaker`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
+-- AUTO_INCREMENT for table `edit_point`
+--
+ALTER TABLE `edit_point`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `enllo`
 --
 ALTER TABLE `enllo`
@@ -443,7 +498,7 @@ ALTER TABLE `enllo`
 -- AUTO_INCREMENT for table `extra_point`
 --
 ALTER TABLE `extra_point`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `opencourse`
@@ -455,13 +510,13 @@ ALTER TABLE `opencourse`
 -- AUTO_INCREMENT for table `points`
 --
 ALTER TABLE `points`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `titelwork`
 --
 ALTER TABLE `titelwork`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `topic_create`
