@@ -24,8 +24,8 @@ export default function Home() {
       <>
         <Head>
           <title>Scoring Classroom</title>
-          <meta name="description" content="Scoring Classroom เว็บไซต์สำหรับบันทึกคะแนน คะแนนพิเศษในชั้นเรียน สำหรับนักศึกษาวิทยาลัยการคอมพิวเตอร์ มหาวิทยาลัยขอนแก่น"></meta>
-          <meta name="robots" content="index,follow"></meta>
+          {/* <meta name="description" content="Scoring Classroom เว็บไซต์สำหรับบันทึกคะแนน คะแนนพิเศษในชั้นเรียน สำหรับนักศึกษาวิทยาลัยการคอมพิวเตอร์ มหาวิทยาลัยขอนแก่น"></meta>
+          <meta name="robots" content="index,follow"></meta> */}
 
         </Head>
         {/* <NavbarComponent /> */}
