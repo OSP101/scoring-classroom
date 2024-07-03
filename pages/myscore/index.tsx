@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Navbar, NavbarBrand, NavbarContent, Divider, Button, Spinner, NavbarItem, Input, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Accordion, AccordionItem } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, Divider, Button, Spinner, NavbarItem, Input, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Accordion, AccordionItem, CardBody, Card } from "@nextui-org/react";
 import { Prompt } from "next/font/google";
 import { useSession } from "next-auth/react"
 import Stack from '@mui/material/Stack';
@@ -64,6 +64,8 @@ export default function index() {
         <div className={kanit.className}>
             <Head>
                 <title>Myscore - Scoring Classroom</title>
+                <meta name="robots" content="index,follow"></meta>
+                <meta name="description" content="Myscore เว็บไซต์สำหรับตรวจสอบคะแนน คะแนนพิเศษในชั้นเรียน สำหรับนักศึกษาวิทยาลัยการคอมพิวเตอร์ มหาวิทยาลัยขอนแก่น"></meta>
             </Head>
             {!session ? (
                 <Navbar isBordered maxWidth="2xl" isBlurred={false}>
@@ -77,17 +79,22 @@ export default function index() {
 
             <div className={`container mx-auto w-full max-w-4xl ${kanit.className}`}>
                 <div className={`px-2 pb-4 pt-3 ${kanit.className}`}>
-                    <div className='flex justify-center'>
-                        <h2 className="text-center text-lg sm:text-3xl font-medium from-[#FF1CF7] to-[#b249f8] bg-clip-text text-transparent bg-gradient-to-b inline">ยินดีต้อนรับสู่ระบบตรวจสอบคะแนน</h2>
-                    </div>
+                    <Card>
+                        <CardBody>
+                            <div className='flex justify-center'>
+                                <h1 className="text-center text-lg sm:text-3xl font-medium from-[#FF1CF7] to-[#b249f8] bg-clip-text text-transparent bg-gradient-to-b inline">ยินดีต้อนรับสู่ระบบตรวจสอบคะแนน</h1>
+                            </div>
 
-                    <div className='flex justify-center my-3'>
-                        <Input type="text" label="รหัสนักศึกษา (633020xxx-x)" size='sm' variant="bordered" color={"secondary"} value={pointInput} onValueChange={setPointInput} isRequired className='w-2/3 mr-4' />
+                            <div className='flex justify-center my-3'>
+                                <Input type="text" label="รหัสนักศึกษา (633020xxx-x)" size='sm' variant="bordered" color={"secondary"} value={pointInput} onValueChange={setPointInput} isRequired className='w-2/3 mr-4' />
 
-                        <Button className={`bg-gradient-to-tr w-1/5 from-[#FF1CF7] to-[#b249f8] text-white shadow-lg${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={submutations}>
-                            {statusUpdate ? (<><Spinner color="default" /> <p> กำลังค้นหา...</p></>) : "ค้นหา"}
-                        </Button>
-                    </div>
+                                <Button className={`bg-gradient-to-tr w-1/5 from-[#FF1CF7] to-[#b249f8] text-white shadow-lg${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={submutations}>
+                                    {statusUpdate ? (<><Spinner color="default" /> <p> กำลังค้นหา...</p></>) : "ค้นหา"}
+                                </Button>
+                            </div>
+
+                        </CardBody>
+                    </Card>
 
                     {statusUpdate ? (
                         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -134,9 +141,9 @@ export default function index() {
                                                             <span className="badge badge-ghost badge-sm">{dataUser.track}</span>
                                                         </td>
                                                         <td>{dataUser.section}</td>
-                                                        <th>
+                                                        <td>
                                                             {dataUser.track}
-                                                        </th>
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>

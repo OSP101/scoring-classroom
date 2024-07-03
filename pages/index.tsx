@@ -24,6 +24,9 @@ export default function Home() {
       <>
         <Head>
           <title>Scoring Classroom</title>
+          <meta name="description" content="Scoring Classroom เว็บไซต์สำหรับบันทึกคะแนน คะแนนพิเศษในชั้นเรียน สำหรับนักศึกษาวิทยาลัยการคอมพิวเตอร์ มหาวิทยาลัยขอนแก่น"></meta>
+          <meta name="robots" content="index,follow"></meta>
+
         </Head>
         {/* <NavbarComponent /> */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 container mx-auto mt-4">

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Tooltip } from "@nextui-org/react";
+import { Tooltip, Button, Link } from "@nextui-org/react";
 import Image from 'next/image';
+import { Prompt } from "next/font/google";
+
+const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
+
 
 export default function PointTab(idcouesr: any) {
 
@@ -55,6 +59,9 @@ export default function PointTab(idcouesr: any) {
 
     return (
         <div className="overflow-x-auto">
+            <Link isBlock showAnchorIcon href="/myscore" color="secondary" className='mb-2' target='_blank'>
+                ดูคะแนนรายบุคคล
+            </Link>
             <table className="table table-pin-rows table-pin-cols" >
                 {/* head */}
                 <thead>

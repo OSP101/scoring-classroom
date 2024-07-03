@@ -503,8 +503,8 @@ export default function WorkspaceTab(idcourse: any) {
                                                             </Button>
                                                         </DropdownTrigger>
                                                         <DropdownMenu>
-                                                            <DropdownItem onClick={() => { openEdit(item.id) }}>แก้ไข</DropdownItem>
-                                                            <DropdownItem className="text-danger" color="danger" onClick={() => { openDelete(item.id) }}>ลบ</DropdownItem>
+                                                            <DropdownItem onPress={() => { openEdit(item.id) }}>แก้ไข</DropdownItem>
+                                                            <DropdownItem className="text-danger" color="danger" onPress={() => { openDelete(item.id) }}>ลบ</DropdownItem>
                                                         </DropdownMenu>
                                                     </Dropdown>
                                                 }
@@ -564,8 +564,8 @@ export default function WorkspaceTab(idcourse: any) {
                                                             </Button>
                                                         </DropdownTrigger>
                                                         <DropdownMenu>
-                                                            <DropdownItem onClick={() => { openEdit(item.id) }}>แก้ไข</DropdownItem>
-                                                            <DropdownItem className="text-danger" color="danger" onClick={() => { openDelete(item.id) }}>ลบ</DropdownItem>
+                                                            <DropdownItem onPress={() => { openEdit(item.id) }}>แก้ไข</DropdownItem>
+                                                            <DropdownItem className="text-danger" color="danger" onPress={() => { openDelete(item.id) }}>ลบ</DropdownItem>
                                                         </DropdownMenu>
                                                     </Dropdown>
                                                 }
@@ -604,7 +604,7 @@ export default function WorkspaceTab(idcourse: any) {
             </Snackbar>
 
             {/* Modal สำหรับกรอกคะแนน แก้ไขคะแนน */}
-            <Modal isOpen={visible} onClose={() => setVisible(false)} placement="center" className={kanit.className}  isKeyboardDismissDisabled={true} >
+            <Modal isOpen={visible} onClose={() => setVisible(false)} placement="center" className={kanit.className} size='xs'  isKeyboardDismissDisabled={true} >
                 <ModalContent>
                     <ModalHeader className="flex flex-col gap-1">{data?.name}</ModalHeader>
                     <ModalBody>

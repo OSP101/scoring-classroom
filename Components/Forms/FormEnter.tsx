@@ -238,14 +238,14 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
                                         <span className="text-tiny text-default-400">{item.stdid}</span>
                                     </div>
                                 </div>
-                                <Button
+                                {/* <Button
                                     className="border-small mr-0.5 font-medium shadow-small"
                                     radius="full"
                                     size="md"
                                     variant="bordered"
                                 >
                                     เลือก
-                                </Button>
+                                </Button> */}
                             </div>
                         </AutocompleteItem>
                     )}
