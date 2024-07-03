@@ -15,6 +15,10 @@ import Footer from '@/Components/footer';
 
 export default function index() {
 
+    console.warn('%cคำเตือน!', 'background: yellow; color: red; font-size: 20px; font-weight: bold;');
+    console.warn(`การใช้คอนโซลนี้อาจทำให้ผู้โจมตีสามารถแอบอ้างตัวเป็นคุณและขโมยข้อมูลของคุณได้โดยใช้การโจมตีที่เรียกว่า Self-XSS อย่าป้อนหรือวางโค้ดที่คุณไม่เข้าใจ`);
+    console.warn('%cและขอเตือนว่าอย่าพยายามทำนอกเหนือการใช้งาน เพราะระบบได้ตรวจจับการทำงานไว้แล้ว!', 'background: yellow; color: red; font-size: 20px; font-weight: bold;')
+
     interface Users {
         stdid: string;
         name: string;
@@ -28,7 +32,7 @@ export default function index() {
         lab: any;
     }
 
-    
+
 
 
     const [pointInput, setPointInput] = useState("");
@@ -103,11 +107,11 @@ export default function index() {
 
                             <div className=' block justify-center my-3 md:flex'>
                                 <div className='flex justify-center md:w-2/3 mb-2'>
-                                <Input type="text" label="รหัสนักศึกษา (633020xxx-x)" size='sm' variant="bordered" color={"secondary"} value={pointInput} onValueChange={setPointInput} isRequired className=' w-full' />
+                                    <Input type="text" label="รหัสนักศึกษา (633020xxx-x)" size='sm' variant="bordered" color={"secondary"} value={pointInput} onValueChange={setPointInput} isRequired className=' w-full' />
 
-                                <Button className={`mx-4 my-1 bg-gradient-to-tr w-2/5 from-[#FF1CF7] to-[#b249f8] text-white shadow-lg${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={submutations} isDisabled={!statusButton}>
-                                    {statusUpdate ? (<><Spinner color="default" /> <p> กำลังค้นหา...</p></>) : "ค้นหา"}
-                                </Button>
+                                    <Button className={`mx-4 my-1 bg-gradient-to-tr w-2/5 from-[#FF1CF7] to-[#b249f8] text-white shadow-lg${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={submutations} isDisabled={!statusButton}>
+                                        {statusUpdate ? (<><Spinner color="default" /> <p> กำลังค้นหา...</p></>) : "ค้นหา"}
+                                    </Button>
                                 </div>
                                 <Turnstile
                                     id='turnstile-1'
@@ -116,10 +120,10 @@ export default function index() {
                                     onSuccess={() => setCanSubmit(true)}
                                     options={{
                                         theme: 'light'
-                                      }}
+                                    }}
                                 />
                             </div>
-  
+
 
                         </CardBody>
                     </Card>
@@ -212,7 +216,7 @@ export default function index() {
                         </>
                     )}
 
-                    <Footer/>
+                    <Footer />
                 </div>
             </div>
         </div>
