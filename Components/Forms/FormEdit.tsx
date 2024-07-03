@@ -184,6 +184,7 @@ const FormEdit: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint })
                 <Divider className="my-1" />
                 <Autocomplete
                     inputValue={stdidInput}
+                    autoFocus={true}
                     onInputChange={onInputChange}
                     defaultItems={dataUser}
                     color="secondary"

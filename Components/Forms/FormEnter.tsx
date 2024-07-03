@@ -191,6 +191,7 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
                 <Divider className="my-1" />
                 <Autocomplete
                     ref={autocompleteRef}
+                    autoFocus={true}
                     inputValue={stdidInput}
                     onInputChange={onInputChange}
                     defaultItems={dataUser}

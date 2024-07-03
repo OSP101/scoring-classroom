@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+
+import React, { useState, useRef } from 'react'
 import { Navbar, NavbarBrand, NavbarContent, Divider, Button, Spinner, NavbarItem, Input, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Accordion, AccordionItem, CardBody, Card } from "@nextui-org/react";
 import { Prompt } from "next/font/google";
 import { useSession } from "next-auth/react"
@@ -6,10 +7,11 @@ import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Head from 'next/head'
+import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile';
 
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
-
-
+import TextField from '@mui/material/TextField';
+import Footer from '@/Components/footer';
 
 export default function index() {
 
@@ -26,11 +28,24 @@ export default function index() {
         lab: any;
     }
 
+    
+
+
     const [pointInput, setPointInput] = useState("");
     const [dataUser, setDataUser] = useState<Users | null>(null);
     const { data: session, status } = useSession();
     const [number, setNumber] = useState(0)
     const [statusUpdate, setStatusUpdate] = useState(false);
+
+    const [canSubmit, setCanSubmit] = useState(false);
+    const refTurnstile = useRef<TurnstileInstance>(null);
+
+    const handleSubmit = async () => {
+        refTurnstile.current?.reset();
+        console.log('submitted!');
+    }
+
+    const statusButton = canSubmit && pointInput.length > 0;
 
     const defaultContent =
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
@@ -46,6 +61,7 @@ export default function index() {
             method: 'GET',
             headers: headers
         })
+        refTurnstile.current?.reset();
         if (getData.status === 201) {
             setNumber(1)
             setStatusUpdate(false)
@@ -85,13 +101,25 @@ export default function index() {
                                 <h1 className="text-center text-lg sm:text-3xl font-medium from-[#FF1CF7] to-[#b249f8] bg-clip-text text-transparent bg-gradient-to-b inline">ยินดีต้อนรับสู่ระบบตรวจสอบคะแนน</h1>
                             </div>
 
-                            <div className='flex justify-center my-3'>
-                                <Input type="text" label="รหัสนักศึกษา (633020xxx-x)" size='sm' variant="bordered" color={"secondary"} value={pointInput} onValueChange={setPointInput} isRequired className='w-2/3 mr-4' />
+                            <div className=' block justify-center my-3 md:flex'>
+                                <div className='flex justify-center md:w-2/3 mb-2'>
+                                <Input type="text" label="รหัสนักศึกษา (633020xxx-x)" size='sm' variant="bordered" color={"secondary"} value={pointInput} onValueChange={setPointInput} isRequired className=' w-full' />
 
-                                <Button className={`bg-gradient-to-tr w-1/5 from-[#FF1CF7] to-[#b249f8] text-white shadow-lg${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={submutations}>
+                                <Button className={`mx-4 my-1 bg-gradient-to-tr w-2/5 from-[#FF1CF7] to-[#b249f8] text-white shadow-lg${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={submutations} isDisabled={!statusButton}>
                                     {statusUpdate ? (<><Spinner color="default" /> <p> กำลังค้นหา...</p></>) : "ค้นหา"}
                                 </Button>
+                                </div>
+                                <Turnstile
+                                    id='turnstile-1'
+                                    ref={refTurnstile}
+                                    siteKey='0x4AAAAAAAeSpDcbB30BJR1b'
+                                    onSuccess={() => setCanSubmit(true)}
+                                    options={{
+                                        theme: 'light'
+                                      }}
+                                />
                             </div>
+  
 
                         </CardBody>
                     </Card>
@@ -183,6 +211,8 @@ export default function index() {
                             )}
                         </>
                     )}
+
+                    <Footer/>
                 </div>
             </div>
         </div>

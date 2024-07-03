@@ -604,7 +604,7 @@ export default function WorkspaceTab(idcourse: any) {
             </Snackbar>
 
             {/* Modal สำหรับกรอกคะแนน แก้ไขคะแนน */}
-            <Modal isOpen={visible} onClose={() => setVisible(false)} placement="center" className={kanit.className} size='xs'  isKeyboardDismissDisabled={true} >
+            <Modal isOpen={visible} placement="bottom-center" onClose={() => setVisible(false)} className={kanit.className} size='xs'  isKeyboardDismissDisabled={true} >
                 <ModalContent>
                     <ModalHeader className="flex flex-col gap-1">{data?.name}</ModalHeader>
                     <ModalBody>
@@ -632,7 +632,7 @@ export default function WorkspaceTab(idcourse: any) {
 
 
             {/* Modal สำหรับกรอกคะแนนพิเศษ */}
-            <Modal isOpen={extraPoint} onClose={() => setExtraPoint(false)} placement="center" className={kanit.className}  isKeyboardDismissDisabled={true}>
+            <Modal isOpen={extraPoint} onClose={() => setExtraPoint(false)} placement="bottom-center" className={kanit.className}  isKeyboardDismissDisabled={true}>
                 <ModalContent>
                     <ModalHeader className="flex flex-col gap-1">คะแนนพิเศษ {idcourse.idcourse} (Extra points)</ModalHeader>
                     
@@ -645,7 +645,7 @@ export default function WorkspaceTab(idcourse: any) {
 
 
             {/* Modal เพิ่มงานเดี่ยว */}
-            <Modal isOpen={isOpenSolo} onOpenChange={onOpenChangeSolo} placement="center" className={kanit.className}>
+            <Modal isOpen={isOpenSolo} onOpenChange={onOpenChangeSolo} placement="bottom-center" className={kanit.className}>
                 <ModalContent>
                     {(onCloseSolo) => (
                         <>
@@ -727,7 +727,7 @@ export default function WorkspaceTab(idcourse: any) {
             </Modal>
 
             {/* Modal แก้ไขงาน */}
-            <Modal isOpen={isOpenEdit} onOpenChange={onOpenChangeEdit} placement="center" className={kanit.className}>
+            <Modal isOpen={isOpenEdit} onOpenChange={onOpenChangeEdit} placement="top-center" className={kanit.className}>
                 <ModalContent>
                     {(onCloseEdit) => (
                         <>
@@ -767,7 +767,7 @@ export default function WorkspaceTab(idcourse: any) {
             </Modal>
 
             {/* Modal ลบงาน */}
-            <Modal isOpen={isOpenDelete} onOpenChange={onOpenChangeDelete} placement="center" className={kanit.className}>
+            <Modal isOpen={isOpenDelete} onOpenChange={onOpenChangeDelete} placement="top-center" className={kanit.className}>
                 <ModalContent>
                     {(onCloseDelete) => (
                         <>
