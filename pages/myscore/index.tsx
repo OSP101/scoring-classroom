@@ -1,5 +1,4 @@
-
-import React, { useState, useRef } from 'react'
+import React, { useState,useRef } from 'react'
 import { Navbar, NavbarBrand, NavbarContent, Divider, Button, Spinner, NavbarItem, Input, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Accordion, AccordionItem, CardBody, Card } from "@nextui-org/react";
 import { Prompt } from "next/font/google";
 import { useSession } from "next-auth/react"
@@ -8,10 +7,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Head from 'next/head'
 import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile';
-
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
-import TextField from '@mui/material/TextField';
-import Footer from '@/Components/footer';
+
+
 
 export default function index() {
 
@@ -41,20 +39,18 @@ export default function index() {
     const [number, setNumber] = useState(0)
     const [statusUpdate, setStatusUpdate] = useState(false);
 
-    const [canSubmit, setCanSubmit] = useState(false);
-    const refTurnstile = useRef<TurnstileInstance>(null);
-
-    const handleSubmit = async () => {
-        refTurnstile.current?.reset();
-        console.log('submitted!');
-    }
-
-    const statusButton = canSubmit && pointInput.length > 0;
-
     const defaultContent =
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
 
+        const [canSubmit, setCanSubmit] = useState(false);
+        const refTurnstile = useRef<TurnstileInstance>(null);
+    
+        const handleSubmit = async () => {
+            refTurnstile.current?.reset();
+            console.log('submitted!');
+        }
 
+        const statusButton = canSubmit && pointInput.length > 0;
     const submutations = async () => {
         const headers = new Headers({
             'Content-Type': 'application/json',
@@ -65,7 +61,6 @@ export default function index() {
             method: 'GET',
             headers: headers
         })
-        refTurnstile.current?.reset();
         if (getData.status === 201) {
             setNumber(1)
             setStatusUpdate(false)
@@ -216,7 +211,7 @@ export default function index() {
                         </>
                     )}
 
-                    <Footer />
+                    {/* <Footer /> */}
                 </div>
             </div>
         </div>

@@ -99,7 +99,6 @@ export default function FormExtra(idcourse: any) {
                 <form className={`flex flex-col gap-4 ${kanit.className}`}>
                     <Autocomplete
                         defaultItems={dataUser}
-                        autoFocus={true}
                         inputProps={{
                             classNames: {
                                 input: "ml-1",

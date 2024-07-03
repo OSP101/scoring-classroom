@@ -645,7 +645,7 @@ export default function WorkspaceTab(idcourse: any) {
 
 
             {/* Modal เพิ่มงานเดี่ยว */}
-            <Modal isOpen={isOpenSolo} onOpenChange={onOpenChangeSolo} placement="bottom-center" className={kanit.className}>
+            <Modal isOpen={isOpenSolo} onOpenChange={onOpenChangeSolo} placement="center" className={kanit.className}>
                 <ModalContent>
                     {(onCloseSolo) => (
                         <>
@@ -727,7 +727,7 @@ export default function WorkspaceTab(idcourse: any) {
             </Modal>
 
             {/* Modal แก้ไขงาน */}
-            <Modal isOpen={isOpenEdit} onOpenChange={onOpenChangeEdit} placement="top-center" className={kanit.className}>
+            <Modal isOpen={isOpenEdit} onOpenChange={onOpenChangeEdit} placement="center" className={kanit.className}>
                 <ModalContent>
                     {(onCloseEdit) => (
                         <>
@@ -767,7 +767,7 @@ export default function WorkspaceTab(idcourse: any) {
             </Modal>
 
             {/* Modal ลบงาน */}
-            <Modal isOpen={isOpenDelete} onOpenChange={onOpenChangeDelete} placement="top-center" className={kanit.className}>
+            <Modal isOpen={isOpenDelete} onOpenChange={onOpenChangeDelete} placement="center" className={kanit.className}>
                 <ModalContent>
                     {(onCloseDelete) => (
                         <>

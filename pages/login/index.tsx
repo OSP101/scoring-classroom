@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { Key, useState, useRef } from "react";
+import React, { Key } from "react";
 import { Tabs, Tab, Input, Link, Button, Card, CardBody, CardHeader, Image } from "@nextui-org/react";
 import Head from 'next/head'
 import { useSession, signIn, signOut } from "next-auth/react"
@@ -93,7 +93,6 @@ export default function App() {
                                         ลงทะเบียน
                                     </Link>
                                 </p>
-
                                 <div className="flex gap-2 justify-end">
                                     <Button fullWidth className="bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg">
                                         เข้าสู่ระบบ
@@ -104,7 +103,6 @@ export default function App() {
                                     fullWidth
                                     variant="bordered"
                                     onClick={handleGoogleSignin}
-                                    // isDisabled={canSubmit}
                                     css={css`&:hover {color: #b249f8; border-color: #b249f8}`}
                                     className="inline-flex h-10 items-center justify-center gap-2 bg-white font-medium text-black outline-none focus:ring-2 focus:ring-[#b249f8] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
                                 >
