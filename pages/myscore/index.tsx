@@ -17,7 +17,7 @@ export default function index() {
 
     console.warn('%cคำเตือน!', 'background: yellow; color: red; font-size: 20px; font-weight: bold;');
     console.warn(`การใช้คอนโซลนี้อาจทำให้ผู้โจมตีสามารถแอบอ้างตัวเป็นคุณและขโมยข้อมูลของคุณได้โดยใช้การโจมตีที่เรียกว่า Self-XSS อย่าป้อนหรือวางโค้ดที่คุณไม่เข้าใจ`);
-    console.warn('%cและขอเตือนว่าอย่าพยายามทำนอกเหนือการใช้งาน เพราะระบบได้ตรวจจับการทำงานไว้แล้ว!', 'background: yellow; color: red; font-size: 20px; font-weight: bold;')
+    console.warn('%cและขอเตือนว่าอย่าพยายามทำนอกเหนือการใช้งาน เพราะระบบได้ตรวจจับการทำงานไว้แล้ว!', 'text-decoration: underline; background: yellow; color: red; font-size: 10px; font-weight: bold;')
 
     interface Users {
         stdid: string;
