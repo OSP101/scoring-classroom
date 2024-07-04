@@ -190,6 +190,7 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
             <form className={`flex flex-col gap-4 ${kanit.className}`}>
                 <Divider className="my-1" />
                 <Autocomplete
+                    autoFocus={true}
                     ref={autocompleteRef}
                     inputValue={stdidInput}
                     onInputChange={onInputChange}

@@ -7,6 +7,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Head from 'next/head'
 import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile';
+import Footer from '@/Components/Footer';
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
 
 
@@ -79,8 +80,8 @@ export default function index() {
         <div className={kanit.className}>
             <Head>
                 <title>Myscore - Scoring Classroom</title>
-                {/* <meta name="robots" content="index,follow"></meta>
-                <meta name="description" content="Myscore เว็บไซต์สำหรับตรวจสอบคะแนน คะแนนพิเศษในชั้นเรียน สำหรับนักศึกษาวิทยาลัยการคอมพิวเตอร์ มหาวิทยาลัยขอนแก่น"></meta> */}
+                <meta name="robots" content="index,follow"></meta>
+                <meta name="description" content="Myscore เว็บไซต์สำหรับตรวจสอบคะแนน คะแนนพิเศษในชั้นเรียน สำหรับนักศึกษาวิทยาลัยการคอมพิวเตอร์ มหาวิทยาลัยขอนแก่น"></meta>
             </Head>
             {!session ? (
                 <Navbar isBordered maxWidth="2xl" isBlurred={false}>
@@ -111,7 +112,7 @@ export default function index() {
                                 <Turnstile
                                     id='turnstile-1'
                                     ref={refTurnstile}
-                                    siteKey='0x4AAAAAAAeSpDcbB30BJR1b'
+                                    siteKey='0x4AAAAAAAeVSPy7CyRQ-TwY'
                                     onSuccess={() => setCanSubmit(true)}
                                     options={{
                                         theme: 'light'
@@ -211,7 +212,7 @@ export default function index() {
                         </>
                     )}
 
-                    {/* <Footer /> */}
+                    <Footer/>
                 </div>
             </div>
         </div>
