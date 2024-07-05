@@ -103,7 +103,7 @@ export default function App() {
                                     fullWidth
                                     variant="bordered"
                                     onClick={handleGoogleSignin}
-                                    isDisabled={canSubmit}
+                                    // isDisabled={canSubmit}
                                     css={css`&:hover {color: #b249f8; border-color: #b249f8}`}
                                     className="inline-flex h-10 items-center justify-center gap-2 bg-white font-medium text-black outline-none focus:ring-2 focus:ring-[#b249f8] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
                                 >
