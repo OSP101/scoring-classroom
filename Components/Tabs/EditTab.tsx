@@ -316,7 +316,7 @@ export default function EditTab(idcouesr: any) {
         </Accordion>
       </div>
 
-      <Modal isOpen={visible} onClose={() => setVisible(false)} placement="bottom-center" className={kanit.className} isDismissable={false} isKeyboardDismissDisabled={true} >
+      <Modal isOpen={visible} onClose={() => setVisible(false)} placement="center" className={kanit.className} isDismissable={false} isKeyboardDismissDisabled={true} >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">{`รายละเอียดการแก้ไขคะแนน ${data?.name}`}</ModalHeader>
           <ModalBody>
@@ -376,7 +376,7 @@ export default function EditTab(idcouesr: any) {
         </ModalContent>
       </Modal>
 
-      <Modal isOpen={visibleTwo} onClose={() => setVisibleTwo(false)} placement="bottom-center" className={kanit.className} isDismissable={false} isKeyboardDismissDisabled={true} >
+      <Modal isOpen={visibleTwo} onClose={() => setVisibleTwo(false)} placement="center" className={kanit.className} isDismissable={false} isKeyboardDismissDisabled={true} >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">{`รายละเอียดการแก้ไขคะแนน ${data?.name}`}</ModalHeader>
           <ModalBody>
@@ -401,7 +401,7 @@ export default function EditTab(idcouesr: any) {
         </ModalContent>
       </Modal>
 
-      <Modal isOpen={visibleTree} onClose={() => setVisibleTree(false)} placement="bottom-center" className={kanit.className} isDismissable={false} isKeyboardDismissDisabled={true} >
+      <Modal isOpen={visibleTree} onClose={() => setVisibleTree(false)} placement="center" className={kanit.className} isDismissable={false} isKeyboardDismissDisabled={true} >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">{`รายละเอียดการแก้ไขคะแนน ${data?.name}`}</ModalHeader>
           <ModalBody>

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { Key,useState,useRef } from "react";
+import React, { Key } from "react";
 import { Tabs, Tab, Input, Link, Button, Card, CardBody, CardHeader, Image } from "@nextui-org/react";
 import Head from 'next/head'
 import { useSession, signIn, signOut } from "next-auth/react"
@@ -8,7 +8,7 @@ import { useRouter } from 'next/router'
 import { css } from '@emotion/react'
 import { Prompt } from "next/font/google";
 import Typography from '@mui/material/Typography';
-import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile';
+// import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile';
 
 
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
@@ -17,13 +17,13 @@ export default function App() {
     const [selected, setSelected] = React.useState("login");
     const { data: session, status } = useSession();
     const loading = status === "loading";
-    const [canSubmit, setCanSubmit] = useState(true);
-    const refTurnstile = useRef<TurnstileInstance>(null);
+    // const [canSubmit, setCanSubmit] = useState(true);
+    // const refTurnstile = useRef<TurnstileInstance>(null);
 
-    const handleSubmit = async () => {
-        refTurnstile.current?.reset();
-        console.log('submitted!');
-    }
+    // const handleSubmit = async () => {
+    //     refTurnstile.current?.reset();
+    //     console.log('submitted!');
+    // }
 
     const copyrightStyle = css`
             font-size: 12px;
@@ -94,7 +94,7 @@ export default function App() {
                                     </Link>
                                 </p>
                                 <div className="flex gap-2 justify-end">
-                                    <Button fullWidth className="bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg" isDisabled={canSubmit}>
+                                    <Button fullWidth className="bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg">
                                         เข้าสู่ระบบ
                                     </Button>
                                 </div>
@@ -115,15 +115,15 @@ export default function App() {
                                     />
                                     เข้าสู่ระบบด้วยบัญชี Google
                                 </Button>
-                                <Turnstile
+                                {/* <Turnstile
                                     id='turnstile-1'
                                     ref={refTurnstile}
-                                    siteKey='0x4AAAAAAAeVSPy7CyRQ-TwY'
+                                    siteKey='0x4AAAAAAAeSpDcbB30BJR1b'
                                     onSuccess={() => setCanSubmit(false)}
                                     options={{
                                         theme: 'light'
                                       }}
-                                />
+                                /> */}
                             </form>
                         </Tab>
                         <Tab key="sign-up" title="ลงทะเบียน">
