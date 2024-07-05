@@ -1,17 +1,17 @@
 version: '3.4'
 
 services:
-  scoringclassroom:
-    image: scoringclassroom
-    restart: always
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    environment:
-      NODE_ENV: production
-      NEXT_PUBLIC_API_KEY: asdfghjkl
-    ports:
-      - 3000:3000
+  # scoringclassroom:
+  #   image: scoringclassroom
+  #   restart: always
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile
+  #   environment:
+  #     NODE_ENV: production
+  #     NEXT_PUBLIC_API_KEY: asdfghjkl
+  #   ports:
+  #     - 3000:3000
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin
