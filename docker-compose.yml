@@ -39,7 +39,12 @@ services:
     volumes:
       - db:/var/lib/mysql
 
-
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./conf.d:/etc/nginx/conf.d
+    ports:
+      - 80:80
   # portainer:
   #   container_name: portainer
   #   image: portainer/portainer-ce:latest
