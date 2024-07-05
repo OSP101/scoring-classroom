@@ -21,7 +21,7 @@ services:
       PMA_USER: root
       PMA_PASSWORD: mauFJcuf5dhRMQrjj
     ports:
-      - "8080:80"
+      - "9090:80"
     depends_on:
       - db
     restart: always      
