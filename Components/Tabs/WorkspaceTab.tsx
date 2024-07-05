@@ -604,7 +604,7 @@ export default function WorkspaceTab(idcourse: any) {
             </Snackbar>
 
             {/* Modal สำหรับกรอกคะแนน แก้ไขคะแนน */}
-            <Modal isOpen={visible} isDismissable={false} onClose={() => setVisible(false)} size='xs' placement="top-center" className={kanit.className}  isKeyboardDismissDisabled={true} >
+            <Modal isOpen={visible} onClose={() => setVisible(false)} size='xs' placement="bottom-center" className={kanit.className}  isKeyboardDismissDisabled={true} >
                 <ModalContent>
                     <ModalHeader className="flex flex-col gap-1">{data?.name}</ModalHeader>
                     <ModalBody>

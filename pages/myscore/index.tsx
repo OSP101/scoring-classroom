@@ -61,7 +61,6 @@ export default function index() {
             method: 'GET',
             headers: headers
         })
-        // refTurnstile.current?.reset();
         if (getData.status === 201) {
             setNumber(1)
             setStatusUpdate(false)
