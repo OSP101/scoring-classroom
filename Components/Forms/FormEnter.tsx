@@ -58,11 +58,6 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
         (autocompleteRef.current as HTMLInputElement).value = ''; // Type assertion
     };
 
-    useEffect(() => {
-        getUser("0", idcourse);
-        // onInputChange("")
-    }, [])
-
     const getUser = async (stdid: string, idcourse: string) => {
         try {
             const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/score/getuser`, {
@@ -190,7 +185,6 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
             <form className={`flex flex-col gap-4 ${kanit.className}`}>
                 <Divider className="my-1" />
                 <Autocomplete
-                    autoFocus={true}
                     ref={autocompleteRef}
                     inputValue={stdidInput}
                     onInputChange={onInputChange}
@@ -220,7 +214,7 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
                     label="รหัสนักศึกษา"
                     placeholder="กรุณากรอกรหัสนักศึกษา"
                     popoverProps={{
-                        offset: 5,
+                        offset: 3,
                         classNames: {
                             base: "rounded-large",
                             content: "p-1 border-small border-default-100 bg-background",

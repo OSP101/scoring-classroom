@@ -53,10 +53,6 @@ const FormEdit: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint })
     const [dataAlert, setDataAlert] = useState("");
     const [dataChecks, setDataChecks] = useState<DataCheck>();
 
-    useEffect(() => {
-        getUser("0", idcourse);
-        // onInputChange("")
-    }, [])
 
 
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {

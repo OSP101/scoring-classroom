@@ -1,17 +1,30 @@
 version: '3.4'
 
 services:
-  # scoringclassroom:
-  #   image: scoringclassroom
-  #   restart: always
-  #   build:
-  #     context: .
-  #     dockerfile: ./Dockerfile
-  #   environment:
-  #     NODE_ENV: production
-  #     NEXT_PUBLIC_API_KEY: asdfghjkl
-  #   ports:
-  #     - 3000:3000
+  scoringclassroom:
+    image: scoringclassroom
+    restart: always
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_KEY: asdfghjkl
+      NEXTAUTH_SECRET: asdfghjkl
+      GOOGLE_ID: 606064697392-ek0mu1kcsv2rb4l8qhlo1snrukf0065r.apps.googleusercontent.com
+      GOOGLE_SECRET: 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
+      MYSQL_HOST: db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: mauFJcuf5dhRMQrjj
+      MYSQL_DATABASE: scoring_classroom
+      NEXT_PUBLIC_API_URL: http://localhost:3000/api/v1
+      NEXT_PUBLIC_API_HEAS: pknvpeibnpirnbklnbejneo@@VFV
+      NEXTAUTH_URL: http://localhost:3000
+      NEXT_PUBLIC_GA_ID: G-PZKP3616CJ
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin
@@ -45,16 +58,17 @@ services:
       - ./conf.d:/etc/nginx/conf.d
     ports:
       - 80:80
-  # portainer:
-  #   container_name: portainer
-  #   image: portainer/portainer-ce:latest
-  #   ports:
-  #     - '8000:8000'
-  #     - '9443:9443'
-  #   volumes:
-  #     - 'portainer_data:/data'
-  #     - '/var/run/docker.sock:/var/run/docker.sock'
-  #   restart: always
+      
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce:latest
+    ports:
+      - '8000:8000'
+      - '9443:9443'
+    volumes:
+      - 'portainer_data:/data'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    restart: always
 
 
 volumes:

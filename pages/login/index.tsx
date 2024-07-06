@@ -3,12 +3,12 @@ import React, { Key } from "react";
 import { Tabs, Tab, Input, Link, Button, Card, CardBody, CardHeader, Image } from "@nextui-org/react";
 import Head from 'next/head'
 import { useSession, signIn, signOut } from "next-auth/react"
-import { useEffect } from 'react'
+import { useEffect,useState,useRef } from 'react'
 import { useRouter } from 'next/router'
 import { css } from '@emotion/react'
 import { Prompt } from "next/font/google";
 import Typography from '@mui/material/Typography';
-// import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile';
+import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile';
 
 
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
@@ -17,13 +17,13 @@ export default function App() {
     const [selected, setSelected] = React.useState("login");
     const { data: session, status } = useSession();
     const loading = status === "loading";
-    // const [canSubmit, setCanSubmit] = useState(true);
-    // const refTurnstile = useRef<TurnstileInstance>(null);
+    const [canSubmit, setCanSubmit] = useState(true);
+    const refTurnstile = useRef<TurnstileInstance>(null);
 
-    // const handleSubmit = async () => {
-    //     refTurnstile.current?.reset();
-    //     console.log('submitted!');
-    // }
+    const handleSubmit = async () => {
+        refTurnstile.current?.reset();
+        console.log('submitted!');
+    }
 
     const copyrightStyle = css`
             font-size: 12px;
@@ -103,7 +103,7 @@ export default function App() {
                                     fullWidth
                                     variant="bordered"
                                     onClick={handleGoogleSignin}
-                                    // isDisabled={canSubmit}
+                                    isDisabled={canSubmit}
                                     css={css`&:hover {color: #b249f8; border-color: #b249f8}`}
                                     className="inline-flex h-10 items-center justify-center gap-2 bg-white font-medium text-black outline-none focus:ring-2 focus:ring-[#b249f8] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
                                 >
@@ -115,7 +115,7 @@ export default function App() {
                                     />
                                     เข้าสู่ระบบด้วยบัญชี Google
                                 </Button>
-                                {/* <Turnstile
+                                <Turnstile
                                     id='turnstile-1'
                                     ref={refTurnstile}
                                     siteKey='0x4AAAAAAAeSpDcbB30BJR1b'
@@ -123,7 +123,7 @@ export default function App() {
                                     options={{
                                         theme: 'light'
                                       }}
-                                /> */}
+                                />
                             </form>
                         </Tab>
                         <Tab key="sign-up" title="ลงทะเบียน">

@@ -3,12 +3,16 @@ import Image from 'next/image'
 import { Prompt } from "next/font/google";
 import Link from 'next/link';
 import { Tabs, Tab, Button } from "@nextui-org/react";
-
+import Head from 'next/head'
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
 
 
 export default function index() {
   return (
+    <>
+            <Head>
+          <title>403 Forbidden - Scoring Classroom</title>
+        </Head>
 <div className={`hero bg-base-200 min-h-screen ${kanit.className}`}>
                 <div className="hero-content flex-col lg:flex-row">
                     <Image src={`/403.svg`} alt='403' width={300} height={300} />
@@ -25,5 +29,6 @@ export default function index() {
                     </div>
                 </div>
             </div>
+            </>
   )
 }

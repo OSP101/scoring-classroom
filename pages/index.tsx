@@ -5,8 +5,9 @@ import React,{useEffect} from "react";
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router';
 
-
-const CourseAll = dynamic(() => import('@/Components/CourseAll'));
+const CourseAll = dynamic(() => import('@/Components/CourseAll'), {
+  loading: () => <Loading />,
+});
 export default function Home() {
   const { data: session, status } = useSession();
   const loading = status === "loading";
@@ -24,8 +25,8 @@ export default function Home() {
       <>
         <Head>
           <title>Scoring Classroom</title>
-          {/* <meta name="description" content="Scoring Classroom เว็บไซต์สำหรับบันทึกคะแนน คะแนนพิเศษในชั้นเรียน สำหรับนักศึกษาวิทยาลัยการคอมพิวเตอร์ มหาวิทยาลัยขอนแก่น"></meta>
-          <meta name="robots" content="index,follow"></meta> */}
+          <meta name="description" content="Scoring Classroom เว็บไซต์สำหรับบันทึกคะแนน คะแนนพิเศษในชั้นเรียน สำหรับนักศึกษาวิทยาลัยการคอมพิวเตอร์ มหาวิทยาลัยขอนแก่น พัฒนาโดย OSP101"></meta>
+          <meta name="robots" content="index,follow"></meta>
 
         </Head>
         {/* <NavbarComponent /> */}
@@ -39,5 +40,14 @@ export default function Home() {
 }
 
 function Loading() {
-  return <h2>🌀 Loading...</h2>;
+  return (
+    <>
+        <div className="flex flex-col gap-4 w-52">
+            <div className="skeleton h-32 w-full"></div>
+            <div className="skeleton h-4 w-28"></div>
+            <div className="skeleton h-4 w-full"></div>
+            <div className="skeleton h-4 w-full"></div>
+        </div>
+    </>
+)
 }

@@ -1,12 +1,12 @@
 import React from 'react'
 import { useState, useEffect } from "react";
 import dynamic from 'next/dynamic'
+import Link from 'next/link';
+import { Prompt } from "next/font/google";
+import Image from 'next/image'
+// import {Image} from "@nextui-org/react";
 
-
-
-const CardCourse = dynamic(() => import('@/Components/CardCourse'), {
-    loading: () => <Loading />,
-})
+const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
 
 export default function CourseAll({ session }: { session: any }) {
     interface Course {
@@ -25,7 +25,7 @@ export default function CourseAll({ session }: { session: any }) {
                     'Content-Type': 'application/json',
                     'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ''
                 });
-            
+
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/course/${session?.user?.stdid}`, {
                     method: 'GET',
                     headers: headers
@@ -38,8 +38,8 @@ export default function CourseAll({ session }: { session: any }) {
             } catch (error) {
                 console.error('Error fetching courses:', error);
             }
-            
-            
+
+
         };
 
         if (session?.user?.stdid) {
@@ -51,7 +51,15 @@ export default function CourseAll({ session }: { session: any }) {
     return (
         <>
             {dataCourses.map((course) => (
-                <CardCourse key={course.id} course={course} />
+                <div className={`card card-compact bg-base-100 shadow-xl mx-4 md:mx-0 ${kanit.className}`} >
+                    <figure className="object-cover w-full h-full" ><Image src={`/${course.image}`} alt={course.name} width={244} height={168} className="object-cover w-full h-full" priority={true} fetchPriority='auto' /></figure>
+
+                    <div className="card-body">
+                        <div className="badge badge-secondary badge-outline badge-sm">{course.idcourse}</div>
+                        <Link href={`/c/${course.idcourse}`}><p className="truncate text-xl font-medium hover:underline">{course.name}</p></Link>
+                        <p className='font-light'>{course.description}</p>
+                    </div>
+                </div>
             ))
             }
         </>
