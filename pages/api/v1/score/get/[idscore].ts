@@ -22,7 +22,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 let [data2] = await promisePool.query(`SELECT e.stdid, 
        users.name, users.image,p.teachid,
                     tw.name AS titelname,
-       COALESCE(p.point, '-') AS point
+       COALESCE(p.point, '-') AS point,p.create_at
 FROM enllo e
 LEFT JOIN points p ON e.stdid = p.stdid AND p.idtitelwork = ?
 LEFT JOIN titelwork tw ON p.idtitelwork = tw.id AND tw.delete_at IS NULL

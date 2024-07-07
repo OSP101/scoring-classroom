@@ -1,4 +1,4 @@
-import React, { useState,useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import { Navbar, NavbarBrand, NavbarContent, Divider, Button, Spinner, NavbarItem, Input, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Accordion, AccordionItem, CardBody, Card } from "@nextui-org/react";
 import { Prompt } from "next/font/google";
 import { useSession } from "next-auth/react"
@@ -42,15 +42,15 @@ export default function index() {
     const defaultContent =
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
 
-        const [canSubmit, setCanSubmit] = useState(false);
-        const refTurnstile = useRef<TurnstileInstance>(null);
-    
-        const handleSubmit = async () => {
-            refTurnstile.current?.reset();
-            console.log('submitted!');
-        }
+    const [canSubmit, setCanSubmit] = useState(false);
+    const refTurnstile = useRef<TurnstileInstance>(null);
 
-        const statusButton = canSubmit && pointInput.length > 0;
+    const handleSubmit = async () => {
+        refTurnstile.current?.reset();
+        console.log('submitted!');
+    }
+
+    const statusButton = canSubmit && pointInput.length > 0;
     const submutations = async () => {
         const headers = new Headers({
             'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ export default function index() {
                 <div className={`px-2 pb-4 pt-3 ${kanit.className}`}>
                     <Card>
                         <CardBody>
-                            <div className='flex justify-center'>
+                            <div className='flex justify-center mb-1'>
                                 <h1 className="text-center text-lg sm:text-3xl font-medium from-[#FF1CF7] to-[#b249f8] bg-clip-text text-transparent bg-gradient-to-b inline">ยินดีต้อนรับสู่ระบบตรวจสอบคะแนน</h1>
                             </div>
 
@@ -139,9 +139,8 @@ export default function index() {
                                                 <thead>
                                                     <tr>
                                                         <th>ชื่อ - นามสกุล</th>
-                                                        <th>อีเมลล์</th>
-                                                        <th>กลุ่ม</th>
-                                                        <th>แทร็ค</th>
+                                                        <th className='text-center'>อีเมลล์</th>
+                                                        <th className='text-center'>กลุ่ม</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -162,44 +161,57 @@ export default function index() {
                                                                 </div>
                                                             </div>
                                                         </td>
-                                                        <td>
-                                                            {dataUser.email}
-                                                            <br />
-                                                            <span className="badge badge-ghost badge-sm">{dataUser.track}</span>
+                                                        <td className='text-center'>
+                                                            <div>
+                                                                {dataUser.email}
+                                                                <br />
+                                                                <span className="badge badge-ghost badge-sm">{dataUser.track}</span>
+                                                            </div>
                                                         </td>
-                                                        <td>{dataUser.section}</td>
-                                                        <td>
-                                                            {dataUser.track}
-                                                        </td>
+                                                        <td className='text-center'>{dataUser.section}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </AccordionItem>
 
-                                        <AccordionItem key="2" aria-label="คะแนนทั้งหมด" title="คะแนนทั้งหมด" className='mt-2'>
+                                        <AccordionItem key="2" aria-label="คะแนนปฏิบัติการ" title="คะแนนปฏิบัติการ" className='mt-2'>
                                             <table className="table">
                                                 <thead>
                                                     <tr>
-                                                        <th>คะแนนพิเศษ</th>
+                                                        <th className='text-center'>คะแนนพิเศษ</th>
                                                         {dataUser.lab.map((item: any, index: number) => (
-                                                            <th key={index}>{item[0].titelname ? item[0].titelname : `Lab ${index + 1}`}</th>
+                                                            <th key={index} className='text-center'>{item[0].titelname ? item[0].titelname : `Lab ${index + 1}`}</th>
                                                         ))}
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <td>{dataUser.extra}</td>
+                                                        <td className='text-center'>{dataUser.extra}</td>
                                                         {dataUser.lab.map((item: any, index: number) => (
-                                                            <td key={index}>{item[0].point}</td>
+                                                            <td key={index} className='text-center'>{item[0].point}</td>
                                                         ))}
                                                     </tr>
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <th>คะแนนรวม</th>
+                                                        <th colSpan={dataUser.lab.length + 1} className='text-center font-bold'>
+                                                            คะแนนทั้งหมด
+                                                            {(() => {
+                                                                const totalPoints = dataUser.lab.reduce((sum: number, item: any) => {
+                                                                    const point = Number(item[0].point);
+                                                                    return isNaN(point) ? sum : sum + point;
+                                                                }, 0);
+                                                                return totalPoints === 0 ? " " + 0 + "/" + dataUser.lab.length * 10 : " " + totalPoints + "/" + dataUser.lab.length * 10;
+                                                            })()}
+                                                        </th>
                                                     </tr>
                                                 </tfoot>
                                             </table>
+                                        </AccordionItem>
+
+                                        <AccordionItem key="3" aria-label="คะแนนกลุ่ม" title="คะแนนกลุ่ม" className='mt-2'>
+                                            <p className='text-center text-sm font-light mb-3'>ไม่พบข้อมูลของ {pointInput}</p>
+
                                         </AccordionItem>
                                     </Accordion>
                                 </>

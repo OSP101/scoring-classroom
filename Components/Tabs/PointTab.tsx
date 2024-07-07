@@ -15,6 +15,7 @@ export default function PointTab(idcouesr: any) {
         name: string;
         image: string;
         teachid: string;
+        create_at: Date;
     }
 
     interface LabData {
@@ -62,52 +63,84 @@ export default function PointTab(idcouesr: any) {
             <Link isBlock showAnchorIcon href="/myscore" color="secondary" className='mb-2' target='_blank'>
                 ดูคะแนนรายบุคคล
             </Link>
-            <table className="table table-pin-rows table-pin-cols" >
+            <table className="table table-pin-rows table-pin-cols table-zebra">
                 {/* head */}
                 <thead>
                     <tr>
                         <th>ชื่อ - นามสกุล</th>
                         {labsData.length > 0 ? (
                             labsData.map((item) => (
-                                <th key={item.idtitelwork}>{item.namework}</th>
+                                <th key={item.idtitelwork} className='text-center'>{item.namework}</th>
                             ))
                         ) : null}
+                        <th className='text-center'>รวม</th>
                     </tr>
                 </thead>
                 <tbody>
                     {/* row 1 */}
-                    {labsData[0]?.data.map((head) => (
-                        <tr key={head.stdid} className="hover">
-                            <td>
-                                <div className="flex items-center gap-3">
-                                    <div className="avatar">
-                                        <div className="mask mask-squircle h-12 w-12">
-                                            <Image
-                                                src={head.image}
-                                                alt={`Image ${head.name}`}
-                                                width={12}
-                                                height={12} />
+                    {labsData[0]?.data.map((head) => {
+                        let totalPoints = 0;
+                        return (
+                            <tr key={head.stdid} className="hover">
+                                <td>
+                                    <div className="flex items-center gap-3">
+                                        <div className="avatar">
+                                            <div className="mask mask-squircle h-12 w-12">
+                                                <Image
+                                                    src={head.image}
+                                                    alt={`Image ${head.name}`}
+                                                    width={12}
+                                                    height={12} />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div>{head.name}</div>
+                                            <div className="text-sm opacity-50">{head.stdid}</div>
                                         </div>
                                     </div>
-                                    <div>
-                                        <div >{head.name}</div>
-                                        <div className="text-sm opacity-50">{head.stdid}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            {labsData.map((lab, index) => {
-                                const item = lab.data.find((data) => data.stdid === head.stdid);
-                                return (
-
-                                    <td key={index}>
-                                        {item?.teachid == null ? item?.point : <Tooltip key={index} color="secondary" content={`ผู้ตรวจ: ${item?.teachid}`} className="capitalize" placement="top">
-                                            {item?.point}
-                                        </Tooltip>}
-                                    </td>
-                                )
-                            })}
-                        </tr>
-                    ))}
+                                </td>
+                                {labsData.map((lab, index) => {
+                                    const item = lab.data.find((data) => data.stdid === head.stdid);
+                                    if (item?.point && item?.point !== '-') {
+                                        totalPoints += Number(item.point);
+                                    }
+                                    const formattedDate = (() => {
+                                        if (item?.create_at) {
+                                            const date = new Date(item.create_at);
+                                            if (!isNaN(date.getTime())) {
+                                                return date.toLocaleDateString('th-TH', {
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric',
+                                                    hour: 'numeric',
+                                                    minute: 'numeric',
+                                                    second: 'numeric'
+                                                });
+                                            }
+                                        }
+                                        return "Invalid Date";
+                                    })();
+                                    return (
+                                        <td key={index} className='text-center'>
+                                            {item?.teachid == null ? item?.point : (
+                                                <Tooltip key={index} color="secondary" content={
+                                                    <div className="px-1 py-2">
+                                                        <div className="text-small font-bold">ผู้ตรวจ: {item?.teachid}</div>
+                                                        <div className="text-tiny">ลงวันที่: {formattedDate}</div>
+                                                    </div>
+                                                } className="capitalize" placement="top">
+                                                    {item?.point}
+                                                </Tooltip>
+                                            )}
+                                        </td>
+                                    )
+                                })}
+                                <td className={`text-center font-bold ${totalPoints === 0 ? 'text-red-500' : 'text-black'}`}>
+                                    {totalPoints === 0 ? 0 : totalPoints}
+                                </td>
+                            </tr>
+                        );
+                    })}
                 </tbody>
             </table>
         </div>
