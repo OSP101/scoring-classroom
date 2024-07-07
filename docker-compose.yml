@@ -40,7 +40,7 @@ services:
     restart: always      
 
   db:
-    image: mysql:8.0
+    image: mysql:latest
     cap_add:
       - SYS_NICE
     restart: always
