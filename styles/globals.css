@@ -24,3 +24,7 @@
   .star-icon svg:hover {
     color: #ffffff;
   }
+
+  input[type="number"] {
+    font-size: 16px;
+  }

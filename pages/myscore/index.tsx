@@ -111,7 +111,7 @@ export default function index() {
                                 <Turnstile
                                     id='turnstile-1'
                                     ref={refTurnstile}
-                                    siteKey='0x4AAAAAAAeSpDcbB30BJR1b'
+                                    siteKey={process.env.NEXT_PUBLIC_CLOUD || ''}
                                     onSuccess={() => setCanSubmit(true)}
                                     options={{
                                         theme: 'light'
