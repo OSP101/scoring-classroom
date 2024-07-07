@@ -4,6 +4,7 @@ import { signOut } from 'next-auth/react';
 import { useSession, signIn } from "next-auth/react"
 import { Prompt } from "next/font/google";
 import Link from 'next/link';
+import { ThemeSwitcher } from '../Theme';
 
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
 
@@ -21,6 +22,7 @@ export default function NavbarComponent() {
                 </NavbarContent>
 
                 <NavbarContent as="div" className="items-center" justify="end">
+                    <ThemeSwitcher/>
                     <Dropdown placement="bottom-end" className={kanit.className}>
                         <DropdownTrigger>
                             <Avatar

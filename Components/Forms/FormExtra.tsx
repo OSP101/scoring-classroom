@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect,useRef } from 'react'
 import axios from 'axios';
 import { Autocomplete, AutocompleteItem, Avatar, Button, dateInput, Input, ModalBody, ModalFooter, Spinner } from "@nextui-org/react";
 import { Prompt } from "next/font/google";
@@ -26,7 +26,9 @@ export default function FormExtra(idcourse: any) {
     const [open, setOpen] = React.useState(false);
     const [dataAlert, setDataAlert] = useState("");
     const [statusUpdate, setStatusUpdate] = useState(false);
+    const [stdidInput, setStdidInput] = useState("")
 
+    const autocompleteRef = useRef<HTMLInputElement>(null); // Set the initial type
 
 
     useEffect(() => {
@@ -98,6 +100,8 @@ export default function FormExtra(idcourse: any) {
             <ModalBody>
                 <form className={`flex flex-col gap-4 ${kanit.className}`}>
                     <Autocomplete
+                        ref={autocompleteRef}
+                        inputValue={inputData}
                         defaultItems={dataUser}
                         inputProps={{
                             classNames: {

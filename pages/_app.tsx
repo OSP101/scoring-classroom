@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import Script from "next/script";
 import { useRouter } from "next/router";
 import * as gtag from "../lib/gtag";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const router = useRouter();
@@ -41,9 +42,11 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
 
       <SessionProvider session={session}>
         <NextUIProvider >
-          <NavWrapper>
-            <Component {...pageProps} />
-          </NavWrapper>
+          <NextThemesProvider attribute="class" defaultTheme="black" enableSystem={true} storageKey="theme">
+            <NavWrapper>
+              <Component {...pageProps} />
+            </NavWrapper>
+          </NextThemesProvider>
         </NextUIProvider>
       </SessionProvider>
     </>

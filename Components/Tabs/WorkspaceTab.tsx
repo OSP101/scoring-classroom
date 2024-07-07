@@ -458,7 +458,7 @@ export default function WorkspaceTab(idcourse: any) {
                     key="extra"
                     description={`คะแนนพิเศษตอบคำถามในชั้นเรียน`}
                     startContent={<FaStar className='text-xl text-default-500 pointer-events-none flex-shrink-0 star-icon' />}
-                    className='py-3 my-3 bg-white shadow-sm border border-x-gray-200 border-y-gray-200'
+                    className='py-3 my-3  shadow-sm border border-x-gray-200 border-y-gray-200'
                     color='secondary'
                     variant='flat'
                 >
@@ -494,7 +494,8 @@ export default function WorkspaceTab(idcourse: any) {
                                         return (
                                             <ListboxItem
                                                 key={item.id}
-                                                color={"default"}
+                                                color='secondary'
+                                                variant='flat'
                                                 endContent={
                                                     <Dropdown>
                                                         <DropdownTrigger>
@@ -604,7 +605,7 @@ export default function WorkspaceTab(idcourse: any) {
             </Snackbar>
 
             {/* Modal สำหรับกรอกคะแนน แก้ไขคะแนน */}
-            <Modal isOpen={visible} onClose={() => setVisible(false)} size='xs' placement="top-center" className={kanit.className} isDismissable={false} isKeyboardDismissDisabled={true} >
+            <Modal isOpen={visible} onClose={() => setVisible(false)} size='sm' placement="top-center" className={kanit.className} isDismissable={false} isKeyboardDismissDisabled={true} >
                 <ModalContent>
                     <ModalHeader className="flex flex-col gap-1">{data?.name}</ModalHeader>
                     <ModalBody>
