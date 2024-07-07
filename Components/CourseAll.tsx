@@ -51,7 +51,7 @@ export default function CourseAll({ session }: { session: any }) {
     return (
         <>
             {dataCourses.map((course) => (
-                <div className={`card card-compact bg-base-100 shadow-xl mx-4 md:mx-0 ${kanit.className}`} >
+                <Link href={`/c/${course.idcourse}`} className={`card card-compact bg-base-100 shadow-xl mx-4 md:mx-0 ${kanit.className}`}>
                     <figure className="object-cover w-full h-full" ><Image src={`/${course.image}`} alt={course.name} width={244} height={168} className="object-cover w-full h-full" priority={true} fetchPriority='auto' /></figure>
 
                     <div className="card-body">
@@ -59,7 +59,7 @@ export default function CourseAll({ session }: { session: any }) {
                         <Link href={`/c/${course.idcourse}`}><p className="truncate text-xl font-medium hover:underline">{course.name}</p></Link>
                         <p className='font-light'>{course.description}</p>
                     </div>
-                </div>
+                </Link>
             ))
             }
         </>
