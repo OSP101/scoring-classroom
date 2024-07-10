@@ -20,7 +20,7 @@ export const ThemeSwitcher = () => {
             document.documentElement.setAttribute("data-theme", "light");
 
         }else if(e.newValue === 'dark') {
-            document.documentElement.setAttribute("data-theme", "dark");
+            document.documentElement.setAttribute("data-theme", "black");
         }
       }
     };
