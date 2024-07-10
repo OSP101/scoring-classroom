@@ -16,6 +16,7 @@ export default function PointTab(idcouesr: any) {
         image: string;
         teachid: string;
         create_at: Date;
+        update_at: Date;
     }
 
     interface LabData {
@@ -68,9 +69,12 @@ export default function PointTab(idcouesr: any) {
                 <thead>
                     <tr>
                         <th>ชื่อ - นามสกุล</th>
+                        <th>คะแนนพิเศษ</th>
                         {labsData.length > 0 ? (
                             labsData.map((item) => (
-                                <th key={item.idtitelwork} className='text-center'>{item.namework}</th>
+                                item.idtitelwork !== 0 ? (
+                                    <th key={item.idtitelwork} className='text-center'>{item.namework}</th>
+                                ) : null
                             ))
                         ) : null}
                         <th className='text-center'>รวม</th>
@@ -79,6 +83,7 @@ export default function PointTab(idcouesr: any) {
                 <tbody>
                     {/* row 1 */}
                     {labsData[0]?.data.map((head) => {
+
                         let totalPoints = 0;
                         return (
                             <tr key={head.stdid} className="hover">
@@ -100,13 +105,21 @@ export default function PointTab(idcouesr: any) {
                                     </div>
                                 </td>
                                 {labsData.map((lab, index) => {
+                                    if (lab.idtitelwork === 0) {
+                                        const item2 = lab.data.find((data) => data.stdid === head.stdid);
+                                        return (
+                                            <td key={index} className='text-center'>
+                                                    {item2?.point}
+                                        </td>
+                                        );
+                                    }
                                     const item = lab.data.find((data) => data.stdid === head.stdid);
                                     if (item?.point && item?.point !== '-') {
                                         totalPoints += Number(item.point);
                                     }
                                     const formattedDate = (() => {
-                                        if (item?.create_at) {
-                                            const date = new Date(item.create_at);
+                                        if (item?.update_at) {
+                                            const date = new Date(item.update_at);
                                             if (!isNaN(date.getTime())) {
                                                 return date.toLocaleDateString('th-TH', {
                                                     year: 'numeric',

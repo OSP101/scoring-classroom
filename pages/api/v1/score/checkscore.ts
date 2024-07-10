@@ -17,8 +17,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             [ stdidInput, idtitelwork ]
         );
 
-        if (rows.length === 0) {
-            res.status(200).json({length:rows.length, data: rows});
+        // console.log(rows[0].point);
+
+        if (rows[0].point == 0) {
+            res.status(200).json({length:0});
         } else {
             res.status(200).json({length:rows.length, data: rows[0]});
         }

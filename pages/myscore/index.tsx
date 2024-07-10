@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react'
-import { Navbar, NavbarBrand, NavbarContent, Divider, Button, Spinner, NavbarItem, Input, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Accordion, AccordionItem, CardBody, Card } from "@nextui-org/react";
+import React, { useState, useRef, useEffect } from 'react'
+import { Modal, ModalContent, ModalHeader, ModalBody, Navbar, NavbarBrand, NavbarContent, Divider, Button, Spinner, useDisclosure, NavbarItem, Input, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Accordion, AccordionItem, CardBody, Card } from "@nextui-org/react";
 import { Prompt } from "next/font/google";
 import { useSession } from "next-auth/react"
 import Stack from '@mui/material/Stack';
@@ -11,7 +11,7 @@ const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', 
 import { useTheme } from "next-themes";
 import { ThemeSwitcher } from '@/Components/Theme';
 import Footer from '@/Components/Footer';
-
+import Image from 'next/image';
 
 export default function index() {
 
@@ -46,11 +46,17 @@ export default function index() {
 
     const [canSubmit, setCanSubmit] = useState(false);
     const refTurnstile = useRef<TurnstileInstance>(null);
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const handleSubmit = async () => {
         refTurnstile.current?.reset();
         console.log('submitted!');
     }
+
+    useEffect(() => {
+        onOpen()
+    }, [])
+    
 
     const statusButton = canSubmit && pointInput.length > 0;
     const submutations = async () => {
@@ -94,7 +100,7 @@ export default function index() {
 
 
                     <NavbarContent as="div" className="items-center" justify="end">
-                    <ThemeSwitcher/>
+                        <ThemeSwitcher />
                     </NavbarContent>
                 </Navbar>
             ) : null}
@@ -232,6 +238,33 @@ export default function index() {
 
                     <Footer />
                 </div>
+
+                <Modal
+                    backdrop="opaque"
+                    isOpen={isOpen}
+                    onOpenChange={onOpenChange}
+                    radius="lg"
+                    size='3xl'
+                    placement="center"
+                    classNames={{
+                        body: "py-6",
+                        backdrop: "bg-[#FBDBA7]/50 backdrop-opacity-40",
+                        base: "border-[#FBDBA7] bg-[#FBDBA7] dark:bg-[#FBDBA7] text-[#FBDBA7]",
+                        header: "border-b-[1px] border-[#FBDBA7]",
+                        footer: "border-t-[1px] border-[#FBDBA7]",
+                        closeButton: "hover:bg-white/5 active:bg-white/10",
+                    }}
+                >
+                    <ModalContent>
+                        {(onClose) => (
+                            <>
+                                <ModalBody>
+                                    <Image src={`/670111-671231_banner.jpeg`} alt='banner' width={700} height={500}></Image>
+                                </ModalBody>
+                            </>
+                        )}
+                    </ModalContent>
+                </Modal>
             </div>
         </div>
     )

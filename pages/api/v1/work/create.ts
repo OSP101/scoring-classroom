@@ -15,12 +15,32 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         try {
             const promisePool = mysqlPool.promise()
+            await promisePool.query('START TRANSACTION');
+
             const [courseResult] = await promisePool.query(
                 'INSERT INTO titelwork (idcourse, name, date, maxpoint, typework) VALUES (?, ?, ?, ?, ?)',
                 [idcourse, name, date, maxpoint, typework]
             );
 
+            const id = courseResult.insertId;
+
+            const [rows] = await promisePool.query(
+                'SELECT stdid FROM enllo WHERE idcourse = ?',
+                [idcourse]
+            );
+
+            if (rows.length > 0) {
+                const values = rows.map((row: { stdid: any; }) => [row.stdid, id, 0]);
+                await promisePool.query(
+                    'INSERT INTO `points` (`stdid`, `idtitelwork`, `point`) VALUES ?',
+                    [values]
+                );
+            }
+
+            // Commit the transaction
+            await promisePool.query('COMMIT');
             res.status(201).json({ message: 'Course added successfully' });
+
         } catch (error) {
             res.status(500).json({ error1: 'Failed to add work', error2: error });
         }

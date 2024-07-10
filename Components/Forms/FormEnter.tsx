@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Autocomplete, AutocompleteItem, Avatar, Button, Input, Spinner, Divider } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem, Avatar, Button, Input, Spinner, Divider, RadioGroup, Radio } from "@nextui-org/react";
 import axios from 'axios';
 import { Prompt } from "next/font/google";
 import { useSession } from "next-auth/react"
@@ -43,7 +43,7 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
     const [dataPoint, setDataPoint] = useState<Point>();
     const [dataUser, setDataUser] = useState<Students[]>([]);
     const [statusUpdate, setStatusUpdate] = useState(false);
-    const [pointInput, setPointInput] = useState("");
+    const [pointInput, setPointInput] = useState("10");
     const [stdidInput, setStdidInput] = useState("")
     const [statusCheck, setStatusCheck] = useState(false);
     const [dataCheck, setDataCheck] = useState<DataCheck>();
@@ -51,6 +51,7 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
     const [idTeach, setIdTeach] = useState(session?.user?.name)
     const [open, setOpen] = React.useState(false);
     const [dataAlert, setDataAlert] = useState("");
+    const [selected, setSelected] = React.useState("10");
 
     const autocompleteRef = useRef<HTMLInputElement>(null); // Set the initial type
 
@@ -79,18 +80,24 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
 
     // console.log("DATAUSER ", dataUser)
     const onInputChange = (value: string) => {
-        console.log("Data input ", value.length)
+        // console.log("Data input ", value.length)
         setStdidInput(value);
-        getUser(value, idcourse);
         if (value.length === 11) {
             checkuser(value);
-        } if (value.length < 11) {
+            getUser(value, idcourse);
+        } if (value.length < 11 && value.length > 0) {
             setStatusCheck(false);
-            console.log("Data user : 0")
+            // console.log("Data user : 1")
+            getUser(value, idcourse);
+        }
+        if (value.length === 0) {
+            setDataUser([])
+            setStatusCheck(false);
+            // console.log("Data user : 0")
         }
     };
 
-    const statusButton = pointInput.length < 1 || stdidInput.length != 11;
+    const statusButton = pointInput.length < 1 || stdidInput.length != 11 || statusCheck;
 
 
     const checkuser = async (value: string) => {
@@ -123,12 +130,31 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
 
     const submitpoint = async () => {
         setStatusUpdate(true)
-        const formData = {
-            stdid: stdidInput,
-            teachid: idTeach,
-            idtitelwork,
-            point: pointInput
+
+        let formData;
+        if (selected == "10") {
+            formData = {
+                stdid: stdidInput,
+                teachid: idTeach,
+                idtitelwork,
+                point: 10
+            }
+        } else if (selected == "5") {
+            formData = {
+                stdid: stdidInput,
+                teachid: idTeach,
+                idtitelwork,
+                point: 5
+            }
+        } else if (selected == "other") {
+            formData = {
+                stdid: stdidInput,
+                teachid: idTeach,
+                idtitelwork,
+                point: pointInput
+            }
         }
+
 
 
         // console.log('submitpoint', formData)
@@ -154,6 +180,7 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
             if (response.status === 201) {
                 onInputChange("");
                 setPointInput("");
+                setDataUser([])
                 handleClear();
                 setStatusUpdate(false)
                 setDataAlert("ลงคะแนนสำเร็จ !")
@@ -224,6 +251,7 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
                     isInvalid={statusCheck}
                     pattern='[0-9]*'
                     inputMode='text'
+                    errorMessage={`รหัสนักศึกษา ${stdidInput} มีการลงคะแนน ${dataCheck?.point} โดย ${dataCheck?.teachid} เรียบร้อยแล้ว`}
                 >
                     {(item) => (
                         <AutocompleteItem key={item.name} textValue={item.stdid} className={kanit.className}>
@@ -247,11 +275,29 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
                         </AutocompleteItem>
                     )}
                 </Autocomplete>
+                <RadioGroup
+                    color="secondary"
+                    orientation="horizontal"
+                    value={selected}
+                    onValueChange={setSelected}
+                >
+                    <Radio value="10" description="คะแนน 10">
+                        ส่งในคาบ
+                    </Radio>
+                    <Radio value="5" description="คะแนน 5">
+                        ส่งช้า
+                    </Radio>
+                    <Radio value="other" description="ปรับแต่งคะแนน">
+                        อื่น ๆ
+                    </Radio>
+                </RadioGroup>
 
+                {selected == "other" ?
+                    <Input type="number" label="คะแนน" size='md' variant="bordered" placeholder='กรอกคะแนนตัวเลขเท่านั้น' color={pointInput.length > 0 ? statusCheck ? "danger" : "success" : "secondary"} value={statusCheck ? dataCheck?.point.toString() : pointInput} onValueChange={setPointInput} isInvalid={statusCheck} errorMessage={`รหัสนักศึกษา ${stdidInput} มีการลงคะแนนโดย ${dataCheck?.teachid} เรียบร้อยแล้ว`} isDisabled={statusCheck} inputMode='numeric' pattern='[0-9]*' />
+                    : null
+                }
 
-                <Input type="number" label="คะแนน"  size='md' variant="bordered" placeholder='กรอกคะแนนตัวเลขเท่านั้น' color={pointInput.length > 0 ? statusCheck ? "danger" : "success" : "secondary"} value={statusCheck ? dataCheck?.point.toString() : pointInput} onValueChange={setPointInput} isInvalid={statusCheck} errorMessage={`รหัสนักศึกษา ${stdidInput} มีการลงคะแนนโดย ${dataCheck?.teachid} เรียบร้อยแล้ว`} isDisabled={statusCheck} inputMode='numeric' pattern='[0-9]*'/>
-
-                <Button className={`bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg ${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''} `} isDisabled={statusButton} onClick={submitpoint}>
+                <Button className={`bg-gradient-to-tr from-[#4e484e] to-[#b249f8] text-white shadow-lg ${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''} `} isDisabled={statusButton} onClick={submitpoint}>
                     {statusUpdate ? (<><Spinner color="default" /> <p> กำลังบันทึก...</p></>) : "บันทึก"}
                 </Button>
             </form>

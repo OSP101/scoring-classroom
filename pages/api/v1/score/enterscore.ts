@@ -13,8 +13,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         let rows; 
 
         [rows] = await promisePool.query(
-            'INSERT INTO `points`( `stdid`, `teachid`, `idtitelwork`, `point`) VALUES (?,?,?,?)',
-            [ stdid, teachid, idtitelwork, point ]
+            'UPDATE points SET teachid = ?,point = ? WHERE idtitelwork = ? AND stdid = ?',
+            [ teachid, point, idtitelwork, stdid ]
         );
 
         res.status(201).json({ message: 'Course added successfully' });
