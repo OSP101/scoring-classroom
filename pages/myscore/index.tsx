@@ -94,6 +94,12 @@ export default function index() {
                 <title>Myscore - Scoring Classroom</title>
                 <meta name="robots" content="index,follow"></meta>
                 <meta name="description" content="Myscore เว็บไซต์สำหรับตรวจสอบคะแนน คะแนนพิเศษในชั้นเรียน สำหรับนักศึกษาวิทยาลัยการคอมพิวเตอร์ มหาวิทยาลัยขอนแก่น พัฒนาโดย OSP101"></meta>
+                <meta property="og:title" content="Scoring Classroom" />
+                <meta property="og:description" content="Scoring Classroom เว็บไซต์สำหรับบันทึกคะแนน คะแนนพิเศษในชั้นเรียน สำหรับนักศึกษาวิทยาลัยการคอมพิวเตอร์ มหาวิทยาลัยขอนแก่น พัฒนาโดย OSP101" />
+                <meta property="og:url" content="https://sc.osp101.dev" />
+                <meta property="og:type" content="website" />
+                <meta property="og:site_name" content="Scoring Classroom" />
+                <meta property="og:image" content="https://sc.osp101.dev/SA.png" />
             </Head>
             {!session ? (
                 <Navbar isBordered maxWidth="2xl" isBlurred={false}>
