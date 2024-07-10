@@ -69,7 +69,7 @@ export default function PointTab(idcouesr: any) {
                 <thead>
                     <tr>
                         <th>ชื่อ - นามสกุล</th>
-                        <th>คะแนนพิเศษ</th>
+                        <th className='text-center'>คะแนนพิเศษ</th>
                         {labsData.length > 0 ? (
                             labsData.map((item) => (
                                 item.idtitelwork !== 0 ? (
@@ -148,7 +148,7 @@ export default function PointTab(idcouesr: any) {
                                         </td>
                                     )
                                 })}
-                                <td className={`text-center font-bold ${totalPoints === 0 ? 'text-red-500' : 'text-black'}`}>
+                                <td className={`text-center font-extrabold ${totalPoints === 0 ? 'text-red-500' : ""}`}>
                                     {totalPoints === 0 ? 0 : totalPoints}
                                 </td>
                             </tr>
