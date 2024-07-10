@@ -8,7 +8,9 @@ import Box from '@mui/material/Box';
 import Head from 'next/head'
 import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile';
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
-
+import { useTheme } from "next-themes";
+import { ThemeSwitcher } from '@/Components/Theme';
+import Footer from '@/Components/Footer';
 
 
 export default function index() {
@@ -38,7 +40,7 @@ export default function index() {
     const { data: session, status } = useSession();
     const [number, setNumber] = useState(0)
     const [statusUpdate, setStatusUpdate] = useState(false);
-
+    const { theme, setTheme } = useTheme();
     const defaultContent =
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
 
@@ -89,6 +91,11 @@ export default function index() {
                             <p className={`sm:block font-bold text-inherit ${kanit.className}`}>Scoring <span className='from-[#FF1CF7] to-[#b249f8] bg-clip-text text-transparent bg-gradient-to-b inline'>Classroom</span></p>
                         </NavbarBrand>
                     </NavbarContent>
+
+
+                    <NavbarContent as="div" className="items-center" justify="end">
+                    <ThemeSwitcher/>
+                    </NavbarContent>
                 </Navbar>
             ) : null}
 
@@ -114,7 +121,7 @@ export default function index() {
                                     siteKey={process.env.NEXT_PUBLIC_CLOUD || ''}
                                     onSuccess={() => setCanSubmit(true)}
                                     options={{
-                                        theme: 'light'
+                                        theme: "auto"
                                     }}
                                 />
                             </div>
@@ -223,7 +230,7 @@ export default function index() {
                         </>
                     )}
 
-                    {/* <Footer /> */}
+                    <Footer />
                 </div>
             </div>
         </div>

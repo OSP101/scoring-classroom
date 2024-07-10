@@ -121,7 +121,7 @@ export default function App() {
                                     siteKey={process.env.NEXT_PUBLIC_CLOUD || ''}
                                     onSuccess={() => setCanSubmit(false)}
                                     options={{
-                                        theme: 'light'
+                                        theme: 'auto'
                                       }}
                                 />
                             </form>

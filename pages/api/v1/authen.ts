@@ -16,7 +16,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         const promisePool = mysqlPool.promise()
         const [rows, fields] = await promisePool.query(
-          `SELECT * FROM users WHERE ?;` , email
+          `SELECT * FROM users WHERE ? AND type = '1';` , email
         )
       res.status(200).json(rows);
     } else {

@@ -42,7 +42,8 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
 
       <SessionProvider session={session}>
         <NextUIProvider >
-          <NextThemesProvider attribute="class" defaultTheme="black" enableSystem={true} storageKey="theme">
+          <NextThemesProvider attribute="class" defaultTheme="light" >
+            <meta name="google-site-verification" content="F6z6ihjP_j_3j1lcrmvdMGhCkhwdjdclCuxmQ4C9I68" />
             <NavWrapper>
               <Component {...pageProps} />
             </NavWrapper>
