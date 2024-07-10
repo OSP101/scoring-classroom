@@ -20,7 +20,7 @@ export const ThemeSwitcher = () => {
             document.documentElement.setAttribute("data-theme", "light");
 
         }else if(e.newValue === 'dark') {
-            document.documentElement.setAttribute("data-theme", "black");
+            document.documentElement.setAttribute("data-theme", "dark");
         }
       }
     };
@@ -41,7 +41,7 @@ export const ThemeSwitcher = () => {
         document.documentElement.setAttribute("data-theme", "light");
 
     }else if(newTheme === 'dark') {
-        document.documentElement.setAttribute("data-theme", "black");
+        document.documentElement.setAttribute("data-theme", "dark");
     }
     localStorage.setItem('theme', newTheme); // Store theme in localStorage
   };
