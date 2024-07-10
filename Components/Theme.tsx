@@ -41,7 +41,7 @@ export const ThemeSwitcher = () => {
         document.documentElement.setAttribute("data-theme", "light");
 
     }else if(newTheme === 'dark') {
-        document.documentElement.setAttribute("data-theme", "dark");
+        document.documentElement.setAttribute("data-theme", "black");
     }
     localStorage.setItem('theme', newTheme); // Store theme in localStorage
   };
