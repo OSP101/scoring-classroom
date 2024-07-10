@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import * as gtag from "../lib/gtag";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 
+
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const router = useRouter();
   useEffect(() => {
@@ -18,8 +19,9 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
     router.events.on("routeChangeComplete", handleRouteChange);
     return () => {
       router.events.off("routeChangeComplete", handleRouteChange);
+
     };
-  }, [router.events]);
+  }, [router.events ]);
   return (
     <>
       <Script
@@ -42,7 +44,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
 
       <SessionProvider session={session}>
         <NextUIProvider >
-          <NextThemesProvider attribute="class" defaultTheme="light" storageKey="theme">
+          <NextThemesProvider attribute="class" defaultTheme="light" enableSystem={true}>
             <meta name="google-site-verification" content="F6z6ihjP_j_3j1lcrmvdMGhCkhwdjdclCuxmQ4C9I68" />
             <NavWrapper>
               <Component {...pageProps} />

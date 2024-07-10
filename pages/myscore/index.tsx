@@ -15,10 +15,15 @@ import Image from 'next/image';
 
 export default function index() {
 
-    console.warn('%cคำเตือน!', 'background: yellow; color: red; font-size: 20px; font-weight: bold;');
-    console.warn(`การใช้คอนโซลนี้อาจทำให้ผู้โจมตีสามารถแอบอ้างตัวเป็นคุณและขโมยข้อมูลของคุณได้โดยใช้การโจมตีที่เรียกว่า Self-XSS อย่าป้อนหรือวางโค้ดที่คุณไม่เข้าใจ`);
-    console.warn('%cและขอเตือนว่าอย่าพยายามทำนอกเหนือการใช้งาน เพราะระบบได้ตรวจจับการทำงานไว้แล้ว!', 'text-decoration: underline; background: yellow; color: red; font-size: 10px; font-weight: bold;')
-
+    // console.warn('%cคำเตือน!', 'background: yellow; color: red; font-size: 20px; font-weight: bold;');
+    // console.warn(`การใช้คอนโซลนี้อาจทำให้ผู้โจมตีสามารถแอบอ้างตัวเป็นคุณและขโมยข้อมูลของคุณได้โดยใช้การโจมตีที่เรียกว่า Self-XSS อย่าป้อนหรือวางโค้ดที่คุณไม่เข้าใจ`);
+    // console.warn('%cและขอเตือนว่าอย่าพยายามทำนอกเหนือการใช้งาน เพราะระบบได้ตรวจจับการทำงานไว้แล้ว!', 'text-decoration: underline; background: yellow; color: red; font-size: 10px; font-weight: bold;')
+    console.log(
+        '%c คำเตือน! ' + 
+        '%c การใช้คอนโซลนี้อาจทำให้ผู้โจมตีสามารถแอบอ้างตัวคุณได้โดยใช้การโจมตีที่เรียกว่า Self-XSS อย่าป้อนหรือวางโค้ดที่คุณไม่เข้าใจ และเตือนว่าอย่าพยายามทำนอกเหนือการใช้งาน เพราะระบบได้ตรวจจับการทำงานไว้แล้ว!',
+        'background: #ffff00; color: #ff0000; font-size: 18px; font-weight: bold; padding: 2px;',
+        'color: white; background: #444; font-size: 14px; padding: 2px;'
+      );
     interface Users {
         stdid: string;
         name: string;
@@ -259,7 +264,7 @@ export default function index() {
                         {(onClose) => (
                             <>
                                 <ModalBody>
-                                    <Image src={`/670111-671231_banner.jpeg`} alt='banner' width={700} height={500}></Image>
+                                    <img src={`/670111-671231_banner.jpeg`} alt='banner' width={700} height={500}></img>
                                 </ModalBody>
                             </>
                         )}

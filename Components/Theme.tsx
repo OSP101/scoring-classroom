@@ -12,21 +12,22 @@ export const ThemeSwitcher = () => {
   useEffect(() => {
     setMounted(true);
 
-    // Sync theme change across tabs
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setTheme(savedTheme);
+      document.documentElement.setAttribute("data-theme", savedTheme === 'light' ? 'light' : 'black');
+    }
+  
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'theme') {
-        setTheme(e.newValue || 'light');
-        if(e.newValue === 'light') {
-            document.documentElement.setAttribute("data-theme", "light");
-
-        }else if(e.newValue === 'dark') {
-            document.documentElement.setAttribute("data-theme", "black");
-        }
+        const newTheme = e.newValue || 'light';
+        setTheme(newTheme);
+        document.documentElement.setAttribute("data-theme", newTheme === 'light' ? 'light' : 'black');
       }
     };
-
+  
     window.addEventListener('storage', handleStorageChange);
-
+  
     return () => {
       window.removeEventListener('storage', handleStorageChange);
     };
