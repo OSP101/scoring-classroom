@@ -20,13 +20,11 @@ export default function Footer() {
     }
     `;
     return (
-        <>
-            <p css={copyrightStyle}>
-                © 2024 Scoring Classroom v0.4 All Rights Reserved. made with by{' '}
-                <a href="http://github.com/OSP101" target="_blank" rel="noopener noreferrer">
-                    <Typography variant="caption" gutterBottom>
-                        OSP101
-                    </Typography></a></p>
-        </>
+        <p css={copyrightStyle}>
+            © 2024 Scoring Classroom v0.4 All Rights Reserved. made with by{' '}
+            <a href="http://github.com/OSP101" target="_blank" rel="noopener noreferrer">
+                <Typography variant="caption" gutterBottom>
+                    OSP101
+                </Typography></a></p>
     )
 }

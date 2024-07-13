@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Modal, ModalContent, ModalHeader, ModalBody, Navbar, NavbarBrand, NavbarContent, Divider, Button, Spinner, useDisclosure, NavbarItem, Input, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Accordion, AccordionItem, CardBody, Card } from "@nextui-org/react";
 import { Prompt } from "next/font/google";
 import { useSession } from "next-auth/react"
-import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Head from 'next/head'
@@ -11,7 +10,7 @@ const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', 
 import { useTheme } from "next-themes";
 import { ThemeSwitcher } from '@/Components/Theme';
 import Footer from '@/Components/Footer';
-import Image from 'next/image';
+import Script from 'next/script'
 
 export default function index() {
 
@@ -41,14 +40,10 @@ export default function index() {
 
 
     const [pointInput, setPointInput] = useState("");
-    const [dataUser, setDataUser] = useState<Users | null>(null);
+    const [dataUser, setDataUser] = useState<Users[] | null>(null);
     const { data: session, status } = useSession();
     const [number, setNumber] = useState(0)
     const [statusUpdate, setStatusUpdate] = useState(false);
-    const { theme, setTheme } = useTheme();
-    const defaultContent =
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
-
     const [canSubmit, setCanSubmit] = useState(false);
     const refTurnstile = useRef<TurnstileInstance>(null);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -79,14 +74,13 @@ export default function index() {
             setStatusUpdate(false)
         } else if (getData.status === 200) {
             const dataCourses = await getData.json();
-            setDataUser(dataCourses[0]);
+            setDataUser(dataCourses);
             setNumber(2)
 
             setStatusUpdate(false)
         }
 
     }
-
 
     return (
         <div className={kanit.className}>
@@ -100,8 +94,8 @@ export default function index() {
                 <meta property="og:type" content="website" />
                 <meta property="og:site_name" content="Scoring Classroom" />
                 <meta property="og:image" content="https://sc.osp101.dev/SA.png" />
-                <script type="text/javascript" src="https://cookiecdn.com/cwc.js"></script>
-                <script id="cookieWow" type="text/javascript" src="https://cookiecdn.com/configs/SKduo3rfyASeQCFhHQZYzrgK" data-cwcid="SKduo3rfyASeQCFhHQZYzrgK"></script>
+                <Script type="text/javascript" src="https://cookiecdn.com/cwc.js"></Script>
+                <Script id="cookieWow" type="text/javascript" src="https://cookiecdn.com/configs/SKduo3rfyASeQCFhHQZYzrgK" data-cwcid="SKduo3rfyASeQCFhHQZYzrgK"></Script>
             </Head>
             {!session ? (
                 <Navbar isBordered maxWidth="2xl" isBlurred={false}>
@@ -130,7 +124,7 @@ export default function index() {
                                 <div className='flex justify-center md:w-2/3 mb-2'>
                                     <Input type="text" label="รหัสนักศึกษา(633020xxx-x)" size='sm' variant="bordered" color={"secondary"} value={pointInput} onValueChange={setPointInput} isRequired className=' w-full' />
 
-                                    <Button className={`mx-4 my-1 bg-gradient-to-tr w-2/5 from-[#FF1CF7] to-[#b249f8] text-white shadow-lg${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={submutations} isDisabled={!statusButton}>
+                                    <Button className={`mx-4 my-1 bg-gradient-to-tr w-2/5 from-[#FF1CF7] to-[#b249f8] text-white shadow-lg${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={submutations} >
                                         {statusUpdate ? (<><Spinner color="default" /> <p> กำลังค้นหา...</p></>) : "ค้นหา"}
                                     </Button>
                                 </div>
@@ -157,9 +151,7 @@ export default function index() {
                         <>
                             {dataUser && number === 2 ? (
                                 <>
-                                    <h2 className='text-lg sm:text-3xl mt-5'>{dataUser.idcourse} {dataUser.namesub}</h2>
-                                    <Divider className="my-2" />
-                                    <Accordion variant="splitted" className='pt-4 px-0' selectionMode="multiple" defaultExpandedKeys={["1", "2"]}>
+                                <Accordion variant="splitted" className='pt-4 px-0' selectionMode="multiple" defaultExpandedKeys={["1"]}>
                                         <AccordionItem key="1" aria-label="ข้อมูลนักศึกษา" title="ข้อมูลนักศึกษา">
                                             <table className="table">
                                                 <thead>
@@ -176,69 +168,74 @@ export default function index() {
                                                                 <div className="avatar">
                                                                     <div className="mask mask-squircle h-12 w-12">
                                                                         <img
-                                                                            src={dataUser.image}
+                                                                            src={dataUser[0].image}
                                                                             alt="Avatar Tailwind CSS Component"
                                                                         />
                                                                     </div>
                                                                 </div>
                                                                 <div>
-                                                                    <div className="font-bold">{dataUser.name}</div>
-                                                                    <div className="text-sm opacity-50">{dataUser.stdid}</div>
+                                                                    <div className="font-bold">{dataUser[0].name}</div>
+                                                                    <div className="text-sm opacity-50">{dataUser[0].stdid}</div>
                                                                 </div>
                                                             </div>
                                                         </td>
                                                         <td className='text-center'>
                                                             <div>
-                                                                {dataUser.email}
+                                                                {dataUser[0].email}
                                                                 <br />
-                                                                <span className="badge badge-ghost badge-sm">{dataUser.track}</span>
+                                                                <span className="badge badge-ghost badge-sm">{dataUser[0].track}</span>
                                                             </div>
                                                         </td>
-                                                        <td className='text-center'>{dataUser.section}</td>
+                                                        <td className='text-center'>{dataUser[0].section}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </AccordionItem>
+                                    </Accordion>
 
-                                        <AccordionItem key="2" aria-label="คะแนนปฏิบัติการ" title="คะแนนปฏิบัติการ" className='mt-2'>
-                                            <table className="table">
-                                                <thead>
-                                                    <tr>
-                                                        <th className='text-center'>คะแนนพิเศษ</th>
-                                                        {dataUser.lab.map((item: any, index: number) => (
-                                                            <th key={index} className='text-center'>{item[0].titelname ? item[0].titelname : `Lab ${index + 1}`}</th>
-                                                        ))}
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td className='text-center'>{dataUser.extra}</td>
-                                                        {dataUser.lab.map((item: any, index: number) => (
-                                                            <td key={index} className='text-center'>{item[0].point}</td>
-                                                        ))}
-                                                    </tr>
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <th colSpan={dataUser.lab.length + 1} className='text-center font-bold'>
-                                                            คะแนนทั้งหมด
-                                                            {(() => {
-                                                                const totalPoints = dataUser.lab.reduce((sum: number, item: any) => {
-                                                                    const point = Number(item[0].point);
-                                                                    return isNaN(point) ? sum : sum + point;
-                                                                }, 0);
-                                                                return totalPoints === 0 ? " " + 0 + "/" + dataUser.lab.length * 10 : " " + totalPoints + "/" + dataUser.lab.length * 10;
-                                                            })()}
-                                                        </th>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        </AccordionItem>
+                                    <Accordion variant="splitted" className='pt-2 mb-2 px-0' selectionMode="multiple">
+                                        {dataUser.map((subject, subjectIndex) => (
 
-                                        <AccordionItem key="3" aria-label="คะแนนกลุ่ม" title="คะแนนกลุ่ม" className='mt-2'>
-                                            <p className='text-center text-sm font-light mb-3'>ไม่พบข้อมูลของ {pointInput}</p>
-
-                                        </AccordionItem>
+                                            <AccordionItem
+                                                key={`${subjectIndex + 2}`}
+                                                aria-label={`คะแนนปฏิบัติการ ${subject.namesub}`}
+                                                title={`คะแนนปฏิบัติการ ${subject.namesub}`}
+                                                className=''
+                                            >
+                                                <table className="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th className='text-center'>คะแนนพิเศษ</th>
+                                                            {subject.lab.map((item: { titelname: any; }, index: React.Key | null | undefined) => (
+                                                                <th key={index} className='text-center'>{item.titelname || `Lab`}</th>
+                                                            ))}
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td className='text-center'>{subject.extra}</td>
+                                                            {subject.lab.map((item: { point: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; }, index: React.Key | null | undefined) => (
+                                                                <td key={index} className='text-center'>{item.point}</td>
+                                                            ))}
+                                                        </tr>
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th colSpan={subject.lab.length + 1} className='text-center font-bold'>
+                                                                คะแนนทั้งหมด
+                                                                {(() => {
+                                                                    const totalPoints = subject.lab.reduce((sum: number, item: { point: any; }) => {
+                                                                        const point = Number(item.point);
+                                                                        return isNaN(point) ? sum : sum + point;
+                                                                    }, 0);
+                                                                    return totalPoints === 0 ? " 0/" + subject.lab.length * 10 : ` ${totalPoints}/${subject.lab.length * 10}`;
+                                                                })()}
+                                                            </th>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </AccordionItem>
+                                        ))}
                                     </Accordion>
                                 </>
                             ) : (

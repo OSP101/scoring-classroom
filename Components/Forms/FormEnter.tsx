@@ -98,10 +98,10 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
     };
 
     const statusButton =  stdidInput.length != 11 || statusCheck;
-    console.log("statusButton",statusButton)
-    console.log("pointInput.length < 1",pointInput.length < 1)
-    console.log("stdidInput.length != 11",stdidInput.length != 11)
-    console.log("statusCheck",statusCheck)
+    // console.log("statusButton",statusButton)
+    // console.log("pointInput.length < 1",pointInput.length < 1)
+    // console.log("stdidInput.length != 11",stdidInput.length != 11)
+    // console.log("statusCheck",statusCheck)
 
     const checkuser = async (value: string) => {
         // console.log("Check user : ", idtitelwork.idtitelwork);
