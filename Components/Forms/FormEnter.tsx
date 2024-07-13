@@ -97,8 +97,11 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
         }
     };
 
-    const statusButton = pointInput.length < 1 || stdidInput.length != 11 || statusCheck;
-
+    const statusButton =  stdidInput.length != 11 || statusCheck;
+    console.log("statusButton",statusButton)
+    console.log("pointInput.length < 1",pointInput.length < 1)
+    console.log("stdidInput.length != 11",stdidInput.length != 11)
+    console.log("statusCheck",statusCheck)
 
     const checkuser = async (value: string) => {
         // console.log("Check user : ", idtitelwork.idtitelwork);
@@ -179,7 +182,7 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
 
             if (response.status === 201) {
                 onInputChange("");
-                setPointInput("");
+                setPointInput("10");
                 setDataUser([])
                 handleClear();
                 setStatusUpdate(false)
@@ -280,6 +283,8 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
                     orientation="horizontal"
                     value={selected}
                     onValueChange={setSelected}
+                    isInvalid={statusCheck}
+                    isDisabled={statusCheck}
                 >
                     <Radio value="10" description="คะแนน 10">
                         ส่งในคาบ
@@ -293,7 +298,7 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
                 </RadioGroup>
 
                 {selected == "other" ?
-                    <Input type="number" label="คะแนน" size='md' variant="bordered" placeholder='กรอกคะแนนตัวเลขเท่านั้น' color={pointInput.length > 0 ? statusCheck ? "danger" : "success" : "secondary"} value={statusCheck ? dataCheck?.point.toString() : pointInput} onValueChange={setPointInput} isInvalid={statusCheck} errorMessage={`รหัสนักศึกษา ${stdidInput} มีการลงคะแนนโดย ${dataCheck?.teachid} เรียบร้อยแล้ว`} isDisabled={statusCheck} inputMode='numeric' pattern='[0-9]*' />
+                    <Input type="number" label="คะแนน" size='md' variant="bordered" placeholder='กรอกคะแนนตัวเลขเท่านั้น' color={statusCheck ? "success" : "secondary"} value={statusCheck ? dataCheck?.point.toString() : pointInput} onValueChange={setPointInput} isInvalid={statusCheck} errorMessage={`รหัสนักศึกษา ${stdidInput} มีการลงคะแนนโดย ${dataCheck?.teachid} เรียบร้อยแล้ว`} isDisabled={statusCheck} inputMode='numeric' pattern='[0-9]*' />
                     : null
                 }
 

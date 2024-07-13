@@ -19,11 +19,11 @@ export default function index() {
     // console.warn(`การใช้คอนโซลนี้อาจทำให้ผู้โจมตีสามารถแอบอ้างตัวเป็นคุณและขโมยข้อมูลของคุณได้โดยใช้การโจมตีที่เรียกว่า Self-XSS อย่าป้อนหรือวางโค้ดที่คุณไม่เข้าใจ`);
     // console.warn('%cและขอเตือนว่าอย่าพยายามทำนอกเหนือการใช้งาน เพราะระบบได้ตรวจจับการทำงานไว้แล้ว!', 'text-decoration: underline; background: yellow; color: red; font-size: 10px; font-weight: bold;')
     console.log(
-        '%c คำเตือน! ' + 
+        '%c คำเตือน! ' +
         '%c การใช้คอนโซลนี้อาจทำให้ผู้โจมตีสามารถแอบอ้างตัวคุณได้โดยใช้การโจมตีที่เรียกว่า Self-XSS อย่าป้อนหรือวางโค้ดที่คุณไม่เข้าใจ และเตือนว่าอย่าพยายามทำนอกเหนือการใช้งาน เพราะระบบได้ตรวจจับการทำงานไว้แล้ว!',
         'background: #ffff00; color: #ff0000; font-size: 18px; font-weight: bold; padding: 2px;',
         'color: white; background: #444; font-size: 14px; padding: 2px;'
-      );
+    );
     interface Users {
         stdid: string;
         name: string;
@@ -61,7 +61,7 @@ export default function index() {
     useEffect(() => {
         onOpen()
     }, [])
-    
+
 
     const statusButton = canSubmit && pointInput.length > 0;
     const submutations = async () => {
@@ -100,6 +100,8 @@ export default function index() {
                 <meta property="og:type" content="website" />
                 <meta property="og:site_name" content="Scoring Classroom" />
                 <meta property="og:image" content="https://sc.osp101.dev/SA.png" />
+                <script type="text/javascript" src="https://cookiecdn.com/cwc.js"></script>
+                <script id="cookieWow" type="text/javascript" src="https://cookiecdn.com/configs/SKduo3rfyASeQCFhHQZYzrgK" data-cwcid="SKduo3rfyASeQCFhHQZYzrgK"></script>
             </Head>
             {!session ? (
                 <Navbar isBordered maxWidth="2xl" isBlurred={false}>
