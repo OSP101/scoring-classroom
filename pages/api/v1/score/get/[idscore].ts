@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { mysqlPool } from "../../../../../utils/db";
 import { authenticateApiKey } from '../../../../../lib/auth';
+import { count } from "console";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "GET") {
@@ -9,7 +10,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         var dataPoint = []
         try {
             const promisePool = mysqlPool.promise();
-            let [rows] = await promisePool.query('SELECT id, name FROM titelwork WHERE idcourse = ? AND delete_at IS NULL', [idscore]);
+            let [rows] = await promisePool.query('SELECT id, name, maxpoint FROM titelwork WHERE idcourse = ? AND delete_at IS NULL', [idscore]);
             let [data1] = await promisePool.query('SELECT users.stdid,users.name,users.image, COALESCE(COUNT(extra_point.stdid), 0) AS point FROM users LEFT JOIN extra_point ON users.stdid = extra_point.stdid AND extra_point.idcourse = ? JOIN enllo ON enllo.stdid = users.stdid AND enllo.idcourse = ? GROUP BY users.stdid', [idscore,idscore]);
             
             dataPoint.push({
@@ -30,10 +31,15 @@ JOIN users ON e.stdid = users.stdid
 WHERE e.idcourse = ?
   AND (tw.id = ? OR tw.id IS NULL);`, [item.id, idscore, item.id]);
 
+                let [avg] = await promisePool.query('SELECT ROUND(AVG(point),2) AS avgpoint FROM points WHERE idtitelwork = ?', item.id);
+
+//   console.log(data2[0])
                 dataPoint.push({
                     idtitelwork: item.id,
                     namework: item.name,
                     length: data2.length,
+                    maxpoint: item.maxpoint,
+                    avgpoint: avg[0].avgpoint,
                     data: data2
                 })
             }
