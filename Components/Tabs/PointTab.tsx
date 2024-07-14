@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { Tooltip, Button, Link } from "@nextui-org/react";
+import { Tooltip, Button, Link, Progress } from "@nextui-org/react";
 import Image from 'next/image';
 import { Prompt } from "next/font/google";
-
+import { FaUserGroup } from "react-icons/fa6";
+import { count } from 'console';
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
 
 
@@ -23,6 +24,8 @@ export default function PointTab(idcouesr: any) {
         idtitelwork: number;
         namework: string;
         length: number;
+        maxpoint: number;
+        avgpoint: number
         data: StudentData[];
     }
 
@@ -69,22 +72,41 @@ export default function PointTab(idcouesr: any) {
                 <thead>
                     <tr>
                         <th>ชื่อ - นามสกุล</th>
+                        <th className='text-center'>% งานที่ส่งแล้ว <br /> <span className=' font-light'>(จำนวนงานทั้งหมด)</span></th>
                         <th className='text-center'>คะแนนพิเศษ</th>
                         {labsData.length > 0 ? (
                             labsData.map((item) => (
                                 item.idtitelwork !== 0 ? (
-                                    <th key={item.idtitelwork} className='text-center'>{item.namework}</th>
+                                    <th key={item.idtitelwork} className='text-center'>{item.namework} <br /> <span className=' font-light'>จาก {item.maxpoint} คะแนน</span></th>
                                 ) : null
                             ))
                         ) : null}
-                        <th className='text-center'>รวม</th>
+                        <th className='text-center'>รวมทั้งหมด <br /> <span className=' font-light'>จาก {(labsData.length - 1) * 10} คะแนน</span></th>
                     </tr>
                 </thead>
                 <tbody>
+                    <tr className="hover">
+                        <td>
+                            <div className='flex justify-start items-center'>
+                                <FaUserGroup className='text-xl mr-3' />คะแนนเฉลี่ยของชั้นเรียน
+                            </div>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        {labsData.length > 0 ? (
+                            labsData.map((item) => (
+                                item.idtitelwork !== 0 ? (
+                                    <td key={item.idtitelwork} className='text-center font-bold'>{item.avgpoint}</td>
+                                ) : null
+                            ))
+                        ) : null}
+                        <td></td>
+                    </tr>
                     {/* row 1 */}
                     {labsData[0]?.data.map((head) => {
 
                         let totalPoints = 0;
+                        let totalAvgPoints = 0;
                         return (
                             <tr key={head.stdid} className="hover">
                                 <td>
@@ -104,13 +126,44 @@ export default function PointTab(idcouesr: any) {
                                         </div>
                                     </div>
                                 </td>
+
                                 {labsData.map((lab, index) => {
+                                    {
+                                        labsData.map((counter, index) => {
+                                            if (counter.idtitelwork !== 0) {
+                                                const item3 = counter.data.find((data) => data.stdid === head.stdid);
+                                                if (item3?.point && item3?.point !== '0') {
+                                                    totalAvgPoints += 1;
+                                                }
+                                            }
+                                        })
+                                    }
+
+
                                     if (lab.idtitelwork === 0) {
                                         const item2 = lab.data.find((data) => data.stdid === head.stdid);
                                         return (
-                                            <td key={index} className='text-center'>
+                                            <>
+                                                <td key={index} className='text-center'>
+                                                    <Progress
+                                                        size="md"
+                                                        radius="sm"
+                                                        classNames={{
+                                                            base: "max-w-md",
+                                                            track: "drop-shadow-md border border-default",
+                                                            indicator: "bg-gradient-to-r from-[#FF1CF7] to-[#b249f8]",
+                                                            label: "text-default-600 font-light text-sm",
+                                                            value: "text-foreground/60 text-sm",
+                                                        }}
+                                                        label={`(${labsData.length - 1})`}
+                                                        value={totalAvgPoints * 100 / (labsData.length - 1)}
+                                                        showValueLabel={true}
+                                                    />
+                                                </td>
+                                                <td key={index} className='text-center '>
                                                     {item2?.point}
-                                        </td>
+                                                </td>
+                                            </>
                                         );
                                     }
                                     const item = lab.data.find((data) => data.stdid === head.stdid);

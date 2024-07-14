@@ -14,7 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             if (subjects.length > 0) {
                 for (const subject of subjects) {
                     let lab = [];
-    
+                    let couter = 0;
                     // ดึงข้อมูล Lab
                     let [lad] = await promisePool.query('SELECT id, name FROM titelwork WHERE idcourse = ? AND delete_at IS NULL', [subject.idcourse]);
     
@@ -37,6 +37,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                             WHERE e.idcourse = ? AND (tw.id = ? OR tw.id IS NULL) AND users.stdid = ?
                         `, [item.id, subject.idcourse, item.id, scoreapi]);
                         lab.push(data2[0]);
+                        if(data2[0].point !== "0"){
+                            couter += 1;
+                        }
                     }
     
                     dataPoint.push({
@@ -49,6 +52,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                         email: data1[0].email,
                         section: data1[0].section,
                         extra: data1[0].point,
+                        coute: couter * 100 / lab.length,
                         lab
                     });
 

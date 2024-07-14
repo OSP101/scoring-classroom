@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Tabs, Tab, Chip, Spinner, Listbox, ListboxItem, Accordion, AccordionItem, DatePicker, DateInput, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, DropdownSection, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input } from "@nextui-org/react";
+import { Tabs, Tab, Chip, Spinner, Listbox, ListboxItem, Accordion, AccordionItem, DatePicker, Breadcrumbs, BreadcrumbItem, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, DropdownSection, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input } from "@nextui-org/react";
 import { BsPlusLg } from "react-icons/bs";
 import { MdWork } from "react-icons/md";
 import { FaUserGroup, FaBookBookmark } from "react-icons/fa6";
@@ -12,16 +12,17 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import { FaStar } from "react-icons/fa";
 import dynamic from 'next/dynamic'
+import Link from 'next/link';
 
 const FormExtra = dynamic(() => import('../Forms/FormExtra'), {
-    loading: () => <Spinner  color="secondary"/>,
-  });
+    loading: () => <Spinner color="secondary" />,
+});
 const FormEnter = dynamic(() => import('../Forms/FormEnter'), {
-    loading: () => <Spinner  color="secondary"/>,
-  });
+    loading: () => <Spinner color="secondary" />,
+});
 const FormEdit = dynamic(() => import('../Forms/FormEdit'), {
-    loading: () => <Spinner  color="secondary"/>,
-  });
+    loading: () => <Spinner color="secondary" />,
+});
 
 
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
@@ -210,7 +211,7 @@ export default function WorkspaceTab(idcourse: any) {
                 'Content-Type': 'application/json',
                 'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ''
             });
-        
+
             const responseTopic = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/topic`, {
                 method: 'GET',
                 headers: headers
@@ -231,7 +232,7 @@ export default function WorkspaceTab(idcourse: any) {
                 'Content-Type': 'application/json',
                 'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ''
             });
-        
+
             const responseone = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/work/typeone/${idcourse.idcourse}`, {
                 method: 'GET',
                 headers: headers
@@ -254,7 +255,7 @@ export default function WorkspaceTab(idcourse: any) {
                 'Content-Type': 'application/json',
                 'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ''
             });
-        
+
             const responsetwo = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/work/typetwo/${idcourse.idcourse}`, {
                 method: 'GET',
                 headers: headers
@@ -420,11 +421,14 @@ export default function WorkspaceTab(idcourse: any) {
 
     return (
         <div className={`container mx-auto w-full max-w-4xl pt-0 ${kanit.className}`}>
-
+            <Breadcrumbs variant="bordered" color='secondary' className='mt-4'>
+                <BreadcrumbItem><Link href={`/`}>Home</Link></BreadcrumbItem>
+                <BreadcrumbItem>{idcourse.idcourse}</BreadcrumbItem>
+            </Breadcrumbs>
             <div className={`px-2 pb-4 pt-0 ${kanit.className}`}>
                 <Dropdown>
                     <DropdownTrigger>
-                        <Button className={`bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg mt-3 ${kanit.className}`}>
+                        <Button className={`bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg mt-6 ${kanit.className}`}>
                             <BsPlusLg /> สร้าง
                         </Button>
                     </DropdownTrigger>
@@ -619,11 +623,11 @@ export default function WorkspaceTab(idcourse: any) {
                                 color="secondary"
                             >
                                 <Tab key="enter" title="ลงคะแนน" className={kanit.className}>
-                                    <FormEnter idcourse={idcourse.idcourse} idtitelwork={data?.id} maxpoint={data?.maxpoint}/>
+                                    <FormEnter idcourse={idcourse.idcourse} idtitelwork={data?.id} maxpoint={data?.maxpoint} />
 
                                 </Tab>
                                 <Tab key="edit" title="แก้ไขคะแนน">
-                                    <FormEdit idcourse={idcourse.idcourse} idtitelwork={data?.id} maxpoint={data?.maxpoint}/>
+                                    <FormEdit idcourse={idcourse.idcourse} idtitelwork={data?.id} maxpoint={data?.maxpoint} />
                                 </Tab>
                             </Tabs>
                         </div>
@@ -636,10 +640,10 @@ export default function WorkspaceTab(idcourse: any) {
             <Modal isOpen={extraPoint} onClose={() => setExtraPoint(false)} placement="top-center" className={kanit.className} isDismissable={false} isKeyboardDismissDisabled={true}>
                 <ModalContent>
                     <ModalHeader className="flex flex-col gap-1">คะแนนพิเศษ {idcourse.idcourse} (Extra points)</ModalHeader>
-                    
-                        <div className="flex flex-col w-full">
-                            <FormExtra idcourse={idcourse.idcourse} />
-                        </div>
+
+                    <div className="flex flex-col w-full">
+                        <FormExtra idcourse={idcourse.idcourse} />
+                    </div>
 
                 </ModalContent>
             </Modal>

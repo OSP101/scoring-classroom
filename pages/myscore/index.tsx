@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Modal, ModalContent, ModalHeader, ModalBody, Navbar, NavbarBrand, NavbarContent, Divider, Button, Spinner, useDisclosure, NavbarItem, Input, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Accordion, AccordionItem, CardBody, Card } from "@nextui-org/react";
+import { Modal, ModalContent, Progress, ModalBody, Navbar, NavbarBrand, NavbarContent, Divider, Button, Spinner, useDisclosure, NavbarItem, Input, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Accordion, AccordionItem, CardBody, Card } from "@nextui-org/react";
 import { Prompt } from "next/font/google";
 import { useSession } from "next-auth/react"
 import CircularProgress from '@mui/material/CircularProgress';
@@ -11,9 +11,6 @@ const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', 
 import { useTheme } from "next-themes";
 import { ThemeSwitcher } from '@/Components/Theme';
 import Footer from '@/Components/Footer';
-import Script from 'next/script'
-import Typography from '@mui/material/Typography';
-import { css } from '@emotion/react'
 
 export default function index() {
     const copyrightStyle = css`
@@ -51,6 +48,7 @@ export default function index() {
         extra: number;
         namesub: string;
         idcourse: string;
+        coute: number;
         lab: any;
     }
 
@@ -223,6 +221,7 @@ export default function index() {
                                                 <table className="table">
                                                     <thead>
                                                         <tr>
+                                                            <th className='text-center'>% งานที่ส่งแล้ว <br /> <span className=' font-light'>(จำนวนงานทั้งหมด)</span></th>
                                                             <th className='text-center'>คะแนนพิเศษ</th>
                                                             {subject.lab.map((item: { titelname: any; }, index: React.Key | null | undefined) => (
                                                                 <th key={index} className='text-center'>{item.titelname || `Lab`}</th>
@@ -231,6 +230,22 @@ export default function index() {
                                                     </thead>
                                                     <tbody>
                                                         <tr>
+                                                            <td className='text-center'>
+                                                                <Progress
+                                                                    size="md"
+                                                                    radius="sm"
+                                                                    classNames={{
+                                                                        base: "max-w-md",
+                                                                        track: "drop-shadow-md border border-default",
+                                                                        indicator: "bg-gradient-to-r from-[#FF1CF7] to-[#b249f8]",
+                                                                        label: "text-default-600 font-light text-sm",
+                                                                        value: "text-foreground/60 text-sm",
+                                                                    }}
+                                                                    label={`(${subject?.lab.length})`}
+                                                                    value={subject.coute}
+                                                                    showValueLabel={true}
+                                                                />
+                                                            </td>
                                                             <td className='text-center'>{subject.extra}</td>
                                                             {subject.lab.map((item: { point: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; }, index: React.Key | null | undefined) => (
                                                                 <td key={index} className='text-center'>{item.point}</td>
@@ -239,7 +254,7 @@ export default function index() {
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
-                                                            <th colSpan={subject.lab.length + 1} className='text-center font-bold'>
+                                                            <th colSpan={subject.lab.length + 2} className='text-center font-bold'>
                                                                 คะแนนทั้งหมด
                                                                 {(() => {
                                                                     const totalPoints = subject.lab.reduce((sum: number, item: { point: any; }) => {
