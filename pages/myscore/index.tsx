@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react'
 import { Modal, ModalContent, ModalHeader, ModalBody, Navbar, NavbarBrand, NavbarContent, Divider, Button, Spinner, useDisclosure, NavbarItem, Input, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Accordion, AccordionItem, CardBody, Card } from "@nextui-org/react";
 import { Prompt } from "next/font/google";
@@ -11,9 +12,26 @@ import { useTheme } from "next-themes";
 import { ThemeSwitcher } from '@/Components/Theme';
 import Footer from '@/Components/Footer';
 import Script from 'next/script'
+import Typography from '@mui/material/Typography';
+import { css } from '@emotion/react'
 
 export default function index() {
-
+    const copyrightStyle = css`
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 3px;
+    margin-top: 15px;
+    margin-left: 15px;
+    margin-right: 15px;
+    text-align: center;
+    a {
+        color: #666;
+        text-decoration: underline;
+        &:hover {
+        color: #b249f8;
+        }
+    }
+    `;
     // console.warn('%cคำเตือน!', 'background: yellow; color: red; font-size: 20px; font-weight: bold;');
     // console.warn(`การใช้คอนโซลนี้อาจทำให้ผู้โจมตีสามารถแอบอ้างตัวเป็นคุณและขโมยข้อมูลของคุณได้โดยใช้การโจมตีที่เรียกว่า Self-XSS อย่าป้อนหรือวางโค้ดที่คุณไม่เข้าใจ`);
     // console.warn('%cและขอเตือนว่าอย่าพยายามทำนอกเหนือการใช้งาน เพราะระบบได้ตรวจจับการทำงานไว้แล้ว!', 'text-decoration: underline; background: yellow; color: red; font-size: 10px; font-weight: bold;')
@@ -94,8 +112,8 @@ export default function index() {
                 <meta property="og:type" content="website" />
                 <meta property="og:site_name" content="Scoring Classroom" />
                 <meta property="og:image" content="https://sc.osp101.dev/SA.png" />
-                <Script type="text/javascript" src="https://cookiecdn.com/cwc.js"></Script>
-                <Script id="cookieWow" type="text/javascript" src="https://cookiecdn.com/configs/SKduo3rfyASeQCFhHQZYzrgK" data-cwcid="SKduo3rfyASeQCFhHQZYzrgK"></Script>
+                <script type="text/javascript" src="https://cookiecdn.com/cwc.js"></script>
+                <script id="cookieWow" type="text/javascript" src="https://cookiecdn.com/configs/SKduo3rfyASeQCFhHQZYzrgK" data-cwcid="SKduo3rfyASeQCFhHQZYzrgK"></script>
             </Head>
             {!session ? (
                 <Navbar isBordered maxWidth="2xl" isBlurred={false}>
@@ -124,7 +142,7 @@ export default function index() {
                                 <div className='flex justify-center md:w-2/3 mb-2'>
                                     <Input type="text" label="รหัสนักศึกษา(633020xxx-x)" size='sm' variant="bordered" color={"secondary"} value={pointInput} onValueChange={setPointInput} isRequired className=' w-full' />
 
-                                    <Button className={`mx-4 my-1 bg-gradient-to-tr w-2/5 from-[#FF1CF7] to-[#b249f8] text-white shadow-lg${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={submutations} >
+                                    <Button className={`mx-4 my-1 bg-gradient-to-tr w-2/5 from-[#FF1CF7] to-[#b249f8] text-white shadow-lg${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={submutations} isDisabled={!statusButton}>
                                         {statusUpdate ? (<><Spinner color="default" /> <p> กำลังค้นหา...</p></>) : "ค้นหา"}
                                     </Button>
                                 </div>
@@ -151,7 +169,7 @@ export default function index() {
                         <>
                             {dataUser && number === 2 ? (
                                 <>
-                                <Accordion variant="splitted" className='pt-4 px-0' selectionMode="multiple" defaultExpandedKeys={["1"]}>
+                                    <Accordion variant="splitted" className='pt-4 px-0' selectionMode="multiple" defaultExpandedKeys={["1"]}>
                                         <AccordionItem key="1" aria-label="ข้อมูลนักศึกษา" title="ข้อมูลนักศึกษา">
                                             <table className="table">
                                                 <thead>
@@ -247,6 +265,12 @@ export default function index() {
                     )}
 
                     <Footer />
+                    {/* <p css={copyrightStyle}>
+                        © 2024 Scoring Classroom v0.4 All Rights Reserved. made with by{' '}
+                        <a href="http://github.com/OSP101" target="_blank" rel="noopener noreferrer">
+                            <Typography variant="caption" gutterBottom>
+                                OSP101
+                            </Typography></a></p> */}
                 </div>
 
                 <Modal
