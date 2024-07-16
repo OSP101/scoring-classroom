@@ -13,22 +13,7 @@ import { ThemeSwitcher } from '@/Components/Theme';
 import Footer from '@/Components/Footer';
 
 export default function index() {
-    const copyrightStyle = css`
-    font-size: 12px;
-    color: #666;
-    margin-bottom: 3px;
-    margin-top: 15px;
-    margin-left: 15px;
-    margin-right: 15px;
-    text-align: center;
-    a {
-        color: #666;
-        text-decoration: underline;
-        &:hover {
-        color: #b249f8;
-        }
-    }
-    `;
+
     // console.warn('%cคำเตือน!', 'background: yellow; color: red; font-size: 20px; font-weight: bold;');
     // console.warn(`การใช้คอนโซลนี้อาจทำให้ผู้โจมตีสามารถแอบอ้างตัวเป็นคุณและขโมยข้อมูลของคุณได้โดยใช้การโจมตีที่เรียกว่า Self-XSS อย่าป้อนหรือวางโค้ดที่คุณไม่เข้าใจ`);
     // console.warn('%cและขอเตือนว่าอย่าพยายามทำนอกเหนือการใช้งาน เพราะระบบได้ตรวจจับการทำงานไว้แล้ว!', 'text-decoration: underline; background: yellow; color: red; font-size: 10px; font-weight: bold;')
