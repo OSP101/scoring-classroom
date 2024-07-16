@@ -132,7 +132,7 @@ export default function PointTab({ idcouesr }: PointTabProps) {
                     value={searchInput}
                 />
             </div>
-            <table className="table table-pin-rows table-pin-cols table-zebra">
+            <table className="table table-pin-rows table-zebra">
                 <thead>
                     <tr>
                         <th>ชื่อ - นามสกุล</th>
