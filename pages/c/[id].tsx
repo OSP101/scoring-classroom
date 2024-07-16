@@ -141,7 +141,7 @@ export default function CourseDetail() {
                             }
                         >
                             <div className='overflow-y-scroll custom-h-screen-minus-16'>
-                                <PointTab idcouesr={id} />
+                                <PointTab idcouesr={id?.toString() || ""} />
                             </div>
                         </Tab>
                         {session.user?.email == "supphitan.p@kkumail.com" || session.user?.email == "jakkritk@kku.ac.th" ?
