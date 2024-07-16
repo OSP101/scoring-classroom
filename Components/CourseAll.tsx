@@ -56,7 +56,7 @@ export default function CourseAll({ session }: { session: any }) {
 
                     <div className="card-body">
                         <div className="badge badge-secondary badge-outline badge-sm">{course.idcourse}</div>
-                        <Link href={`/c/${course.idcourse}`}><p className="truncate text-xl font-medium hover:underline">{course.name}</p></Link>
+                        <p className="truncate text-xl font-medium hover:underline">{course.name}</p>
                         <p className='font-light'>{course.description}</p>
                     </div>
                 </Link>

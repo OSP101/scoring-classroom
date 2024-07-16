@@ -172,6 +172,7 @@ export default function EditTab(idcouesr: any) {
                   >
                     {dataEditOne.map((item) => {
                       const date = new Date(item.create_at);
+                      const randomFloat = Math.random() * (1000 - 1) + 1;
                       const formattedDate = !isNaN(date.getTime()) ? date.toLocaleDateString('th-TH', {
                         year: 'numeric',
                         month: 'long',
@@ -183,7 +184,7 @@ export default function EditTab(idcouesr: any) {
 
                       return (
                         <ListboxItem
-                          key={item.id}
+                          key={randomFloat+item.id}
                           color={"default"}
                           endContent={<IoIosInformationCircleOutline />}
                           description={`รหัสนักศึกษา: ${item.stdid} | วันที่แจ้ง: ${formattedDate}`}
@@ -226,6 +227,7 @@ export default function EditTab(idcouesr: any) {
                   >
                     {dataEditTwo.map((item) => {
                       const date = new Date(item.update_at);
+                      const randomFloat = Math.random() * (200000 - 100001) + 1;
                       const formattedDate = !isNaN(date.getTime()) ? date.toLocaleDateString('th-TH', {
                         year: 'numeric',
                         month: 'long',
@@ -237,7 +239,7 @@ export default function EditTab(idcouesr: any) {
 
                       return (
                         <ListboxItem
-                          key={item.id}
+                          key={randomFloat+item.id}
                           color={"default"}
                           endContent={<IoIosInformationCircleOutline />}
                           description={`รหัสนักศึกษา: ${item.stdid} | วันที่อนุมัติ: ${formattedDate}`}
@@ -279,6 +281,7 @@ export default function EditTab(idcouesr: any) {
                   >
                     {dataEditTree.map((item) => {
                       const date = new Date(item.update_at);
+                      const randomFloat = Math.random() * (300000 - 200001) + 1;
                       const formattedDate = !isNaN(date.getTime()) ? date.toLocaleDateString('th-TH', {
                         year: 'numeric',
                         month: 'long',
@@ -290,7 +293,7 @@ export default function EditTab(idcouesr: any) {
 
                       return (
                         <ListboxItem
-                          key={item.id}
+                          key={randomFloat+item.id}
                           color={"default"}
                           endContent={<IoIosInformationCircleOutline />}
                           description={`รหัสนักศึกษา: ${item.stdid} | วันที่อนุมัติ: ${formattedDate}`}
