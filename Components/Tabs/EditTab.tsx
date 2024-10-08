@@ -88,6 +88,8 @@ export default function EditTab(idcouesr: any) {
     var idedit = newData;
     if (idmodal === 1) {
       const dataFind = dataEditOne.find(work => work.id == parseInt(newData, 10));
+      console.log("dataEditOne",dataEditOne)
+      console.log("dataFind",dataFind)
       setData(dataFind);
       setVisible(true);
     } else if (idmodal === 2) {
