@@ -18,7 +18,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             [ stdid, teachid, idtitelwork, point, des, status, idcourse]
         );
 
-        res.status(201).json({ message: 'Edited successfully' });
+        res.status(201).json({ message: 'Edited successfully',rows });
 
         } catch (err) {
             res.status(500).json({ error: err });

@@ -131,7 +131,7 @@ const FormEdit: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint })
 
     const submitpoint = async () => {
         setStatusUpdate(true)
-
+console.log("idtitelwork",idtitelwork)
         const formData = {
             stdid: stdidInput,
             teachid: idTeach,
@@ -140,6 +140,8 @@ const FormEdit: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint })
             des: desInput,
             idcourse: idcourse
         }
+
+        console.log("formData", formData)
 
         try {
             const response = await axios.post(
@@ -158,6 +160,7 @@ const FormEdit: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint })
             // setDataCheck(response.data.data);
 
             if (response.status === 201) {
+        console.log("formData", formData)
                 onInputChange("");
                 setPointInput("");
                 setDesInput("");

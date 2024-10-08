@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Modal, ModalContent, Progress, ModalBody, Navbar, NavbarBrand, NavbarContent, Divider, Button, Spinner, useDisclosure, NavbarItem, Input, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Accordion, AccordionItem, CardBody, Card } from "@nextui-org/react";
+import { Tooltip,Modal, ModalContent, Progress, ModalBody, Navbar, NavbarBrand, NavbarContent, Divider, Button, Spinner, useDisclosure, NavbarItem, Input, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Accordion, AccordionItem, CardBody, Card } from "@nextui-org/react";
 import { Prompt } from "next/font/google";
 import { useSession } from "next-auth/react"
 import CircularProgress from '@mui/material/CircularProgress';
@@ -82,6 +82,21 @@ export default function index() {
         }
 
     }
+
+    const formatDate = (dateString: string | undefined): string => {
+        if (!dateString) return "Invalid Date";
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return "Invalid Date";
+        return date.toLocaleDateString('th-TH', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric'
+        });
+    };
+
 
     return (
         <div className={kanit.className}>
@@ -233,8 +248,20 @@ export default function index() {
                                                                 />
                                                             </td>
                                                             <td className='text-center'>{subject.extra}</td>
-                                                            {subject.lab.map((item: { point: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; }, index: React.Key | null | undefined) => (
-                                                                <td key={index} className='text-center'>{item.point}</td>
+                                                            {subject.lab.map((item: { point: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; teachid: string; update_at: any }, index: React.Key | null | undefined) => (
+
+                                                                <td key={index} className='text-center'>
+                                                                    {item?.teachid == null ? item?.point : (
+                                                                        <Tooltip color="secondary" content={
+                                                                            <div className="px-1 py-2">
+                                                                                <div className="text-small font-bold">ผู้ตรวจ: {item.teachid}</div>
+                                                                                <div className="text-tiny">ลงวันที่: {formatDate(item.update_at?.toString())}</div>
+                                                                            </div>
+                                                                        } className="capitalize" placement="top">
+                                                                            {item.point}
+                                                                        </Tooltip>
+                                                                    )}
+                                                                </td>
                                                             ))}
                                                         </tr>
                                                     </tbody>
@@ -273,17 +300,17 @@ export default function index() {
                                 OSP101
                             </Typography></a></p> */}
 
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7427071385649225"
-     crossOrigin="anonymous"></script>
+                    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7427071385649225"
+                        crossOrigin="anonymous"></script>
 
-<ins className="adsbygoogle block"
-     data-ad-client="ca-pub-7427071385649225"
-     data-ad-slot="8650209963"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+                    <ins className="adsbygoogle block"
+                        data-ad-client="ca-pub-7427071385649225"
+                        data-ad-slot="8650209963"
+                        data-ad-format="auto"
+                        data-full-width-responsive="true"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({ });
+                    </script>
                 </div>
 
                 <Modal

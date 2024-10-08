@@ -34,7 +34,7 @@ export const exportToExcel = (labsData: LabData[], idcouesr: any) => {
     worksheet['!cols'] = columnWidths;
 
     // สร้างส่วนหัวของตาราง
-    const headers = ['ชื่อ - นามสกุล', 'คะแนนพิเศษ'];
+    const headers = ['', 'ชื่อ - นามสกุล', 'คะแนนพิเศษ'];
     labsData.filter(lab => lab.idtitelwork !== 0).forEach(lab => headers.push(lab.namework));
     headers.push('รวมคะแนน');
     XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: 'A1' });

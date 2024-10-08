@@ -126,7 +126,7 @@ export default function EditTab(idcouesr: any) {
       }
     })
 
-    // console.log({idedit: data?.id, idpoints: data?.idpoint, point: data?.pointedit}) 
+    console.log({idedit: data?.id, idpoints: data?.idpoint, point: data?.pointedit}) 
   }
 
   const submitreject = async () => {
