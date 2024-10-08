@@ -24,6 +24,7 @@ export const exportToExcel = (labsData: LabData[], idcouesr: any) => {
 
     // กำหนดความกว้างของคอลัมน์
     const columnWidths = [
+        { wch: 15 },  // คะแนนพิเศษ
         { wch: 30 },  // ชื่อ - นามสกุล
         { wch: 15 },  // คะแนนพิเศษ
     ];
@@ -34,7 +35,7 @@ export const exportToExcel = (labsData: LabData[], idcouesr: any) => {
     worksheet['!cols'] = columnWidths;
 
     // สร้างส่วนหัวของตาราง
-    const headers = ['', 'ชื่อ - นามสกุล', 'คะแนนพิเศษ'];
+    const headers = ['รหัสนักศึกษา', 'ชื่อ - นามสกุล', 'คะแนนพิเศษ'];
     labsData.filter(lab => lab.idtitelwork !== 0).forEach(lab => headers.push(lab.namework));
     headers.push('รวมคะแนน');
     XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: 'A1' });
@@ -75,6 +76,7 @@ export const exportToExcel = (labsData: LabData[], idcouesr: any) => {
     // เพิ่มข้อมูลนักเรียนแต่ละคน
     allStudents.forEach((student, index) => {
         const row = [
+            student.stdid.toString(),
             student.name,
             student.points['คะแนนพิเศษ'] || '0'
         ];
