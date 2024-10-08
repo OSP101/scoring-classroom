@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Prompt } from "next/font/google";
 import { FaUserGroup } from "react-icons/fa6";
 import { MdOutlinePersonSearch } from "react-icons/md";
+import { exportToExcel } from '../../utils/excelExport';
 
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
 
@@ -27,6 +28,22 @@ interface LabData {
     data: StudentData[];
 }
 
+interface Student {
+    stdid: string;
+    name: string;
+    image: string;
+    point: string | number;
+  }
+  
+  interface WorkData {
+    idtitelwork: number;
+    namework: string;
+    length: number;
+    maxpoint: number;
+    avgpoint: string;
+    data: Student[];
+  }
+
 interface PointTabProps {
     idcouesr: string;
 }
@@ -35,6 +52,7 @@ export default function PointTab({ idcouesr }: PointTabProps) {
     const [statusLoadTeach, setStatusLoadTeach] = useState(false);
     const [labsData, setLabsData] = useState<LabData[]>([]);
     const [searchInput, setSearchInput] = useState("");
+    const [scoreData, setScoreData] = useState<WorkData[]>([]);
 
     useEffect(() => {
         getPoint(idcouesr);
@@ -54,7 +72,9 @@ export default function PointTab({ idcouesr }: PointTabProps) {
 
             if (response.ok) {
                 const dataCourses: LabData[] = await response.json();
+                const dataExport = await response.json();
                 setLabsData(dataCourses);
+                setScoreData(dataExport);
                 setStatusLoadTeach(true);
             }
         } catch (error) {
@@ -114,12 +134,19 @@ export default function PointTab({ idcouesr }: PointTabProps) {
         });
     };
 
+    const handleExport = () => {
+        exportToExcel(scoreData);
+      };
+
     return (
         <div className="overflow-x-auto">
             <div className='mx-2 block justify-between md:flex'>
-                <Link isBlock showAnchorIcon href="/myscore" color="secondary" className='mb-2' target='_blank'>
+                <div><Link isBlock showAnchorIcon href="/myscore" color="secondary" className='mb-2' target='_blank'>
                     ดูคะแนนรายบุคคล
                 </Link>
+                <button onClick={handleExport}>Export to Excel</button>
+                </div>
+                
                 <Input
                     type="text"
                     label="ค้นหาด้วยชื่อ หรือ รหัสนักศึกษา"
