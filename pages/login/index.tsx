@@ -62,6 +62,8 @@ export default function App() {
         <div className={`flex flex-col items-center justify-center mt-20 ${kanit.className}`}>
             <Head>
                 <title>Login - Scoring Classroom</title>
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7427071385649225" crossOrigin="anonymous"></script>
+
             </Head>
             <Card className="max-w-full w-[340px]">
                 <CardHeader className="pb-0 pt-2 px-4 flex-col mt-2 items-start">
@@ -165,6 +167,18 @@ export default function App() {
                     </Typography>
                 </a>
             </p>
+
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7427071385649225"
+     crossOrigin="anonymous"></script>
+
+<ins className="adsbygoogle block"
+     data-ad-client="ca-pub-7427071385649225"
+     data-ad-slot="8650209963"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
         </div>
     );
 }

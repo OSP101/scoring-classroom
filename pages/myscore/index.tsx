@@ -54,9 +54,9 @@ export default function index() {
         console.log('submitted!');
     }
 
-    useEffect(() => {
-        onOpen()
-    }, [])
+    // useEffect(() => {
+    //     onOpen()
+    // }, [])
 
 
     const statusButton = canSubmit && pointInput.length > 0;
@@ -97,6 +97,7 @@ export default function index() {
                 <meta property="og:image" content="https://sc.osp101.dev/SA.png" />
                 <script type="text/javascript" src="https://cookiecdn.com/cwc.js"></script>
                 <script id="cookieWow" type="text/javascript" src="https://cookiecdn.com/configs/SKduo3rfyASeQCFhHQZYzrgK" data-cwcid="SKduo3rfyASeQCFhHQZYzrgK"></script>
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7427071385649225" crossOrigin="anonymous"></script>
             </Head>
             {!session ? (
                 <Navbar isBordered maxWidth="2xl" isBlurred={false}>
@@ -271,6 +272,18 @@ export default function index() {
                             <Typography variant="caption" gutterBottom>
                                 OSP101
                             </Typography></a></p> */}
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7427071385649225"
+     crossOrigin="anonymous"></script>
+
+<ins className="adsbygoogle block"
+     data-ad-client="ca-pub-7427071385649225"
+     data-ad-slot="8650209963"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
                 </div>
 
                 <Modal

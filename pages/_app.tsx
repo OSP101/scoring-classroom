@@ -46,6 +46,8 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
         <NextUIProvider >
           <NextThemesProvider attribute="class" defaultTheme="light" enableSystem={true}>
             <meta name="google-site-verification" content="F6z6ihjP_j_3j1lcrmvdMGhCkhwdjdclCuxmQ4C9I68" />
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7427071385649225" crossOrigin="anonymous"></script>
+            
             <NavWrapper>
               <Component {...pageProps} />
             </NavWrapper>

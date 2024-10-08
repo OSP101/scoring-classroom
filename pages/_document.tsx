@@ -11,6 +11,8 @@ export default function Document() {
       <meta name="viewport" content="width=device-width, inital-scale=1, maximum-scale=1, user-scalable=0"/>
       {/* <link rel="icon" href="/favicon.ico" /> */}
       <meta name="google-site-verification" content="F6z6ihjP_j_3j1lcrmvdMGhCkhwdjdclCuxmQ4C9I68"/>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7427071385649225" crossOrigin="anonymous"></script>
+      
       </Head>
       <body>
         <Main />

@@ -37,6 +37,8 @@ export default function Home() {
           <meta property="og:type" content="website" />
           <meta property="og:site_name" content="Scoring Classroom" />
           <meta property="og:image" content="https://sc.osp101.dev/SA.png" />
+          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7427071385649225" crossOrigin="anonymous"></script>
+
         </Head>
         {/* <NavbarComponent /> */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 container mx-auto mt-4">
