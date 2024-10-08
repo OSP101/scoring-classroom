@@ -88,6 +88,7 @@ export default function EditTab(idcouesr: any) {
     var idedit = newData;
     if (idmodal === 1) {
       const dataFind = dataEditOne.find(work => work.id == parseInt(newData, 10));
+      console.log("IDFind",newData)
       console.log("dataEditOne",dataEditOne)
       console.log("dataFind",dataFind)
       setData(dataFind);
@@ -170,7 +171,11 @@ export default function EditTab(idcouesr: any) {
                     items={dataEditOne}
                     aria-label="Dynamic Actions"
                     className={kanit.className}
-                    onAction={(label) => openModalWithData(label.toString(), 1)}
+                    onAction={(key) => {
+                      // const selectedItem = dataEditOne.find(item => item.id.toString() === key.toString());
+                      console.log("Key",key.toString())  
+                      openModalWithData(key.toString(), 1);
+                    }}
                   >
                     {dataEditOne.map((item) => {
                       const date = new Date(item.create_at);
@@ -186,7 +191,7 @@ export default function EditTab(idcouesr: any) {
 
                       return (
                         <ListboxItem
-                          key={randomFloat+item.id}
+                          key={item.id}
                           color={"default"}
                           endContent={<IoIosInformationCircleOutline />}
                           description={`รหัสนักศึกษา: ${item.stdid} | วันที่แจ้ง: ${formattedDate}`}
