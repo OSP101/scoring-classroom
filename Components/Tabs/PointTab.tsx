@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { Tooltip, Input, Link, Progress } from "@nextui-org/react";
+import { Tooltip, Input, Link, Progress,Button } from "@nextui-org/react";
 import Image from 'next/image';
 import { Prompt } from "next/font/google";
 import { FaUserGroup } from "react-icons/fa6";
@@ -71,10 +71,24 @@ export default function PointTab({ idcouesr }: PointTabProps) {
             });
 
             if (response.ok) {
-                const dataCourses: LabData[] = await response.json();
-                const dataExport = await response.json();
-                setLabsData(dataCourses);
-                setScoreData(dataExport);
+                const data: LabData[] = await response.json();
+                setLabsData(data);
+                
+                // แปลงข้อมูลให้เข้ากับ WorkData interface
+                const workData: WorkData[] = data.map(lab => ({
+                    idtitelwork: lab.idtitelwork,
+                    namework: lab.namework,
+                    length: lab.length,
+                    maxpoint: lab.maxpoint,
+                    avgpoint: lab.avgpoint.toString(),
+                    data: lab.data.map(student => ({
+                        stdid: student.stdid,
+                        name: student.name,
+                        image: student.image,
+                        point: student.point
+                    }))
+                }));
+                setScoreData(workData);
                 setStatusLoadTeach(true);
             }
         } catch (error) {
@@ -135,8 +149,40 @@ export default function PointTab({ idcouesr }: PointTabProps) {
     };
 
     const handleExport = () => {
-        exportToExcel(scoreData);
+        if (labsData.length === 0) {
+          alert("ไม่มีข้อมูลที่จะ export");
+          return;
+        }
+        exportToExcel(labsData,idcouesr);
       };
+
+      const ExportButton = () => (
+        <Tooltip content="Export to Excel">
+          <Button
+            onClick={handleExport}
+            color="success"
+            variant="flat"
+            isIconOnly
+            aria-label="Export to Excel"
+            className="min-w-unit-10 w-unit-10 h-unit-10"
+          >
+            <svg
+              viewBox="0 0 32 32"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-5 h-5"
+              fill="currentColor"
+            >
+              <path d="M19.581,15.35,8.512,13.4V27.809A1.192,1.192,0,0,0,9.705,29h19.1A1.192,1.192,0,0,0,30,27.809h0V22.5Z" />
+              <path d="M19.581,3H9.705A1.192,1.192,0,0,0,8.512,4.191h0V9.5L19.581,16l5.861,1.95L30,16V9.5Z" />
+              <path d="M8.512,9.5H19.581V16H8.512Z" />
+              <path d="M3.194,8.85H15.132a1.193,1.193,0,0,1,1.194,1.191V21.959a1.193,1.193,0,0,1-1.194,1.191H3.194A1.192,1.192,0,0,1,2,21.959V10.041A1.192,1.192,0,0,1,3.194,8.85Z" />
+              <path d="M5.7,19.873l2.511-3.884-2.3-3.862H7.758L9.013,14.6c.116.234.2.408.238.524h.017c.082-.188.169-.369.26-.546l1.342-2.447h1.7l-2.359,3.84,2.419,3.905H10.821l-1.45-2.711A2.355,2.355,0,0,1,9.2,16.8H9.176a1.688,1.688,0,0,1-.168.351L7.515,19.873Z" fill="#ffffff" />
+              <path d="M28.806,3H19.581V9.5H30V4.191A1.192,1.192,0,0,0,28.806,3Z" />
+              <path d="M19.581,16H30v6.5H19.581Z" />
+            </svg>
+          </Button>
+        </Tooltip>
+      );
 
     return (
         <div className="overflow-x-auto">
@@ -144,7 +190,7 @@ export default function PointTab({ idcouesr }: PointTabProps) {
                 <div><Link isBlock showAnchorIcon href="/myscore" color="secondary" className='mb-2' target='_blank'>
                     ดูคะแนนรายบุคคล
                 </Link>
-                <button onClick={handleExport}>Export to Excel</button>
+                <ExportButton />
                 </div>
                 
                 <Input

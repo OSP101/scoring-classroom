@@ -246,7 +246,7 @@ export default function EditTab(idcouesr: any) {
 
                       return (
                         <ListboxItem
-                          key={randomFloat+item.id}
+                          key={item.id}
                           color={"default"}
                           endContent={<IoIosInformationCircleOutline />}
                           description={`รหัสนักศึกษา: ${item.stdid} | วันที่อนุมัติ: ${formattedDate}`}
