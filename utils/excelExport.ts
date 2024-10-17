@@ -14,7 +14,7 @@ interface LabData {
 }
 
 export const exportToExcel = (labsData: LabData[], idcouesr: any) => {
-    if (labsData.length === 0) {
+    if (!labsData || labsData.length === 0) {
         alert("ไม่มีข้อมูลที่จะ export");
         return;
     }
@@ -24,7 +24,7 @@ export const exportToExcel = (labsData: LabData[], idcouesr: any) => {
 
     // กำหนดความกว้างของคอลัมน์
     const columnWidths = [
-        { wch: 15 },  // คะแนนพิเศษ
+        { wch: 15 },  // รหัสนักศึกษา
         { wch: 30 },  // ชื่อ - นามสกุล
         { wch: 15 },  // คะแนนพิเศษ
     ];
@@ -54,14 +54,18 @@ export const exportToExcel = (labsData: LabData[], idcouesr: any) => {
     };
     for (let i = 0; i < headers.length; i++) {
         const cell = XLSX.utils.encode_cell({ r: 0, c: i });
-        worksheet[cell].s = headerStyle;
+        if (worksheet[cell]) {
+            worksheet[cell].s = headerStyle;
+        } else {
+            worksheet[cell] = { v: headers[i], t: 's', s: headerStyle };
+        }
     }
 
     // รวบรวมข้อมูลนักเรียนทั้งหมด
-    const allStudents = labsData[1].data.map(student => ({
+    const allStudents = labsData[1] ? labsData[1].data.map(student => ({
         ...student,
         points: {} as { [key: string]: string }
-    }));
+    })) : [];
 
     // เพิ่มคะแนนแต่ละแลปให้กับนักเรียน
     labsData.forEach(lab => {
@@ -76,19 +80,19 @@ export const exportToExcel = (labsData: LabData[], idcouesr: any) => {
     // เพิ่มข้อมูลนักเรียนแต่ละคน
     allStudents.forEach((student, index) => {
         const row = [
-            student.stdid.toString(),
+            student.stdid,
             student.name,
             student.points['คะแนนพิเศษ'] || '0'
         ];
 
-        let totalPoints = Number(student.points['คะแนนพิเศษ'] || '0');
+        let totalPoints = 0; // เริ่มต้นที่ 0 โดยไม่รวมคะแนนพิเศษ
         labsData.filter(lab => lab.idtitelwork !== 0).forEach(lab => {
             const point = student.points[lab.namework] || '0';
             row.push(point);
             totalPoints += Number(point);
         });
 
-        row.push(totalPoints.toString());
+        row.push(totalPoints.toString()); // คะแนนรวมที่ไม่รวมคะแนนพิเศษ
         XLSX.utils.sheet_add_aoa(worksheet, [row], { origin: `A${index + 2}` });
     });
 
@@ -109,21 +113,25 @@ export const exportToExcel = (labsData: LabData[], idcouesr: any) => {
             const cell = XLSX.utils.encode_cell({ r: R, c: C });
             if (!worksheet[cell]) continue;
             worksheet[cell].s = dataStyle;
-            if (C > 0) {  // ตั้งแต่คอลัมน์คะแนนพิเศษเป็นต้นไป
+            if (C > 1) {  // ตั้งแต่คอลัมน์คะแนนพิเศษเป็นต้นไป
                 worksheet[cell].s = { ...dataStyle, alignment: { ...dataStyle.alignment, horizontal: "center" } };
             }
         }
     }
 
     // เพิ่มแถวคะแนนเฉลี่ยของชั้นเรียน
-    const avgRow = ['คะแนนเฉลี่ยของชั้นเรียน', ''];
+    const avgRow = ['คะแนนเฉลี่ยของชั้นเรียน', '', ''];
     let totalAvg = 0;
     labsData.filter(lab => lab.idtitelwork !== 0).forEach(lab => {
-        const avg = lab.data.reduce((sum, student) => sum + Number(student.point), 0) / lab.data.length;
-        avgRow.push(avg.toFixed(2));
-        totalAvg += avg;
+        if (lab.data && lab.data.length > 0) {
+            const avg = lab.data.reduce((sum, student) => sum + Number(student.point || 0), 0) / lab.data.length;
+            avgRow.push(avg.toFixed(2));
+            totalAvg += avg;
+        } else {
+            avgRow.push('0.00');
+        }
     });
-    avgRow.push(totalAvg.toFixed(2));
+    avgRow.push(totalAvg.toFixed(2)); // คะแนนเฉลี่ยรวมที่ไม่รวมคะแนนพิเศษ
     XLSX.utils.sheet_add_aoa(worksheet, [avgRow], { origin: `A${allStudents.length + 2}` });
 
     // จัดรูปแบบแถวคะแนนเฉลี่ย
@@ -141,7 +149,11 @@ export const exportToExcel = (labsData: LabData[], idcouesr: any) => {
     const lastRow = allStudents.length + 2;
     for (let i = 0; i < headers.length; i++) {
         const cell = XLSX.utils.encode_cell({ r: lastRow - 1, c: i });
-        worksheet[cell].s = avgStyle;
+        if (worksheet[cell]) {
+            worksheet[cell].s = avgStyle;
+        } else {
+            worksheet[cell] = { v: avgRow[i] || '', t: 's', s: avgStyle };
+        }
     }
 
     XLSX.utils.book_append_sheet(workbook, worksheet, 'คะแนนนักเรียน');

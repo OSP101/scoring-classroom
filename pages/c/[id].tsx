@@ -144,7 +144,7 @@ export default function CourseDetail() {
                                 <PointTab idcouesr={id?.toString() || ""} />
                             </div>
                         </Tab>
-                        {session.user?.email == "supphitan.p@kkumail.com" || session.user?.email == "jakkritk@kku.ac.th" ?
+                        {session.user?.email == "kamonwan.h@kkumail.com" || session.user?.email == "supphitan.p@kkumail.com" || session.user?.email == "jakkritk@kku.ac.th" ?
                             <Tab
                                 key="editpoint"
                                 title={
