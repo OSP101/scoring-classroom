@@ -131,7 +131,7 @@ const FormEdit: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint })
 
     const submitpoint = async () => {
         setStatusUpdate(true)
-console.log("idtitelwork",idtitelwork)
+        console.log("idtitelwork", idtitelwork)
         const formData = {
             stdid: stdidInput,
             teachid: idTeach,
@@ -160,7 +160,7 @@ console.log("idtitelwork",idtitelwork)
             // setDataCheck(response.data.data);
 
             if (response.status === 201) {
-        console.log("formData", formData)
+                console.log("formData", formData)
                 onInputChange("");
                 setPointInput("");
                 setDesInput("");
@@ -243,7 +243,7 @@ console.log("idtitelwork",idtitelwork)
                     )}
                 </Autocomplete>
 
-                <Input type="number" label="คะแนน" size='md' variant="bordered" placeholder='กรอกคะแนนตัวเลขเท่านั้น' color={pointInput.length > 0 ? statusCheck ? "danger" : "success" : "secondary"} value={pointInput} onValueChange={setPointInput} isInvalid={statusCheck} errorMessage={`รหัสนักศึกษา ${stdidInput} ยังไม่มีการลงคะแนน`} isDisabled={statusCheck} isRequired/>
+                <Input type="number" label="คะแนน" size='md' variant="bordered" placeholder='กรอกคะแนนตัวเลขเท่านั้น' color={pointInput.length > 0 ? statusCheck ? "danger" : "success" : "secondary"} value={pointInput} onValueChange={setPointInput} isInvalid={statusCheck} errorMessage={`รหัสนักศึกษา ${stdidInput} ยังไม่มีการลงคะแนน`} isDisabled={statusCheck} isRequired />
 
                 <Textarea
                     label="เหตุผล"
@@ -257,10 +257,11 @@ console.log("idtitelwork",idtitelwork)
                     isDisabled={statusCheck}
                     color={desInput.length > 0 ? statusCheck ? "danger" : "success" : "secondary"}
                 />
-
-                <Button className={`bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg ${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''} `} isDisabled={statusButton} onClick={submitpoint}>
-                    {statusUpdate ? (<><Spinner color="default" /> <p> กำลังบันทึก...</p></>) : "บันทึก"}
-                </Button>
+                <div className='w-full mt-4 justify-end flex'>
+                    <Button className={`bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg ${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''} `} isDisabled={statusButton} onClick={submitpoint}>
+                        {statusUpdate ? (<><Spinner color="default" /> <p> กำลังบันทึก...</p></>) : "บันทึก"}
+                    </Button>
+                </div>
             </form>
 
             <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>

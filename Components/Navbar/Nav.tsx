@@ -13,7 +13,7 @@ export default function NavbarComponent() {
     const { data: session } = useSession()
 
     return (
-        <div className={`${kanit.className} sticky top-0`}>
+        <div className={`${kanit.className} sticky top-0 z-10`}>
             <Navbar isBordered maxWidth="2xl" isBlurred={false}>
                 <NavbarContent justify="start">
                     <NavbarBrand className="mr-4">

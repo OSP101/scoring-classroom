@@ -151,14 +151,6 @@ export default function FormExtra(idcourse: any) {
                                             <span className="text-tiny text-default-400">{item.stdid}</span>
                                         </div>
                                     </div>
-                                    <Button
-                                        className="border-small mr-0.5 font-medium shadow-small"
-                                        radius="full"
-                                        size="sm"
-                                        variant="bordered"
-                                    >
-                                        เลือก
-                                    </Button>
                                 </div>
                             </AutocompleteItem>
                         )}

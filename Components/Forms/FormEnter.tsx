@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Autocomplete, AutocompleteItem, Avatar, Button, Input, Spinner, Divider, RadioGroup, Radio } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem, Avatar, Button, Input, Spinner, Divider, RadioGroup, Radio, cn } from "@nextui-org/react";
 import axios from 'axios';
 import { Prompt } from "next/font/google";
 import { useSession } from "next-auth/react"
@@ -97,7 +97,7 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
         }
     };
 
-    const statusButton =  stdidInput.length != 11 || statusCheck;
+    const statusButton = stdidInput.length != 11 || statusCheck;
     // console.log("statusButton",statusButton)
     // console.log("pointInput.length < 1",pointInput.length < 1)
     // console.log("stdidInput.length != 11",stdidInput.length != 11)
@@ -280,19 +280,44 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
                 </Autocomplete>
                 <RadioGroup
                     color="secondary"
-                    orientation="horizontal"
+                    orientation="vertical"
                     value={selected}
                     onValueChange={setSelected}
                     isInvalid={statusCheck}
                     isDisabled={statusCheck}
                 >
-                    <Radio value="10" description="คะแนน 10">
+                    <Radio value="10" description="คะแนน 10"
+                        classNames={{
+                            base: cn(
+                                "inline-flex max-w-full w-full bg-content1 m-0",
+                                "hover:bg-content2 items-center justify-start",
+                                "cursor-pointer rounded-lg gap-2 p-2 border-2 border-transparent",
+                                "data-[selected=true]:border-secondary"
+                            ),
+                        }}
+                    >
                         ส่งในคาบ
                     </Radio>
-                    <Radio value="5" description="คะแนน 5">
+                    <Radio value="5" description="คะแนน 5"
+                        classNames={{
+                            base: cn(
+                                "inline-flex max-w-full w-full bg-content1 m-0",
+                                "hover:bg-content2 items-center justify-start",
+                                "cursor-pointer rounded-lg gap-2 p-2 border-2 border-transparent",
+                                "data-[selected=true]:border-secondary"
+                            ),
+                        }}>
                         ส่งช้า
                     </Radio>
-                    <Radio value="other" description="ปรับแต่งคะแนน">
+                    <Radio value="other" description="ปรับแต่งคะแนน"
+                        classNames={{
+                            base: cn(
+                                "inline-flex max-w-full w-full bg-content1 m-0",
+                                "hover:bg-content2 items-center justify-start",
+                                "cursor-pointer rounded-lg gap-2 p-2 border-2 border-transparent",
+                                "data-[selected=true]:border-secondary"
+                            ),
+                        }}>
                         อื่น ๆ
                     </Radio>
                 </RadioGroup>
@@ -301,10 +326,12 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
                     <Input type="number" label="คะแนน" size='md' variant="bordered" placeholder='กรอกคะแนนตัวเลขเท่านั้น' color={statusCheck ? "success" : "secondary"} value={statusCheck ? dataCheck?.point.toString() : pointInput} onValueChange={setPointInput} isInvalid={statusCheck} errorMessage={`รหัสนักศึกษา ${stdidInput} มีการลงคะแนนโดย ${dataCheck?.teachid} เรียบร้อยแล้ว`} isDisabled={statusCheck} inputMode='numeric' pattern='[0-9]*' />
                     : null
                 }
+                <div className='w-full mt-4 justify-end flex'>
 
-                <Button className={`bg-gradient-to-tr from-[#4e484e] to-[#b249f8] text-white shadow-lg ${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''} `} isDisabled={statusButton} onClick={submitpoint}>
-                    {statusUpdate ? (<><Spinner color="default" /> <p> กำลังบันทึก...</p></>) : "บันทึก"}
-                </Button>
+                    <Button className={`bg-gradient-to-tr from-[#4e484e] to-[#b249f8] text-white shadow-lg ${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''} `} isDisabled={statusButton} onClick={submitpoint}>
+                        {statusUpdate ? (<><Spinner color="default" /> <p> กำลังบันทึก...</p></>) : "บันทึก"}
+                    </Button>
+                </div>
             </form>
 
             <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
