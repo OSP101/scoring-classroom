@@ -6,15 +6,15 @@ import { authenticateApiKey } from '../../../../lib/auth';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (req.method === "POST") {
-        const { stdid, teachid, idtitelwork, point } = req.body.formData;
+        const { stdid, teachid, idtitelwork, point, type } = req.body.formData;
 
         try {
         const promisePool = mysqlPool.promise()
         let rows; 
 
         [rows] = await promisePool.query(
-            'UPDATE points SET teachid = ?,point = ? WHERE idtitelwork = ? AND stdid = ?',
-            [ teachid, point, idtitelwork, stdid ]
+            'UPDATE points SET teachid = ?,point = ?,type = ? WHERE idtitelwork = ? AND stdid = ?',
+            [ teachid, point, type, idtitelwork, stdid ]
         );
 
         res.status(201).json({ message: 'Course added successfully' });

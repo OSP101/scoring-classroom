@@ -10,8 +10,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         try {
             const promisePool = mysqlPool.promise();
             let [rows] = await promisePool.query('SELECT id, name, maxpoint FROM titelwork WHERE idcourse = ? AND delete_at IS NULL', [idscore]);
-            let [data1] = await promisePool.query('SELECT users.stdid,users.name,users.image, COALESCE(COUNT(extra_point.stdid), 0) AS point FROM users LEFT JOIN extra_point ON users.stdid = extra_point.stdid AND extra_point.idcourse = ? JOIN enllo ON enllo.stdid = users.stdid AND enllo.idcourse = ? GROUP BY users.stdid', [idscore,idscore]);
-            
+            let [data1] = await promisePool.query('SELECT users.stdid,users.name,users.image, COALESCE(COUNT(extra_point.stdid), 0) AS point FROM users LEFT JOIN extra_point ON users.stdid = extra_point.stdid AND extra_point.idcourse = ? JOIN enllo ON enllo.stdid = users.stdid AND enllo.idcourse = ? GROUP BY users.stdid', [idscore, idscore]);
+
             dataPoint.push({
                 idtitelwork: 0,
                 namework: "คะแนนพิเศษ",
@@ -22,7 +22,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 let [data2] = await promisePool.query(`SELECT e.stdid, 
        users.name, users.image,p.teachid,
                     tw.name AS titelname,
-       COALESCE(p.point, '-') AS point,p.update_at
+       COALESCE(p.point, '-') AS point,p.update_at,p.type
 FROM enllo e
 LEFT JOIN points p ON e.stdid = p.stdid AND p.idtitelwork = ?
 LEFT JOIN titelwork tw ON p.idtitelwork = tw.id AND tw.delete_at IS NULL
@@ -32,7 +32,7 @@ WHERE e.idcourse = ?
 
                 let [avg] = await promisePool.query('SELECT ROUND(AVG(point),2) AS avgpoint FROM points WHERE idtitelwork = ?', item.id);
 
-//   console.log(data2[0])
+                //   console.log(data2[0])
                 dataPoint.push({
                     idtitelwork: item.id,
                     namework: item.name,

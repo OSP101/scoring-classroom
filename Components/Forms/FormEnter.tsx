@@ -135,26 +135,29 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
         setStatusUpdate(true)
 
         let formData;
-        if (selected == "10") {
+        if (selected == "normal") {
             formData = {
                 stdid: stdidInput,
                 teachid: idTeach,
                 idtitelwork,
-                point: 10
+                point: 10,
+                type: "normal"
             }
-        } else if (selected == "5") {
+        } else if (selected == "slow") {
             formData = {
                 stdid: stdidInput,
                 teachid: idTeach,
                 idtitelwork,
-                point: 5
+                point: 10,
+                type: "slow"
             }
         } else if (selected == "other") {
             formData = {
                 stdid: stdidInput,
                 teachid: idTeach,
                 idtitelwork,
-                point: pointInput
+                point: pointInput,
+                type: "normal"
             }
         }
 
@@ -286,7 +289,7 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
                     isInvalid={statusCheck}
                     isDisabled={statusCheck}
                 >
-                    <Radio value="10" description="คะแนน 10"
+                    <Radio value="normal" description="คะแนน 10 ส่งปกติ"
                         classNames={{
                             base: cn(
                                 "inline-flex max-w-full w-full bg-content1 m-0",
@@ -298,7 +301,7 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, maxpoint }
                     >
                         ส่งในคาบ
                     </Radio>
-                    <Radio value="5" description="คะแนน 5"
+                    <Radio value="slow" description="คะแนน 10 ส่งช้า"
                         classNames={{
                             base: cn(
                                 "inline-flex max-w-full w-full bg-content1 m-0",

@@ -14,6 +14,7 @@ interface StudentData {
     point: string;
     name: string;
     image: string;
+    type: string;
     teachid: string;
     create_at: Date;
     update_at: Date;
@@ -282,13 +283,14 @@ export default function PointTab({ idcouesr }: PointTabProps) {
                                     return (
                                         <td key={`point-${student.stdid}-${lab.idtitelwork}`} className='text-center'>
                                             {item?.teachid == null ? item?.point : (
-                                                <Tooltip color="secondary" content={
+                                                <Tooltip color={`${item.type == "slow" ? "warning" : "secondary"}`} content={
                                                     <div className="px-1 py-2">
                                                         <div className="text-small font-bold">ผู้ตรวจ: {item.teachid}</div>
                                                         <div className="text-tiny">ลงวันที่: {formatDate(item.update_at?.toString())}</div>
+                                                        <div className="text-tiny">สถานะการส่ง: {item.type}</div>
                                                     </div>
                                                 } className="capitalize" placement="top">
-                                                    {item.point}
+                                                    <p className={`${item.type == "slow" ? 'text-yellow-500' : 'text-black' }`}>{item.point}</p>
                                                 </Tooltip>
                                             )}
                                         </td>
