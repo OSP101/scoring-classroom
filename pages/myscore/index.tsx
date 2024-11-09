@@ -250,17 +250,18 @@ export default function index() {
                                                                 />
                                                             </td>
                                                             <td className='text-center'>{subject.extra}</td>
-                                                            {subject.lab.map((item: { point: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; teachid: string; update_at: any }, index: React.Key | null | undefined) => (
+                                                            {subject.lab.map((item: { point: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; teachid: string; update_at: any; type: string }, index: React.Key | null | undefined) => (
 
                                                                 <td key={index} className='text-center'>
                                                                     {item?.teachid == null ? item?.point : (
-                                                                        <Tooltip color="secondary" content={
+                                                                        <Tooltip color={`${item.type == "slow" ? "warning" : "secondary"}`} content={
                                                                             <div className="px-1 py-2">
                                                                                 <div className="text-small font-bold">ผู้ตรวจ: {item.teachid}</div>
                                                                                 <div className="text-tiny">ลงวันที่: {formatDate(item.update_at?.toString())}</div>
+                                                                                <div className="text-tiny">สถานะการส่ง: {item.type}</div>
                                                                             </div>
                                                                         } className="capitalize" placement="top">
-                                                                            {item.point}
+                                                                            <p className={`${item.type == "slow" ? 'text-yellow-500' : 'text-black' }`}>{item.point}</p>
                                                                         </Tooltip>
                                                                     )}
                                                                 </td>

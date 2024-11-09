@@ -30,7 +30,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
                     for (const item of lad) {
                         let [data2] = await promisePool.query(`
-                            SELECT tw.name AS titelname, COALESCE(p.point, '-') AS point , p.teachid,p.update_at
+                            SELECT tw.name AS titelname, COALESCE(p.point, '-') AS point , p.teachid,p.update_at,p.type
                             FROM enllo e 
                             LEFT JOIN points p ON e.stdid = p.stdid AND p.idtitelwork = ? 
                             LEFT JOIN titelwork tw ON p.idtitelwork = tw.id AND tw.delete_at IS NULL 
