@@ -11,8 +11,28 @@ const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', 
 import { useTheme } from "next-themes";
 import { ThemeSwitcher } from '@/Components/Theme';
 import Footer from '@/Components/Footer';
+import { css } from '@emotion/react'
+import Typography from '@mui/material/Typography';
 
 export default function index() {
+
+    const copyrightStyle = css`
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 3px;
+            margin-top: 15px;
+            margin-left: 15px;
+            margin-right: 15px;
+            text-align: center;
+
+            a {
+                color: #666;
+                text-decoration: underline;
+                &:hover {
+                color: #b249f8;
+                }
+            }
+            `;
 
     // console.warn('%cคำเตือน!', 'background: yellow; color: red; font-size: 20px; font-weight: bold;');
     // console.warn(`การใช้คอนโซลนี้อาจทำให้ผู้โจมตีสามารถแอบอ้างตัวเป็นคุณและขโมยข้อมูลของคุณได้โดยใช้การโจมตีที่เรียกว่า Self-XSS อย่าป้อนหรือวางโค้ดที่คุณไม่เข้าใจ`);
@@ -41,7 +61,7 @@ export default function index() {
 
 
     const [pointInput, setPointInput] = useState("");
-    const [dataUser, setDataUser] = useState<Users[] | null>(null);
+    const [dataUser, setDataUser] = useState<Users | null>(null);
     const { data: session, status } = useSession();
     const [number, setNumber] = useState(0)
     const [statusUpdate, setStatusUpdate] = useState(false);
@@ -96,6 +116,8 @@ export default function index() {
             second: 'numeric'
         });
     };
+
+    // console.log(dataUser)
 
 
     return (
@@ -187,25 +209,25 @@ export default function index() {
                                                                 <div className="avatar">
                                                                     <div className="mask mask-squircle h-12 w-12">
                                                                         <img
-                                                                            src={dataUser[0].image}
+                                                                            src={dataUser.image}
                                                                             alt="Avatar Tailwind CSS Component"
                                                                         />
                                                                     </div>
                                                                 </div>
                                                                 <div>
-                                                                    <div className="font-bold">{dataUser[0].name}</div>
-                                                                    <div className="text-sm opacity-50">{dataUser[0].stdid}</div>
+                                                                    <div className="font-bold">{dataUser.name}</div>
+                                                                    <div className="text-sm opacity-50">{dataUser.stdid}</div>
                                                                 </div>
                                                             </div>
                                                         </td>
                                                         <td className='text-center'>
                                                             <div>
-                                                                {dataUser[0].email}
+                                                                {dataUser.email}
                                                                 <br />
-                                                                <span className="badge badge-ghost badge-sm">{dataUser[0].track}</span>
+                                                                <span className="badge badge-ghost badge-sm">{dataUser.track}</span>
                                                             </div>
                                                         </td>
-                                                        <td className='text-center'>{dataUser[0].section}</td>
+                                                        <td className='text-center'>{dataUser.section}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -213,12 +235,11 @@ export default function index() {
                                     </Accordion>
 
                                     <Accordion variant="splitted" className='pt-2 mb-2 px-0' selectionMode="multiple">
-                                        {dataUser.map((subject, subjectIndex) => (
 
                                             <AccordionItem
-                                                key={`${subjectIndex + 2}`}
-                                                aria-label={`คะแนนปฏิบัติการ ${subject.namesub}`}
-                                                title={`คะแนนปฏิบัติการ ${subject.namesub}`}
+                                                key={`1`}
+                                                aria-label={`คะแนนปฏิบัติการ ${dataUser.namesub}`}
+                                                title={`คะแนนปฏิบัติการ ${dataUser.namesub}`}
                                                 className=''
                                             >
                                                 <table className="table">
@@ -226,7 +247,7 @@ export default function index() {
                                                         <tr>
                                                             <th className='text-center'>% งานที่ส่งแล้ว <br /> <span className=' font-light'>(จำนวนงานทั้งหมด)</span></th>
                                                             <th className='text-center'>คะแนนพิเศษ</th>
-                                                            {subject.lab.map((item: { titelname: any; }, index: React.Key | null | undefined) => (
+                                                            {dataUser.lab.map((item: { titelname: any; }, index: React.Key | null | undefined) => (
                                                                 <th key={index} className='text-center'>{item.titelname || `Lab`}</th>
                                                             ))}
                                                         </tr>
@@ -244,13 +265,13 @@ export default function index() {
                                                                         label: "text-default-600 font-light text-sm",
                                                                         value: "text-foreground/60 text-sm",
                                                                     }}
-                                                                    label={`(${subject?.lab.length})`}
-                                                                    value={subject.coute}
+                                                                    label={`(${dataUser?.lab.length})`}
+                                                                    value={dataUser.coute}
                                                                     showValueLabel={true}
                                                                 />
                                                             </td>
-                                                            <td className='text-center'>{subject.extra}</td>
-                                                            {subject.lab.map((item: { point: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; teachid: string; update_at: any; type: string }, index: React.Key | null | undefined) => (
+                                                            <td className='text-center'>{dataUser.extra}</td>
+                                                            {dataUser.lab.map((item: { point: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; teachid: string; update_at: any; type: string }, index: React.Key | null | undefined) => (
 
                                                                 <td key={index} className='text-center'>
                                                                     {item?.teachid == null ? item?.point : (
@@ -270,21 +291,20 @@ export default function index() {
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
-                                                            <th colSpan={subject.lab.length + 2} className='text-center font-bold'>
+                                                            <th colSpan={dataUser.lab.length + 2} className='text-center font-bold'>
                                                                 คะแนนทั้งหมด
                                                                 {(() => {
-                                                                    const totalPoints = subject.lab.reduce((sum: number, item: { point: any; }) => {
+                                                                    const totalPoints = dataUser.lab.reduce((sum: number, item: { point: any; }) => {
                                                                         const point = Number(item.point);
                                                                         return isNaN(point) ? sum : sum + point;
                                                                     }, 0);
-                                                                    return totalPoints === 0 ? " 0/" + subject.lab.length * 10 : ` ${totalPoints}/${subject.lab.length * 10}`;
+                                                                    return totalPoints === 0 ? " 0/" + dataUser.lab.length * 10 : ` ${totalPoints}/${dataUser.lab.length * 10}`;
                                                                 })()}
                                                             </th>
                                                         </tr>
                                                     </tfoot>
                                                 </table>
                                             </AccordionItem>
-                                        ))}
                                     </Accordion>
                                 </>
                             ) : (
@@ -296,12 +316,7 @@ export default function index() {
                     )}
 
                     <Footer />
-                    {/* <p css={copyrightStyle}>
-                        © 2024 Scoring Classroom v0.4 All Rights Reserved. made with by{' '}
-                        <a href="http://github.com/OSP101" target="_blank" rel="noopener noreferrer">
-                            <Typography variant="caption" gutterBottom>
-                                OSP101
-                            </Typography></a></p> */}
+
 
                     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7427071385649225"
                         crossOrigin="anonymous"></script>
