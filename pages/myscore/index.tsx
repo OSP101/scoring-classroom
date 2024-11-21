@@ -54,6 +54,7 @@ export default function index() {
         namesub: string;
         idcourse: string;
         coute: number;
+        kahoot: number;
         lab: any;
     }
 
@@ -164,7 +165,7 @@ export default function index() {
                                     <Input type="text" label="รหัสนักศึกษา(633020xxx-x)" size='sm' variant="bordered" color={"secondary"} value={pointInput} onValueChange={setPointInput} isRequired className=' w-full' />
 
                                     <Button className={`mx-4 my-1 bg-gradient-to-tr w-2/5 from-[#FF1CF7] to-[#b249f8] text-white shadow-lg${statusUpdate ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={submutations} 
-                                    isDisabled={!statusButton}
+                                    // isDisabled={!statusButton}
                                     >
                                         {statusUpdate ? (<><Spinner color="default" /> <p> กำลังค้นหา...</p></>) : "ค้นหา"}
                                     </Button>
@@ -247,6 +248,9 @@ export default function index() {
                                                         <tr>
                                                             <th className='text-center'>% งานที่ส่งแล้ว <br /> <span className=' font-light'>(จำนวนงานทั้งหมด)</span></th>
                                                             <th className='text-center'>คะแนนพิเศษ</th>
+                                                            {dataUser.namesub == "Object Oriented Programming" && 
+                                                            <th className='text-center'>คะแนน Kahoot!</th>
+                                                            }
                                                             {dataUser.lab.map((item: { titelname: any; }, index: React.Key | null | undefined) => (
                                                                 <th key={index} className='text-center'>{item.titelname || `Lab`}</th>
                                                             ))}
@@ -271,6 +275,9 @@ export default function index() {
                                                                 />
                                                             </td>
                                                             <td className='text-center'>{dataUser.extra}</td>
+                                                            {dataUser.namesub == "Object Oriented Programming" && 
+                                                            <td className='text-center'>{dataUser.kahoot}</td>
+                                                            }
                                                             {dataUser.lab.map((item: { point: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; teachid: string; update_at: any; type: string }, index: React.Key | null | undefined) => (
 
                                                                 <td key={index} className='text-center'>
@@ -291,7 +298,7 @@ export default function index() {
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
-                                                            <th colSpan={dataUser.lab.length + 2} className='text-center font-bold'>
+                                                            <th colSpan={dataUser.lab.length + 3} className='text-center font-bold'>
                                                                 คะแนนทั้งหมด
                                                                 {(() => {
                                                                     const totalPoints = dataUser.lab.reduce((sum: number, item: { point: any; }) => {

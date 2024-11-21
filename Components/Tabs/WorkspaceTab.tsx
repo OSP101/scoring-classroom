@@ -17,6 +17,9 @@ import Link from 'next/link';
 const FormExtra = dynamic(() => import('../Forms/FormExtra'), {
     loading: () => <Spinner color="secondary" />,
 });
+const FormKahoot = dynamic(() => import('../Forms/FormKahoot'), {
+    loading: () => <Spinner color="secondary" />,
+});
 const FormEnter = dynamic(() => import('../Forms/FormEnter'), {
     loading: () => <Spinner color="secondary" />,
 });
@@ -57,6 +60,7 @@ export default function WorkspaceTab(idcourse: any) {
     const [dataTopic, setDataTopic] = useState<Topics[]>([])
     const [visible, setVisible] = useState(false);
     const [extraPoint, setExtraPoint] = useState(false);
+    const [kahootPoint, setKahootPoint] = useState(false);
     const [data, setData] = useState<Works>();
     const [statusUpdate, setStatusUpdate] = useState(false);
     const [selected, setSelected] = React.useState("enter");
@@ -454,21 +458,59 @@ export default function WorkspaceTab(idcourse: any) {
                 </Dropdown>
             </div>
 
-            <Listbox
-                aria-label="Actions"
-                onAction={(key) => setExtraPoint(true)}
-            >
-                <ListboxItem
-                    key="extra"
-                    description={`คะแนนพิเศษตอบคำถามในชั้นเรียน`}
-                    startContent={<FaStar className='text-xl text-default-500 pointer-events-none flex-shrink-0 star-icon' />}
-                    className='py-3 my-3  shadow-sm border border-x-gray-200 border-y-gray-200'
-                    color='secondary'
-                    variant='flat'
+            {idcourse.idcourse == "CP421024" ?
+                <div>
+                    <Listbox
+                        aria-label="Actions"
+                        onAction={(key) => setExtraPoint(true)}
+                    >
+                        <ListboxItem
+                            key="extra"
+                            description={`คะแนนพิเศษตอบคำถามในชั้นเรียน`}
+                            startContent={<FaStar className='text-xl text-default-500 pointer-events-none flex-shrink-0 star-icon' />}
+                            className='py-3  shadow-sm border border-x-gray-200 border-y-gray-200'
+                            color='secondary'
+                            variant='flat'
+                        >
+                            คะแนนพิเศษ (Extra points)
+                        </ListboxItem>
+                    </Listbox>
+
+                    <Listbox
+                        aria-label="Actions"
+                        onAction={(key) => setKahootPoint(true)}
+                    >
+                        <ListboxItem
+                            key="extra"
+                            description={`คะแนนพิเศษ Kahoot ในชั้นเรียน`}
+                            startContent={<FaStar className='text-xl text-default-500 pointer-events-none flex-shrink-0 star-icon' />}
+                            className='py-3 mb-2  shadow-sm border border-x-gray-200 border-y-gray-200'
+                            color='secondary'
+                            variant='flat'
+                        >
+                            คะแนน Kahoot!
+                        </ListboxItem>
+                    </Listbox>
+                </div>
+                :
+                <Listbox
+                    aria-label="Actions"
+                    onAction={(key) => setExtraPoint(true)}
                 >
-                    คะแนนพิเศษ (Extra points)
-                </ListboxItem>
-            </Listbox>
+                    <ListboxItem
+                        key="extra"
+                        description={`คะแนนพิเศษตอบคำถามในชั้นเรียน`}
+                        startContent={<FaStar className='text-xl text-default-500 pointer-events-none flex-shrink-0 star-icon' />}
+                        className='py-3 my-3 shadow-sm border border-x-gray-200 border-y-gray-200'
+                        color='secondary'
+                        variant='flat'
+                    >
+                        คะแนนพิเศษ (Extra points)
+                    </ListboxItem>
+                </Listbox>
+            }
+
+
 
             <Accordion variant="splitted" selectionMode="multiple" defaultExpandedKeys={["1", "2"]}>
                 <AccordionItem key="1" aria-label="งานเดี่ยว" title="งานเดี่ยว">
@@ -643,6 +685,18 @@ export default function WorkspaceTab(idcourse: any) {
 
                     <div className="flex flex-col w-full">
                         <FormExtra idcourse={idcourse.idcourse} />
+                    </div>
+
+                </ModalContent>
+            </Modal>
+
+            {/* Modal สำหรับกรอกคะแนน Kahoot */}
+            <Modal isOpen={kahootPoint} onClose={() => setKahootPoint(false)} placement="top-center" className={kanit.className} isDismissable={false} isKeyboardDismissDisabled={true}>
+                <ModalContent>
+                    <ModalHeader className="flex flex-col gap-1">คะแนน Kahoot! {idcourse.idcourse}</ModalHeader>
+
+                    <div className="flex flex-col w-full">
+                        <FormKahoot idcourse={idcourse.idcourse} />
                     </div>
 
                 </ModalContent>

@@ -28,6 +28,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                         JOIN course ON course.idcourse = enllo.idcourse
                     `, [subject.idcourse, subject.idcourse, scoreapi]);
 
+                    // ดึงข้อมูล Extra และข้อมูลผู้ใช้
+                    let [data3] = await promisePool.query(`
+                                            SELECT COALESCE(COUNT(kahoot_point.stdid), 0) AS point 
+                                            FROM users 
+                                            LEFT JOIN kahoot_point ON users.stdid = kahoot_point.stdid AND kahoot_point.idcourse = ? 
+                                            JOIN enllo ON enllo.stdid = users.stdid AND enllo.idcourse = ? AND users.stdid = ? 
+                                            JOIN course ON course.idcourse = enllo.idcourse
+                                        `, [subject.idcourse, subject.idcourse, scoreapi]);
+
                     for (const item of lad) {
                         let [data2] = await promisePool.query(`
                             SELECT tw.name AS titelname, COALESCE(p.point, '-') AS point , p.teachid,p.update_at,p.type
@@ -53,6 +62,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                             email: data1[0].email,
                             section: data1[0].section,
                             extra: data1[0].point,
+                            kahoot: data3[0].point,
                             coute: couter * 100 / lab.length,
                             lab
                         });
