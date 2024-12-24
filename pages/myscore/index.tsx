@@ -13,6 +13,8 @@ import { ThemeSwitcher } from '@/Components/Theme';
 import Footer from '@/Components/Footer';
 import { css } from '@emotion/react'
 import Typography from '@mui/material/Typography';
+import Snowfall from 'react-snowfall';
+import AnimatedCharacters from '../../Components/AnimatedCharacters';
 
 export default function index() {
 
@@ -123,6 +125,7 @@ export default function index() {
 
     return (
         <div className={kanit.className}>
+            <Snowfall />
             <Head>
                 <title>Myscore - Scoring Classroom</title>
                 <meta name="robots" content="index,follow"></meta>
