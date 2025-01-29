@@ -10,9 +10,9 @@ const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', 
 export default function index() {
     return (
         <>
-                    <Head>
-          <title>404 Page not found - Scoring Classroom</title>
-        </Head>
+            <Head>
+                <title>404 Page not found - Scoring Classroom</title>
+            </Head>
             <div className={`hero bg-base-200 min-h-screen ${kanit.className}`}>
                 <div className="hero-content flex-col lg:flex-row">
                     <Image src={`/404.svg`} alt='404' width={300} height={300} />
