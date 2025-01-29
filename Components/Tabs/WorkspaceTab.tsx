@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Tabs, Tab, Chip, Spinner, Listbox, ListboxItem, Accordion, AccordionItem, DatePicker, Breadcrumbs, BreadcrumbItem, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, DropdownSection, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input } from "@nextui-org/react";
+import { Tabs, Snippet, Tab, Chip, Spinner, Listbox, ListboxItem, Accordion, AccordionItem, DatePicker, Breadcrumbs, BreadcrumbItem, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, DropdownSection, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input } from "@nextui-org/react";
 import { BsPlusLg } from "react-icons/bs";
 import { MdWork } from "react-icons/md";
 import { FaUserGroup, FaBookBookmark } from "react-icons/fa6";
@@ -550,6 +550,7 @@ export default function WorkspaceTab(idcourse: any) {
                                                             </Button>
                                                         </DropdownTrigger>
                                                         <DropdownMenu>
+                                                            <DropdownItem><Snippet>{item.id}</Snippet></DropdownItem>
                                                             <DropdownItem onPress={() => { openEdit(item.id) }}>แก้ไข</DropdownItem>
                                                             <DropdownItem className="text-danger" color="danger" onPress={() => { openDelete(item.id) }}>ลบ</DropdownItem>
                                                         </DropdownMenu>
