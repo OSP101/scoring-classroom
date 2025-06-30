@@ -1,7 +1,7 @@
 // components/ThemeSwitcher.tsx
 import { useTheme } from "next-themes";
 import React, { useEffect, useState } from "react";
-import { Switch } from "@nextui-org/react";
+import { Switch } from "@heroui/react";
 import { MoonIcon } from "./Icons/MoonIcon";
 import { SunIcon } from "./Icons/SunIcon";
 

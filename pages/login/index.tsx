@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React, { Key } from "react";
-import { Tabs, Tab, Input, Link, Button, Card, CardBody, CardHeader, Image } from "@nextui-org/react";
+import { Tabs, Tab, Input, Link, Button, Card, CardBody, CardHeader, Image } from "@heroui/react";
 import Head from 'next/head'
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useEffect,useState,useRef } from 'react'

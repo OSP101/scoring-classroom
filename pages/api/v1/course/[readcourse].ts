@@ -14,7 +14,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             let rows;
 
             [rows] = await promisePool.query(
-                'SELECT * FROM caretaker JOIN course ON course.idcourse = caretaker.idcourse WHERE caretaker.stdid = ?',
+                `SELECT 
+                    co.id,
+                    c.stdid,
+                    s.id as idcourse,
+                    s.name,
+                    co.image,
+                    s.description,
+                    co.year,
+                    co.semester,
+                    co.status
+                FROM caretaker c
+                JOIN course_offerings co ON c.idcourse COLLATE utf8mb4_unicode_ci = co.id
+                JOIN subjects s ON co.subject_id = s.id
+                WHERE c.stdid = ? AND co.status = 'o'
+                ORDER BY co.year DESC, co.semester DESC`,
                 readcourse
             );
 

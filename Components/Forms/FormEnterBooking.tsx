@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Autocomplete, AutocompleteItem, Avatar, Button, Input, Spinner, Divider, RadioGroup, Radio, cn, Card, CardHeader, CardBody, CardFooter } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem, Avatar, Button, Input, Spinner, Divider, RadioGroup, Radio, cn, Card, CardHeader, CardBody, CardFooter } from "@heroui/react";
 import axios from 'axios';
 import { Prompt } from "next/font/google";
 import { useSession } from "next-auth/react"

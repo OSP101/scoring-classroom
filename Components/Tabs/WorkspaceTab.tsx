@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Tabs, Snippet, Tab, Chip, Spinner, Listbox, ListboxItem, Accordion, AccordionItem, DatePicker, Breadcrumbs, BreadcrumbItem, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, DropdownSection, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input } from "@nextui-org/react";
+import { Tabs, Snippet, Tab, Chip, Spinner, Listbox, ListboxItem, Accordion, AccordionItem, DatePicker, Breadcrumbs, BreadcrumbItem, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, DropdownSection, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input } from "@heroui/react";
 import { BsPlusLg } from "react-icons/bs";
 import { MdWork } from "react-icons/md";
 import { FaUserGroup, FaBookBookmark } from "react-icons/fa6";
@@ -119,12 +119,12 @@ export default function WorkspaceTab(idcourse: any) {
     };
 
 
-    const [valueDate, setValueDate] = React.useState<DateValue>(today(getLocalTimeZone()));
+    const [valueDate, setValueDate] = React.useState<DateValue | null>(today(getLocalTimeZone()));
 
     const [createWork, setCreateWork] = useState({
         idcourse: '',
         name: '',
-        date: `${valueDate.year}-${String(valueDate.month).padStart(2, '0')}-${String(valueDate.day).padStart(2, '0')}`,
+        date: `${valueDate?.year}-${String(valueDate?.month).padStart(2, '0')}-${String(valueDate?.day).padStart(2, '0')}`,
         maxpoint: '',
         typework: ''
     });
@@ -133,7 +133,7 @@ export default function WorkspaceTab(idcourse: any) {
         setCreateWork({
             idcourse: '',
             name: '',
-            date: `${valueDate.year}-${String(valueDate.month).padStart(2, '0')}-${String(valueDate.day).padStart(2, '0')}`,
+            date: `${valueDate?.year}-${String(valueDate?.month).padStart(2, '0')}-${String(valueDate?.day).padStart(2, '0')}`,
             maxpoint: '',
             typework: ''
         })
@@ -424,234 +424,65 @@ export default function WorkspaceTab(idcourse: any) {
     }
 
     return (
-        <div className={`container mx-auto w-full max-w-4xl pt-0 ${kanit.className}`}>
-            <Breadcrumbs variant="bordered" color='secondary' className='mt-4'>
-                <BreadcrumbItem><Link href={`/`}>Home</Link></BreadcrumbItem>
-                <BreadcrumbItem>{idcourse.idcourse}</BreadcrumbItem>
-            </Breadcrumbs>
-            <div className={`px-2 pb-4 pt-0 ${kanit.className}`}>
-                <Dropdown>
-                    <DropdownTrigger>
-                        <Button className={`bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white shadow-lg mt-6 ${kanit.className}`}>
-                            <BsPlusLg /> สร้าง
-                        </Button>
-                    </DropdownTrigger>
-                    <DropdownMenu aria-label="Static Actions" className={kanit.className}>
-                        <DropdownSection title="สร้าง">
-                            {dataTopic && dataTopic.map((item) => (
-                                <DropdownItem
-                                    key={item.id}
-                                    description={item.des}
-                                    startContent={item.id == 1 ? (<MdWork className={iconClasses} />) : (<FaUserGroup className={iconClasses} />)}
-                                    onPress={item.id == 1 ? onOpenSolo : onOpenGroup}
-                                    onAction={() => configData(item.id)}
-                                    isDisabled={item.status == 0 ? true : false}
-                                    textValue={item.name}
-                                >
-                                    {`${item.name} `}
-                                    {item.status == 0 ? <Chip color="warning" size="sm" variant="shadow">เร็ว ๆ นี้</Chip> : ""}
-                                </DropdownItem>
-                            ))}
-
-                        </DropdownSection>
-                    </DropdownMenu>
-                </Dropdown>
+        <div className={`relative min-h-screen bg-gray-50 pb-24 ${kanit.className}`}>
+            {/* Header */}
+            <div className="sticky top-0 z-10 bg-white shadow-sm px-4 py-4 flex items-center justify-between">
+                <h1 className="text-xl font-bold text-gray-800">งานทั้งหมด</h1>
+                {/* FAB for desktop */}
+                <Button onClick={onOpenSolo} className="hidden md:flex bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white text-lg rounded-full shadow-lg px-4 py-2"><BsPlusLg className="text-xl mr-2" />สร้างงาน</Button>
             </div>
 
-            {idcourse.idcourse == "CP421024" ?
-                <div>
-                    <Listbox
-                        aria-label="Actions"
-                        onAction={(key) => setExtraPoint(true)}
-                    >
-                        <ListboxItem
-                            key="extra"
-                            description={`คะแนนพิเศษตอบคำถามในชั้นเรียน`}
-                            startContent={<FaStar className='text-xl text-default-500 pointer-events-none flex-shrink-0 star-icon' />}
-                            className='py-3  shadow-sm border border-x-gray-200 border-y-gray-200'
-                            color='secondary'
-                            variant='flat'
-                        >
-                            คะแนนพิเศษ (Extra points)
-                        </ListboxItem>
-                    </Listbox>
+            {/* Tabs: งานเดี่ยว/งานกลุ่ม */}
+            <div className="w-full max-w-2xl mx-auto mt-4">
+                <Tabs fullWidth color="secondary" variant="underlined" className="rounded-xl bg-white shadow-sm">
+                    <Tab key="one" title={<span className="text-base font-semibold">งานเดี่ยว</span>}>
+                        <WorkList
+                            works={dataWorkOne}
+                            loading={!isLoadedOne}
+                            onOpen={openModalWithData}
+                            onEdit={openEdit}
+                            onDelete={openDelete}
+                            typeColor="purple"
+                            typeIcon="work"
+                        />
+                    </Tab>
+                    <Tab key="two" title={<span className="text-base font-semibold">งานกลุ่ม</span>}>
+                        <WorkList
+                            works={dataWorkTwo}
+                            loading={!isLoadedTwo}
+                            onOpen={openModalWithData}
+                            onEdit={openEdit}
+                            onDelete={openDelete}
+                            typeColor="pink"
+                            typeIcon="group"
+                        />
+                    </Tab>
+                </Tabs>
+            </div>
 
-                    <Listbox
-                        aria-label="Actions"
-                        onAction={(key) => setKahootPoint(true)}
-                    >
-                        <ListboxItem
-                            key="extra"
-                            description={`คะแนนพิเศษ Kahoot ในชั้นเรียน`}
-                            startContent={<FaStar className='text-xl text-default-500 pointer-events-none flex-shrink-0 star-icon' />}
-                            className='py-3 mb-2  shadow-sm border border-x-gray-200 border-y-gray-200'
-                            color='secondary'
-                            variant='flat'
-                        >
-                            คะแนน Kahoot!
-                        </ListboxItem>
-                    </Listbox>
-                </div>
-                :
-                <Listbox
-                    aria-label="Actions"
-                    onAction={(key) => setExtraPoint(true)}
-                >
-                    <ListboxItem
-                        key="extra"
-                        description={`คะแนนพิเศษตอบคำถามในชั้นเรียน`}
-                        startContent={<FaStar className='text-xl text-default-500 pointer-events-none flex-shrink-0 star-icon' />}
-                        className='py-3 my-3 shadow-sm border border-x-gray-200 border-y-gray-200'
-                        color='secondary'
-                        variant='flat'
-                    >
-                        คะแนนพิเศษ (Extra points)
-                    </ListboxItem>
-                </Listbox>
-            }
+            {/* Floating Action Button (FAB) for mobile */}
+            <button
+                onClick={onOpenSolo}
+                className="fixed bottom-6 right-6 z-50 md:hidden bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white rounded-full shadow-lg w-16 h-16 flex items-center justify-center text-3xl hover:scale-105 transition"
+                aria-label="สร้างงานใหม่"
+            >
+                <BsPlusLg />
+            </button>
 
-
-
-            <Accordion variant="splitted" selectionMode="multiple" defaultExpandedKeys={["1", "2"]}>
-                <AccordionItem key="1" aria-label="งานเดี่ยว" title="งานเดี่ยว">
-                    {!isLoadedOne ? (
-                        <>
-                            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                <CircularProgress color="inherit" />
-                            </Box>
-                        </>
-                    ) : (
-                        <>
-                            {dataWorkOne.length > 0 ? (
-                                <Listbox
-                                    items={dataWorkOne}
-                                    aria-label="Dynamic Actions"
-                                    onAction={(label) => openModalWithData(label.toString())}
-                                    className={kanit.className}
-                                >
-                                    {dataWorkOne.map((item) => {
-                                        const date = new Date(item.date);
-                                        const formattedDate = !isNaN(date.getTime()) ? date.toLocaleDateString('th-TH', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric'
-                                        }) : "Invalid Date";
-
-                                        return (
-                                            <ListboxItem
-                                                key={item.id}
-                                                color='secondary'
-                                                variant='flat'
-                                                endContent={
-                                                    <Dropdown>
-                                                        <DropdownTrigger>
-                                                            <Button isIconOnly size="sm" variant="light">
-                                                                <VerticalDotsIcon className="text-default-500" />
-                                                            </Button>
-                                                        </DropdownTrigger>
-                                                        <DropdownMenu>
-                                                            <DropdownItem><Snippet>{item.id}</Snippet></DropdownItem>
-                                                            <DropdownItem onPress={() => { openEdit(item.id) }}>แก้ไข</DropdownItem>
-                                                            <DropdownItem className="text-danger" color="danger" onPress={() => { openDelete(item.id) }}>ลบ</DropdownItem>
-                                                        </DropdownMenu>
-                                                    </Dropdown>
-                                                }
-                                                description={formattedDate}
-                                                startContent={<FaBookBookmark className={iconClasses} />}
-                                                showDivider
-                                            >
-                                                {item.name}
-                                            </ListboxItem>
-                                        );
-                                    })}
-                                </Listbox>
-
-                            ) : (
-                                <>
-                                    <p className='text-center text-sm font-light mb-3'>ไม่พบงาน</p>
-                                </>
-                            )}
-
-                        </>
-                    )}
-
-                </AccordionItem>
-                <AccordionItem key="2" aria-label="งานกลุ่ม" title="งานกลุ่ม">
-                    {!isLoadedTwo ? (
-                        <>
-                            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                <CircularProgress color="inherit" />
-                            </Box>
-                        </>
-                    ) : (
-                        <>
-                            {dataWorkTwo.length > 0 ? (
-                                <Listbox
-                                    items={dataWorkTwo}
-                                    aria-label="Dynamic Actions"
-                                    onAction={(label) => openModalWithData(label.toString())}
-                                    className={kanit.className}
-                                >
-                                    {dataWorkTwo.map((item) => {
-                                        const date = new Date(item.date);
-                                        const formattedDate = !isNaN(date.getTime()) ? date.toLocaleDateString('th-TH', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric'
-                                        }) : "Invalid Date";
-
-                                        return (
-                                            <ListboxItem
-                                                key={item.id}
-                                                color={"default"}
-                                                endContent={
-                                                    <Dropdown>
-                                                        <DropdownTrigger>
-                                                            <Button isIconOnly size="sm" variant="light">
-                                                                <VerticalDotsIcon className="text-default-500" />
-                                                            </Button>
-                                                        </DropdownTrigger>
-                                                        <DropdownMenu>
-                                                            <DropdownItem onPress={() => { openEdit(item.id) }}>แก้ไข</DropdownItem>
-                                                            <DropdownItem className="text-danger" color="danger" onPress={() => { openDelete(item.id) }}>ลบ</DropdownItem>
-                                                        </DropdownMenu>
-                                                    </Dropdown>
-                                                }
-                                                description={formattedDate}
-                                                startContent={<FaBookBookmark className={iconClasses} />}
-                                                showDivider
-                                            >
-                                                {item.name}
-                                            </ListboxItem>
-                                        );
-                                    })}
-                                </Listbox>
-
-                            ) : (
-                                <>
-                                    <p className='text-center text-sm font-light mb-3'>ไม่พบงาน</p>
-                                </>
-                            )}
-
-                        </>
-                    )}
-                </AccordionItem>
-            </Accordion>
-
-            {/* Alrt สำหรับแจ้งว่าสร้างสำเร็จ */}
-            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+            {/* Snackbar/Alert */}
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
                 <Alert
                     onClose={handleClose}
                     severity="success"
                     variant="filled"
-                    sx={{ width: '100%' }}
+                    sx={{ width: '100%', fontSize: '1.1rem', py: 2 }}
                     className={kanit.className}
                 >
                     <p className={kanit.className}>{dataAlert}</p>
                 </Alert>
             </Snackbar>
 
-            {/* Modal สำหรับกรอกคะแนน แก้ไขคะแนน */}
+            {/* Modal สำหรับกรอกคะแนน/แก้ไขคะแนน/สร้างงาน (คง logic เดิม) */}
             <Modal isOpen={visible} onClose={() => setVisible(false)} size='sm' placement="top-center" className={kanit.className} isDismissable={false} isKeyboardDismissDisabled={true} >
                 <ModalContent>
                     <ModalHeader className="flex flex-col gap-1">{data?.name}</ModalHeader>
@@ -863,4 +694,61 @@ export default function WorkspaceTab(idcourse: any) {
             </Modal>
         </div>
     )
+}
+
+// WorkList: Card list for each tab
+function WorkList({ works, loading, onOpen, onEdit, onDelete, typeColor, typeIcon }: any) {
+    if (loading) {
+        return <div className="flex justify-center py-8"><CircularProgress color="inherit" /></div>;
+    }
+    if (!works || works.length === 0) {
+        return <p className="text-center text-gray-400 py-8">ไม่พบงาน</p>;
+    }
+    return (
+        <div className="divide-y divide-gray-200 bg-white rounded-xl shadow-sm overflow-hidden">
+            {works.map((item: any) => {
+                const date = new Date(item.date);
+                const formattedDate = !isNaN(date.getTime()) ? date.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' }) : "Invalid Date";
+                return (
+                    <div
+                        key={item.id}
+                        className={`flex items-center px-3 py-4 hover:bg-${typeColor}-50 active:bg-${typeColor}-100 transition group cursor-pointer`}
+                        onClick={() => onOpen(item.id.toString())}
+                        tabIndex={0}
+                        role="button"
+                        aria-label={`ดูรายละเอียด ${item.name}`}
+                    >
+                        {/* Icon */}
+                        <div className={`flex-shrink-0 mr-4 rounded-full bg-${typeColor}-100 w-12 h-12 flex items-center justify-center`}>
+                            {typeIcon === "work" ? (
+                                <MdWork className={`text-2xl text-${typeColor}-500`} />
+                            ) : (
+                                <FaUserGroup className={`text-2xl text-${typeColor}-500`} />
+                            )}
+                        </div>
+                        {/* Name & Details */}
+                        <div className="flex-1 min-w-0">
+                            <div className="text-base font-medium text-gray-900 truncate">{item.name}</div>
+                            <div className="text-xs text-gray-500 mt-1 md:hidden">โพสต์เมื่อ {formattedDate}</div>
+                        </div>
+                        {/* Date (desktop) */}
+                        <div className="hidden md:block text-sm text-gray-500 mr-4">
+                            โพสต์เมื่อ {formattedDate}
+                        </div>
+                        {/* 3 Dots */}
+                        <Dropdown onClick={e => e.stopPropagation()}>
+                            <DropdownTrigger>
+                                <Button isIconOnly variant="light" className="text-gray-500 group-hover:bg-gray-200"><VerticalDotsIcon /></Button>
+                            </DropdownTrigger>
+                            <DropdownMenu aria-label="เมนูงาน">
+                                <DropdownItem key="detail" onPress={() => onOpen(item.id.toString())}>ดูรายละเอียด</DropdownItem>
+                                <DropdownItem key="edit" onPress={() => onEdit(item.id)}>แก้ไข</DropdownItem>
+                                <DropdownItem key="delete" onPress={() => onDelete(item.id)} className="text-danger" color="danger">ลบ</DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </div>
+                );
+            })}
+        </div>
+    );
 }

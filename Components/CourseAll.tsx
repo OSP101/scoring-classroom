@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import Link from 'next/link';
 import { Prompt } from "next/font/google";
 import Image from 'next/image'
-// import {Image} from "@nextui-org/react";
+// import {Image} from "@heroui/react";
 
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
 
@@ -16,6 +16,9 @@ export default function CourseAll({ session }: { session: any }) {
         name: string;
         image: string;
         description: string;
+        year: number;
+        semester: number;
+        status: string;
     }
     const [dataCourses, setDataCourses] = useState<Course[]>([]);
     useEffect(() => {
@@ -51,11 +54,16 @@ export default function CourseAll({ session }: { session: any }) {
     return (
         <>
             {dataCourses.map((course) => (
-                <Link href={`/c/${course.idcourse}`} className={`card card-compact bg-base-100 shadow-xl mx-4 md:mx-0 ${kanit.className}`}>
+                <Link href={`/c/${course.id}`} className={`card card-compact bg-base-100 shadow-xl mx-4 md:mx-0 ${kanit.className}`}>
                     <figure className="object-cover w-full h-full" ><Image src={`/${course.image}`} alt={course.name} width={244} height={168} className="object-cover w-full h-full" priority={true} fetchPriority='auto' /></figure>
 
                     <div className="card-body">
-                        <div className="badge badge-secondary badge-outline badge-sm">{course.idcourse}</div>
+                        <div>
+                            <div className="badge badge-secondary badge-outline badge-sm">{course.idcourse}</div>
+                            <div className="badge badge-secondary badge-outline badge-sm mx-1">ปีการศึกษา {course.year}</div>
+                            <div className="badge badge-secondary badge-outline badge-sm">เทอม {course.semester}</div>
+                        </div>
+
                         <p className="truncate text-xl font-medium hover:underline">{course.name}</p>
                         <p className='font-light'>{course.description}</p>
                     </div>

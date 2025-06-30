@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useSession, signIn, signOut } from "next-auth/react"
 import Head from 'next/head'
-import { Tabs, Tab, Button } from "@nextui-org/react";
+import { Tabs, Tab, Button } from "@heroui/react";
 import { Prompt } from "next/font/google";
 import dynamic from 'next/dynamic'
 import LinearProgress from '@mui/material/LinearProgress';
@@ -25,6 +25,10 @@ const theme = createTheme({
     },
 });
 
+
+const OverviewTab = dynamic(() => import('@/Components/Tabs/OverviewTab'), {
+    loading: () => <LinearProgress color="secondary" />,
+});
 
 const WorkspaceTab = dynamic(() => import('@/Components/Tabs/WorkspaceTab'), {
     loading: () => <LinearProgress color="secondary" />,
@@ -97,7 +101,7 @@ export default function CourseDetail() {
                 </Head>
                 {/* <NavbarComponent /> */}
 
-                <div className={`flex w-full flex-col ${kanit.className} static `}>
+                <div className={`flex w-full flex-col ${kanit.className} static`}>
                     <Tabs
                         aria-label="Options"
                         variant="underlined"
@@ -109,6 +113,19 @@ export default function CourseDetail() {
                         }}
                     >
                         {/* <LinearProgress /> */}
+                        <Tab
+                            key="overview"
+                            title={
+                                <div className="flex items-center space-x-2">
+                                    <span>ภาพรวม</span>
+                                </div>
+                            }
+                            className='py-0'
+                        >
+                            <div className='overflow-y-scroll custom-h-screen-minus-16'>
+                                <OverviewTab idcouesr={id?.toString() || ""} />
+                            </div>
+                        </Tab>
                         <Tab
                             key="workspace"
                             title={

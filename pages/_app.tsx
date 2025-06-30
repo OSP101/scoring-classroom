@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { SessionProvider, useSession } from "next-auth/react"
-import { NextUIProvider } from "@nextui-org/system";
+import { HeroUIProvider } from "@heroui/system";
 import NavbarComponent from "@/Components/Navbar/Nav";
 import { useEffect } from "react";
 import Script from "next/script";
@@ -43,7 +43,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
       />
 
       <SessionProvider session={session}>
-        <NextUIProvider >
+        <HeroUIProvider >
           <NextThemesProvider attribute="class" defaultTheme="light" enableSystem={true}>
             <meta name="google-site-verification" content="F6z6ihjP_j_3j1lcrmvdMGhCkhwdjdclCuxmQ4C9I68" />
             <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7427071385649225" crossOrigin="anonymous"></script>
@@ -52,7 +52,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
               <Component {...pageProps} />
             </NavWrapper>
           </NextThemesProvider>
-        </NextUIProvider>
+        </HeroUIProvider>
       </SessionProvider>
     </>
   )

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Chip, Divider, DropdownSection } from "@heroui/react";
 import { signOut } from 'next-auth/react';
 import { useSession, signIn } from "next-auth/react"
 import { Prompt } from "next/font/google";
@@ -12,17 +12,20 @@ const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', 
 export default function NavbarComponent() {
     const { data: session } = useSession()
 
+    console.log(session?.user?.usertype);
+
     return (
         <div className={`${kanit.className} sticky top-0 z-10`}>
             <Navbar isBordered maxWidth="2xl" isBlurred={false}>
                 <NavbarContent justify="start">
                     <NavbarBrand className="mr-4">
-                        <Link href='/'><p className="sm:block font-bold text-inherit">Scoring <span className='from-[#FF1CF7] to-[#b249f8] bg-clip-text text-transparent bg-gradient-to-b inline'>Classroom</span></p></Link>
+                        <Link href='/'><p className="sm:block mr-2 font-bold text-inherit">Scoring <span className='from-[#FF1CF7] to-[#b249f8] bg-clip-text text-transparent bg-gradient-to-b inline'>Classroom</span></p></Link>
+                        <Chip isDisabled size="sm" variant="flat">{process.env.NEXT_PUBLIC_VER || 'v2.7.10'}</Chip>
                     </NavbarBrand>
                 </NavbarContent>
 
                 <NavbarContent as="div" className="items-center" justify="end">
-                    <ThemeSwitcher/>
+                    <ThemeSwitcher />
                     <Dropdown placement="bottom-end" className={kanit.className}>
                         <DropdownTrigger>
                             <Avatar
@@ -35,15 +38,36 @@ export default function NavbarComponent() {
                                 src={session?.user?.image || `https://i.pravatar.cc/150?u=a042581f4e29026704d`}
                             />
                         </DropdownTrigger>
-                        <DropdownMenu aria-label="Profile Actions" variant="flat">
-                            <DropdownItem key="profile" className="h-14 gap-2">
-                                <p className="font-semibold">{session?.user?.name || undefined}</p>
-                                <p className="font-light">{session?.user?.email || undefined}</p>
-                            </DropdownItem>
-                            <DropdownItem key="logout" color="danger" onPress={() => signOut({ callbackUrl: '/login' })}>
-                                ออกจากระบบ
-                            </DropdownItem>
-                        </DropdownMenu>
+                        {session?.user?.usertype === 0 ?
+                            <DropdownMenu aria-label="Profile Actions" variant="flat">
+                                <DropdownSection showDivider aria-label="Profile & Actions">
+                                <DropdownItem key="profile" className="h-14 gap-2">
+                                    <p className="font-semibold">{session?.user?.name || undefined} <Chip color="warning" variant="bordered" size="sm">{session?.user?.usertype === 0 ? "Teacher" : "TA"}</Chip></p>
+                                    <p className="font-light">{session?.user?.email || undefined}</p>
+                                </DropdownItem>
+                                </DropdownSection>
+                                <DropdownItem key="admin" onPress={() => window.open("/admin/users", "_blank")}>
+                                    จัดการผู้ใช้
+                                </DropdownItem>
+                                <DropdownItem key="logout" color="danger" onPress={() => signOut({ callbackUrl: '/login' })}>
+                                    ออกจากระบบ
+                                </DropdownItem>
+                                
+                            </DropdownMenu>
+                            :
+                            <DropdownMenu aria-label="Profile Actions" variant="flat">
+                                <DropdownSection showDivider aria-label="Profile & Actions">
+                                <DropdownItem key="profile" className="h-14 gap-2">
+                                    <p className="font-semibold">{session?.user?.name || undefined} <Chip color="warning" variant="bordered" size="sm">{session?.user?.usertype === 0 ? "Teacher" : "TA"}</Chip></p>
+                                    <p className="font-light">{session?.user?.email || undefined}</p>
+                                </DropdownItem>
+                                </DropdownSection>
+                                <DropdownItem key="logout" color="danger" onPress={() => signOut({ callbackUrl: '/login' })}>
+                                    ออกจากระบบ
+                                </DropdownItem>
+                                
+                            </DropdownMenu>
+                        }
                     </Dropdown>
 
                 </NavbarContent>

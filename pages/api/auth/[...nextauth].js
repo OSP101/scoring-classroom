@@ -1,6 +1,8 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import axios from 'axios'
+import CredentialsProvider from "next-auth/providers/credentials";
+import { logActivity } from "../../../lib/logger";
 
 export const authOptions = {
   providers: [
@@ -47,7 +49,8 @@ export const authOptions = {
         if (apiResponse.data) {
           session.user = {
             ...session.user,
-            stdid: apiResponse.data[0].stdid
+            stdid: apiResponse.data[0].stdid,
+            usertype: Number(apiResponse.data[0].type)
           };
         }
 
@@ -56,7 +59,23 @@ export const authOptions = {
         console.error('Error fetching user data from API:', error);
         return session;
       }
-    }
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.stdid = user.stdid;
+        token.type = user.type;
+      }
+      return token;
+    },
+  },
+  events: {
+    async signIn(message) {
+      if (message.isNewUser) {
+        await logActivity(message.user.stdid, 'USER_REGISTER', { provider: message.account.provider });
+      } else {
+        await logActivity(message.user.stdid, 'USER_LOGIN', { provider: message.account.provider });
+      }
+    },
   }
 };
 export default NextAuth(authOptions);

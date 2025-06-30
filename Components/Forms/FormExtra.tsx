@@ -1,6 +1,6 @@
 import React, { useState, useEffect,useRef } from 'react'
 import axios from 'axios';
-import { Autocomplete, AutocompleteItem, Avatar, Button, dateInput, Input, ModalBody, ModalFooter, Spinner } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem, Avatar, Button, dateInput, Input, ModalBody, ModalFooter, Spinner } from "@heroui/react";
 import { Prompt } from "next/font/google";
 import { SearchIcon } from '../Icons/SearchIcon';
 import { useSession } from "next-auth/react"

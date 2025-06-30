@@ -4,6 +4,7 @@ import { useSession, signIn, signOut } from "next-auth/react"
 import React, { useEffect } from "react";
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router';
+import WatermarkOverlay from "@/Components/WatermarkOverlay";
 
 const CourseAll = dynamic(() => import('@/Components/CourseAll'), {
   loading: () => <Loading />,
@@ -41,7 +42,8 @@ export default function Home() {
 
         </Head>
         {/* <NavbarComponent /> */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 container mx-auto mt-4">
+        {/* <WatermarkOverlay name={session?.user?.name || ""} email={session?.user?.email || ""} /> */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 container mx-auto mt-4">
           <CourseAll session={session} />
         </div>
       </>

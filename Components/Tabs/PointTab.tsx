@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { Tooltip, Input, Link, Progress, Button } from "@nextui-org/react";
+import { Tooltip, Input, Link, Progress, Button } from "@heroui/react";
 import Image from 'next/image';
 import { Prompt } from "next/font/google";
 import { FaUserGroup } from "react-icons/fa6";

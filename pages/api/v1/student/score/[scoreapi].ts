@@ -10,32 +10,43 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         var lab = []
         try {
             const promisePool = mysqlPool.promise();
-            let [subjects] = await promisePool.query('SELECT idcourse FROM enllo WHERE stdid =  ?', [scoreapi]);
+            let [subjects] = await promisePool.query(`
+                SELECT DISTINCT co.id as offering_id, s.id as idcourse, s.name as course_name
+                FROM enllo e
+                JOIN course_offerings co ON e.idcourse COLLATE utf8mb4_unicode_ci = co.subject_id
+                JOIN subjects s ON co.subject_id = s.id
+                WHERE e.stdid = ? AND co.status = 'o'
+            `, [scoreapi]);
+            
             if (subjects.length > 0) {
                 for (const subject of subjects) {
                     let lab = [];
                     let couter = 0;
-                    // ดึงข้อมูล Lab
-                    let [lad] = await promisePool.query('SELECT id, name FROM titelwork WHERE idcourse = ? AND delete_at IS NULL', [subject.idcourse]);
-                    let [status] = await promisePool.query('SELECT status FROM course WHERE idcourse = ?', [subject.idcourse]);
+                    // ดึงข้อมูล Lab - updated to use course_offering_id
+                    let [lad] = await promisePool.query('SELECT id, name FROM titelwork WHERE idcourse COLLATE utf8mb4_unicode_ci = ? AND delete_at IS NULL', [subject.offering_id]);
+                    let [status] = await promisePool.query('SELECT status FROM course_offerings WHERE id = ?', [subject.offering_id]);
 
-                    // ดึงข้อมูล Extra และข้อมูลผู้ใช้
+                    // ดึงข้อมูล Extra และข้อมูลผู้ใช้ - updated to use new structure
                     let [data1] = await promisePool.query(`
-                        SELECT users.*, course.name AS namesub, COALESCE(COUNT(extra_point.stdid), 0) AS point 
+                        SELECT users.*, s.name AS namesub, COALESCE(COUNT(extra_point.stdid), 0) AS point 
                         FROM users 
-                        LEFT JOIN extra_point ON users.stdid = extra_point.stdid AND extra_point.idcourse = ? 
-                        JOIN enllo ON enllo.stdid = users.stdid AND enllo.idcourse = ? AND users.stdid = ? 
-                        JOIN course ON course.idcourse = enllo.idcourse
-                    `, [subject.idcourse, subject.idcourse, scoreapi]);
+                        LEFT JOIN extra_point ON users.stdid = extra_point.stdid AND extra_point.idcourse COLLATE utf8mb4_unicode_ci = ? 
+                        JOIN enllo ON enllo.stdid = users.stdid AND enllo.idcourse COLLATE utf8mb4_unicode_ci = ? AND users.stdid = ? 
+                        JOIN course_offerings co ON enllo.idcourse COLLATE utf8mb4_unicode_ci = co.subject_id
+                        JOIN subjects s ON co.subject_id = s.id
+                        WHERE co.id = ?
+                    `, [subject.offering_id, subject.idcourse, scoreapi, subject.offering_id]);
 
-                    // ดึงข้อมูล Extra และข้อมูลผู้ใช้
+                    // ดึงข้อมูล Extra และข้อมูลผู้ใช้ - updated to use new structure
                     let [data3] = await promisePool.query(`
-                                            SELECT COALESCE(COUNT(kahoot_point.stdid), 0) AS point 
-                                            FROM users 
-                                            LEFT JOIN kahoot_point ON users.stdid = kahoot_point.stdid AND kahoot_point.idcourse = ? 
-                                            JOIN enllo ON enllo.stdid = users.stdid AND enllo.idcourse = ? AND users.stdid = ? 
-                                            JOIN course ON course.idcourse = enllo.idcourse
-                                        `, [subject.idcourse, subject.idcourse, scoreapi]);
+                        SELECT COALESCE(COUNT(kahoot_point.stdid), 0) AS point 
+                        FROM users 
+                        LEFT JOIN kahoot_point ON users.stdid = kahoot_point.stdid AND kahoot_point.idcourse COLLATE utf8mb4_unicode_ci = ? 
+                        JOIN enllo ON enllo.stdid = users.stdid AND enllo.idcourse COLLATE utf8mb4_unicode_ci = ? AND users.stdid = ? 
+                        JOIN course_offerings co ON enllo.idcourse COLLATE utf8mb4_unicode_ci = co.subject_id
+                        JOIN subjects s ON co.subject_id = s.id
+                        WHERE co.id = ?
+                    `, [subject.offering_id, subject.idcourse, scoreapi, subject.offering_id]);
 
                     for (const item of lad) {
                         let [data2] = await promisePool.query(`
@@ -44,8 +55,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                             LEFT JOIN points p ON e.stdid = p.stdid AND p.idtitelwork = ? 
                             LEFT JOIN titelwork tw ON p.idtitelwork = tw.id AND tw.delete_at IS NULL 
                             JOIN users ON e.stdid = users.stdid 
-                            WHERE e.idcourse = ? AND (tw.id = ? OR tw.id IS NULL) AND users.stdid = ?
-                        `, [item.id, subject.idcourse, item.id, scoreapi]);
+                            JOIN course_offerings co ON e.idcourse COLLATE utf8mb4_unicode_ci = co.subject_id
+                            WHERE co.id = ? AND (tw.id = ? OR tw.id IS NULL) AND users.stdid = ?
+                        `, [item.id, subject.offering_id, item.id, scoreapi]);
                         lab.push(data2[0]);
                         if (data2[0].point !== "0") {
                             couter += 1;

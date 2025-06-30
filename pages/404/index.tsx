@@ -2,7 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import { Prompt } from "next/font/google";
 import Link from 'next/link';
-import { Tabs, Tab, Button } from "@nextui-org/react";
+import { Tabs, Tab, Button } from "@heroui/react";
 import Head from 'next/head'
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
 

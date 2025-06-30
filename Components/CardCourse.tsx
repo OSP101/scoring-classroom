@@ -2,7 +2,7 @@ import Link from 'next/link';
 import React from 'react'
 import { Prompt } from "next/font/google";
 import Image from 'next/image'
-// import {Image} from "@nextui-org/react";
+// import {Image} from "@heroui/react";
 
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
 
