@@ -84,7 +84,7 @@ export default function WorkspaceTab(idcourse: any) {
     const [idEdit, setIdEdit] = useState(0);
     const [editDetail, setEditDetail] = useState({
         id: 0,
-        idcourse: '',
+        idcourse: idcourse.idcourse,
         name: '',
         date: today(getLocalTimeZone()).toString(),
         maxpoint: 0,
@@ -122,7 +122,7 @@ export default function WorkspaceTab(idcourse: any) {
     const [valueDate, setValueDate] = React.useState<DateValue | null>(today(getLocalTimeZone()));
 
     const [createWork, setCreateWork] = useState({
-        idcourse: '',
+        idcourse: idcourse.idcourse,
         name: '',
         date: `${valueDate?.year}-${String(valueDate?.month).padStart(2, '0')}-${String(valueDate?.day).padStart(2, '0')}`,
         maxpoint: '',
@@ -131,7 +131,7 @@ export default function WorkspaceTab(idcourse: any) {
 
     const setzero = () => {
         setCreateWork({
-            idcourse: '',
+            idcourse: idcourse.idcourse,
             name: '',
             date: `${valueDate?.year}-${String(valueDate?.month).padStart(2, '0')}-${String(valueDate?.day).padStart(2, '0')}`,
             maxpoint: '',
@@ -145,7 +145,7 @@ export default function WorkspaceTab(idcourse: any) {
 
         setEditDetail({
             id: 0,
-            idcourse: '',
+            idcourse: idcourse.idcourse,
             name: '',
             date: "",
             maxpoint: 0,
@@ -161,10 +161,11 @@ export default function WorkspaceTab(idcourse: any) {
     };
 
     const configData = (e: any) => {
+        console.log(e);
         setCreateWork({
             ...createWork,
             idcourse: idcourse.idcourse,
-            typework: e
+            typework: '1'
         });
     }
 
@@ -429,7 +430,7 @@ export default function WorkspaceTab(idcourse: any) {
             <div className="sticky top-0 z-10 bg-white shadow-sm px-4 py-4 flex items-center justify-between">
                 <h1 className="text-xl font-bold text-gray-800">งานทั้งหมด</h1>
                 {/* FAB for desktop */}
-                <Button onClick={onOpenSolo} className="hidden md:flex bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white text-lg rounded-full shadow-lg px-4 py-2"><BsPlusLg className="text-xl mr-2" />สร้างงาน</Button>
+                <Button onClick={onOpenSolo} onPress={() => configData(idcourse.idcourse)} className="hidden md:flex bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white text-lg rounded-full shadow-lg px-4 py-2"><BsPlusLg className="text-xl mr-2" />สร้างงาน</Button>
             </div>
 
             {/* Tabs: งานเดี่ยว/งานกลุ่ม */}

@@ -1,0 +1,15 @@
+version: '3'
+services:
+  booking-service:
+    container_name: booking-lab
+    restart: always
+    build: .
+    ports:
+      - "3000:3000"
+    networks:
+      - booking-network
+
+
+networks:
+  booking-network:
+    driver: bridge
