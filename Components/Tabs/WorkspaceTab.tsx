@@ -429,8 +429,15 @@ export default function WorkspaceTab(idcourse: any) {
             {/* Header */}
             <div className="sticky top-0 z-10 bg-white shadow-sm px-4 py-4 flex items-center justify-between">
                 <h1 className="text-xl font-bold text-gray-800">งานทั้งหมด</h1>
-                {/* FAB for desktop */}
-                <Button onClick={onOpenSolo} onPress={() => configData(idcourse.idcourse)} className="hidden md:flex bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white text-lg rounded-full shadow-lg px-4 py-2"><BsPlusLg className="text-xl mr-2" />สร้างงาน</Button>
+                <div className="flex gap-2">
+                    {/* ปุ่มคะแนนพิเศษ (desktop) */}
+                    <Button onClick={() => setExtraPoint(true)} className="hidden md:flex items-center bg-yellow-400 text-white text-lg rounded-full shadow-lg px-4 py-2">
+                        <FaStar className="text-xl mr-2" />
+                        คะแนนพิเศษ
+                    </Button>
+                    {/* ปุ่มสร้างงาน (desktop) */}
+                    <Button onClick={onOpenSolo} onPress={() => configData(idcourse.idcourse)} className="hidden md:flex bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white text-lg rounded-full shadow-lg px-4 py-2"><BsPlusLg className="text-xl mr-2" />สร้างงาน</Button>
+                </div>
             </div>
 
             {/* Tabs: งานเดี่ยว/งานกลุ่ม */}
@@ -462,13 +469,27 @@ export default function WorkspaceTab(idcourse: any) {
             </div>
 
             {/* Floating Action Button (FAB) for mobile */}
-            <button
-                onClick={onOpenSolo}
-                className="fixed bottom-6 right-6 z-50 md:hidden bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white rounded-full shadow-lg w-16 h-16 flex items-center justify-center text-3xl hover:scale-105 transition"
-                aria-label="สร้างงานใหม่"
-            >
-                <BsPlusLg />
-            </button>
+            <div className="fixed bottom-6 right-6 z-50 md:hidden flex flex-col gap-3 items-end">
+                {/* ปุ่มคะแนนพิเศษ (mobile) */}
+                <button
+                    onClick={() => setExtraPoint(true)}
+                    className="bg-yellow-400 text-white rounded-full shadow-lg w-16 h-16 flex items-center justify-center text-2xl hover:scale-105 transition"
+                    aria-label="คะแนนพิเศษ"
+                >
+                    <FaStar />
+                </button>
+                {/* ปุ่มสร้างงาน (mobile) */}
+                <button
+                    onClick={() => {
+                        onOpenSolo();
+                        configData(idcourse.idcourse);
+                    }}
+                    className="bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white rounded-full shadow-lg w-16 h-16 flex items-center justify-center text-3xl hover:scale-105 transition"
+                    aria-label="สร้างงานใหม่"
+                >
+                    <BsPlusLg />
+                </button>
+            </div>
 
             {/* Snackbar/Alert */}
             <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
