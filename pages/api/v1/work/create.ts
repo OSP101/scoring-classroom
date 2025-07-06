@@ -7,7 +7,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (req.method === "POST") {
         const { idcourse, name, date, maxpoint, typework } = req.body;
-        console.log(idcourse ,name,date,maxpoint);
 
         if (!idcourse || !name || !date || !maxpoint) {
             return res.status(400).json({ error: 'All fields are required and section must be an array' });

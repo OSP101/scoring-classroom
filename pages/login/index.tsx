@@ -22,7 +22,6 @@ export default function App() {
 
     const handleSubmit = async () => {
         refTurnstile.current?.reset();
-        console.log('submitted!');
     }
 
     const copyrightStyle = css`

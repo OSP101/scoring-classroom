@@ -199,6 +199,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             `SELECT 
                 u.stdid,
                 u.name,
+                u.image,
+                u.email,
                 (COUNT(CASE WHEN p.point > 0 THEN 1 END) / COUNT(t.id)) * 100 as submissionRate,
                 COUNT(CASE WHEN p.point > 0 THEN 1 END) as submittedCount,
                 COUNT(t.id) as totalAssignments

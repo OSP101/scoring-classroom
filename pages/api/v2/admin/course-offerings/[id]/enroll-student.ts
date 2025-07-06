@@ -89,7 +89,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             }
 
             const offering = offeringRows[0];
-            console.log('Course offering found:', offering);
 
             // Check if student exists
             const [studentRows]: [any[], any] = await promisePool.query(
@@ -101,8 +100,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 return res.status(404).json({ message: 'Student not found.' });
             }
 
-            console.log('Student found:', studentRows[0]);
-
             // Check if already enrolled
             const [enrollmentRows]: [any[], any] = await promisePool.query(
                 'SELECT id FROM enllo WHERE stdid = ? AND idcourse = ?',
@@ -113,23 +110,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 return res.status(409).json({ message: 'Student is already enrolled in this course.' });
             }
 
-            console.log('Enrolling student:', studentId, 'to course offering:', offering.id);
-
             // Enroll student
             await promisePool.query(
                 'INSERT INTO enllo (idcourse, stdid, type) VALUES (?, ?, ?)',
                 [offering.id, studentId, 2]
             );
 
-            console.log('Student enrolled successfully');
-
             // Create initial points (0) for all existing assignments in this course
             const [assignments]: [any[], any] = await promisePool.query(
                 'SELECT id, maxpoint FROM titelwork WHERE idcourse = ? AND delete_at IS NULL',
                 [offering.id]
             );
-
-            console.log('Found assignments for course:', assignments.length);
 
             if (assignments.length > 0) {
                 // Get a default teacher (first teacher in the course)
@@ -158,14 +149,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                             'INSERT INTO points (stdid, teachid, idtitelwork, point, type) VALUES (?, ?, ?, ?, ?)',
                             [studentId, defaultTeacher, assignment.id, 0, '']
                         );
-                        console.log(`Created initial point (0) for assignment ${assignment.id} (${assignment.maxpoint} max)`);
-                    } else {
-                        console.log(`Point already exists for assignment ${assignment.id}`);
                     }
                 }
             }
-
-            console.log('Initial points creation completed');
 
             res.status(201).json({ 
                 message: 'Student enrolled successfully',
@@ -173,7 +159,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             });
 
         } catch (error) {
-            console.error('Error enrolling student:', error);
             res.status(500).json({ message: 'Internal Server Error' });
         }
     } else {

@@ -3,10 +3,13 @@ import { mysqlPool } from '../../../../../utils/db';
 import { authenticateApiKey } from '../../../../../lib/auth';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-    const { stdid } = req.query;
+    const { stdid, idcourse } = req.query;
 
     if (!stdid || typeof stdid !== 'string') {
         return res.status(400).json({ message: 'Student ID is required.' });
+    }
+    if (!idcourse || typeof idcourse !== 'string') {
+        return res.status(400).json({ message: 'Course offering ID (idcourse) is required.' });
     }
 
     try {
@@ -100,11 +103,28 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             courseScores = scoreData;
         }
 
+        // 5. Fetch assignments and scores for this course and student
+        let assignments: any[] = [];
+        const [assignmentRows]: [any[], any] = await promisePool.query(
+            `SELECT 
+                tw.id AS assignmentId,
+                tw.name,
+                tw.maxpoint,
+                COALESCE(p.point, 0) AS score
+            FROM titelwork tw
+            LEFT JOIN points p ON tw.id = p.idtitelwork AND p.stdid = ?
+            WHERE tw.idcourse = ?
+            ORDER BY tw.id ASC`,
+            [stdid, idcourse]
+        );
+        assignments = assignmentRows;
+
         res.status(200).json({
             profile: userProfile,
             enrolledCourses: courseRows,
             activityLogs: logRows,
             courseScores: courseScores,
+            assignments: assignments,
         });
 
     } catch (error) {

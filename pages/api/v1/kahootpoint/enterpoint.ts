@@ -7,7 +7,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (req.method === "POST") {
         const { inputData, idc, idTeach, point } = req.body;
-        console.log(inputData, idc, idTeach, point)
         try {
         const promisePool = mysqlPool.promise()
         let rows; 
@@ -18,8 +17,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         );
 
             res.status(200).json({ message: 'Pount added successfully' });
-
-        // console.log(rows)
 
         } catch (err) {
             res.status(500).json({ error: err });

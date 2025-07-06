@@ -12,8 +12,6 @@ const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', 
 export default function NavbarComponent() {
     const { data: session } = useSession()
 
-    console.log(session?.user?.usertype);
-
     return (
         <div className={`${kanit.className} sticky top-0 z-10`}>
             <Navbar isBordered maxWidth="2xl" isBlurred={false}>
@@ -21,6 +19,9 @@ export default function NavbarComponent() {
                     <NavbarBrand className="mr-4">
                         <Link href='/'><p className="sm:block mr-2 font-bold text-inherit">Scoring <span className='from-[#FF1CF7] to-[#b249f8] bg-clip-text text-transparent bg-gradient-to-b inline'>Classroom</span></p></Link>
                         <Chip isDisabled size="sm" variant="flat">{process.env.NEXT_PUBLIC_VER || 'v2.7.10'}</Chip>
+                        <Link href='/blog/v2.1.0' className='relative max-w-fit min-w-min items-center justify-between box-border whitespace-nowrap px-1 h-6 text-sm font-sm ml-3 rounded-full text-primary-600 hidden sm:flex bg-default-200/50 border-1 hover:bg-default-200/80 border-default-400/50 cursor-pointer'>
+                        <span className="flex-1 px-2 text-foreground text-xs">Scoring Classroom v2.2.0&nbsp;<span aria-label="emoji" role="img">🔥</span></span>
+                        </Link>
                     </NavbarBrand>
                 </NavbarContent>
 

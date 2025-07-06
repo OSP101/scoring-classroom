@@ -16,7 +16,6 @@ interface FormEnterProps {
 
 const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, studentId }) => {
     
-    console.log(idcourse, idtitelwork, studentId)
     
     interface Students {
         stdid: string;
@@ -110,7 +109,6 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, studentId 
             }
             const dataCourses: Works[] = await responseone.json();
             const dataFind = dataCourses.find(dataCourse => dataCourse.id == parseInt(idtitelwork, 10));
-            console.log(dataCourses);
             sedDataWorkOne(dataFind);
         } catch (error) {
             console.error('Error fetching courses:', error);
@@ -158,7 +156,6 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, studentId 
                     }
                 }
             );
-            console.log(response.data.length);
             setDataCheck(response.data.data);
             if (response.data.length > 0) {
                 setStatusCheck(true)
@@ -219,8 +216,6 @@ const FormEnter: React.FC<FormEnterProps> = ({ idcourse, idtitelwork, studentId 
                     }
                 }
             );
-            console.log(response.data);
-            // setDataCheck(response.data.data);
 
             if (response.status === 201) {
                 onInputChange("");

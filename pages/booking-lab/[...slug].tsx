@@ -12,7 +12,6 @@ const FormEnter = dynamic(() => import('../../Components/Forms/FormEnterBooking'
 export default function Page() {
     const router = useRouter()
     const param = router.query.slug;
-    console.log(param)
   // ตรวจสอบว่า param มีค่าหรือไม่
   if (!param || !Array.isArray(param) || param.length < 3) {
     return <div>Invalid parameters</div>;

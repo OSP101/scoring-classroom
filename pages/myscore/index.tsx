@@ -40,12 +40,6 @@ export default function index() {
     // console.warn('%cคำเตือน!', 'background: yellow; color: red; font-size: 20px; font-weight: bold;');
     // console.warn(`การใช้คอนโซลนี้อาจทำให้ผู้โจมตีสามารถแอบอ้างตัวเป็นคุณและขโมยข้อมูลของคุณได้โดยใช้การโจมตีที่เรียกว่า Self-XSS อย่าป้อนหรือวางโค้ดที่คุณไม่เข้าใจ`);
     // console.warn('%cและขอเตือนว่าอย่าพยายามทำนอกเหนือการใช้งาน เพราะระบบได้ตรวจจับการทำงานไว้แล้ว!', 'text-decoration: underline; background: yellow; color: red; font-size: 10px; font-weight: bold;')
-    console.log(
-        '%c คำเตือน! ' +
-        '%c การใช้คอนโซลนี้อาจทำให้ผู้โจมตีสามารถแอบอ้างตัวคุณได้โดยใช้การโจมตีที่เรียกว่า Self-XSS อย่าป้อนหรือวางโค้ดที่คุณไม่เข้าใจ และเตือนว่าอย่าพยายามทำนอกเหนือการใช้งาน เพราะระบบได้ตรวจจับการทำงานไว้แล้ว!',
-        'background: #ffff00; color: #ff0000; font-size: 18px; font-weight: bold; padding: 2px;',
-        'color: white; background: #444; font-size: 14px; padding: 2px;'
-    );
     interface Users {
         stdid: string;
         name: string;
@@ -137,7 +131,7 @@ export default function index() {
         if (!isClient) return;
 
         const seen = localStorage.getItem('seenBannerModal');
-        console.log('Banner modal check:', { seen, hasApiKey: !!process.env.NEXT_PUBLIC_API_KEY });
+        // console.log('Banner modal check:', { seen, hasApiKey: !!process.env.NEXT_PUBLIC_API_KEY });
         
         if (!seen) {
             fetch('/api/v2/admin/announcement', {
@@ -146,7 +140,7 @@ export default function index() {
                 }
             })
                 .then(res => {
-                    console.log('Banner API response status:', res.status);
+                    // console.log('Banner API response status:', res.status);
                     return res.json();
                 })
                 .then(data => {
@@ -155,18 +149,18 @@ export default function index() {
                         setBanners(data);
                         setBannerModalOpen(true);
                     } else {
-                        console.log('No banners found or empty response');
+                        // console.log('No banners found or empty response');
                         // Show modal even if no banners for testing
                         setBannerModalOpen(true);
                     }
                 })
                 .catch(error => {
-                    console.error('Error fetching banners:', error);
+                    // console.error('Error fetching banners:', error);
                     // Show modal even on error for testing
                     setBannerModalOpen(true);
                 });
         } else {
-            console.log('Banner modal already seen');
+            // console.log('Banner modal already seen');
         }
     }, [isClient]);
 
@@ -190,7 +184,7 @@ export default function index() {
     useEffect(() => {
         if (isClient) {
             (window as any).resetBannerModal = resetBannerModal;
-            console.log('💡 Tip: Run resetBannerModal() in console to test banner modal');
+            // console.log('💡 Tip: Run resetBannerModal() in console to test banner modal');
         }
     }, [isClient]);
 

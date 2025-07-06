@@ -1,0 +1,66 @@
+[
+    {
+        "version": "v2.0.0",
+        "title": "🎉 Introducing Scoring Classroom Version 2.0 🚀",
+        "date": "2025-06-30",
+        "author": "OSP101",
+        "image": "/blog/blog-2-0-0.png",
+        "highlights": [
+          "✨ Added the Overview tab for each course",
+          "👩‍🏫👨‍🎓 Added teacher and student enrollment to courses",
+          "🛠️ New admin backend dashboard"
+        ],
+        "details": [
+          {
+            "title": "📊 Course Overview Tab",
+            "desc": "We developed a brand new Overview tab to give you a beautiful summary of each course! See how your students are doing, track assignment trends, and get a quick snapshot of your class at a glance. 📈"
+          },
+          {
+            "title": "👩‍🏫👨‍🎓 Add Teachers & Students to Courses",
+            "desc": "Now you can easily add teachers and students directly from the course page! Add multiple users at once (as long as they already exist in the system) for faster and more convenient course management. 🚀"
+          },
+          {
+            "title": "🛠️ Admin Backend Dashboard",
+            "desc": "Say hello to the new admin backend for Scoring Classroom! Manage courses, add or remove users, view system logs, and upload course banners—all in one place. 🖥️"
+          }
+        ],
+        "breakingChanges": []
+      },
+      {
+        "version": "v2.1.0",
+        "title": "📝 Scoring Classroom v2.1.0 – Blog, Student Insights & More!",
+        "date": "2025-07-01",
+        "author": "OSP101",
+        "image": "/blog/blog-2-1-0.png",
+        "highlights": [
+          "📰 Added a beautiful Changelog Blog for version updates",
+          "👀 Student 'Needs Attention' modal with detailed assignment scores",
+          "📊 Per-assignment student score insights",
+          "🖼️ Blog supports cover images and grid layout",
+          "✨ UI/UX improvements and bug fixes"
+        ],
+        "details": [
+          {
+            "title": "📰 Changelog Blog",
+            "desc": "We launched a brand new Changelog Blog! Now you can easily browse all the latest updates, features, and improvements for Scoring Classroom in a beautiful, searchable blog format. Each version has its own page, highlights, and cover image! 🎨"
+          },
+          {
+            "title": "👀 Student 'Needs Attention' Modal",
+            "desc": "Click on any student in the 'Needs Attention' section to see a detailed modal popup! Instantly view their profile and a table of all their assignment scores—see which assignments are missing and how they're performing. 📋"
+          },
+          {
+            "title": "📊 Per-Assignment Student Score Insights",
+            "desc": "Get a clear breakdown of each student's scores for every assignment. If a score is above 0, it means the assignment was submitted. If it's 0, it's still missing. This makes it easier than ever to support students who need help! 💡"
+          },
+          {
+            "title": "🖼️ Blog Cover Images & Grid Layout",
+            "desc": "Our blog now supports beautiful cover images for each version and displays all changelogs in a modern, responsive grid layout. Your updates have never looked better! 🖼️"
+          },
+          {
+            "title": "✨ UI/UX Improvements & Bug Fixes",
+            "desc": "We polished the interface, improved responsiveness, and fixed minor bugs for a smoother experience all around. 🛠️"
+          }
+        ],
+        "breakingChanges": []
+      }
+] 

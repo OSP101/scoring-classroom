@@ -26,7 +26,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             LIMIT 1
         `, detailcourse)
 
-        console.log(rows)
         res.status(200).json(rows)
 
         } catch (err) {

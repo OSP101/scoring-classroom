@@ -338,7 +338,6 @@ export default function PersonTab(idcouesr: any) {
                     if (res.ok) {
                         progress[student.stdid] = 'success';
                         successCount++;
-                        console.log(`Successfully enrolled ${student.name} (${student.stdid})`);
                     } else {
                         progress[student.stdid] = 'error';
                         errorCount++;
@@ -410,7 +409,7 @@ export default function PersonTab(idcouesr: any) {
                 </TableHeader>
                 <TableBody
                     items={dataTeacher ?? []}
-                    loadingContent={<Spinner />}
+                    loadingContent={<Spinner variant="wave" label="Loading..." />}
                     loadingState={statusLoadTeach ? "idle" : "loading"}
                     emptyContent={"ไม่พบอาจารย์ผู้สอน"}
                 >
@@ -454,7 +453,7 @@ export default function PersonTab(idcouesr: any) {
                 </TableHeader>
                 <TableBody
                     items={dataStudent ?? []}
-                    loadingContent={<Spinner />}
+                    loadingContent={<Spinner variant="wave" label="Loading..." />}
                     loadingState={statusLoadStudent ? "idle" : "loading"}
                     emptyContent={"ไม่พบนักศึกษา"}
                 >

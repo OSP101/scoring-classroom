@@ -88,9 +88,6 @@ export default function EditTab(idcouesr: any) {
     var idedit = newData;
     if (idmodal === 1) {
       const dataFind = dataEditOne.find(work => work.id == parseInt(newData, 10));
-      console.log("IDFind",newData)
-      console.log("dataEditOne",dataEditOne)
-      console.log("dataFind",dataFind)
       setData(dataFind);
       setVisible(true);
     } else if (idmodal === 2) {
@@ -103,7 +100,6 @@ export default function EditTab(idcouesr: any) {
       setVisibleTree(true);
     }
 
-    // console.log(dataFind)
   };
 
 
@@ -126,7 +122,6 @@ export default function EditTab(idcouesr: any) {
       }
     })
 
-    console.log({idedit: data?.id, idpoints: data?.idpoint, point: data?.pointedit}) 
   }
 
   const submitreject = async () => {
@@ -147,8 +142,6 @@ export default function EditTab(idcouesr: any) {
         getData();
       }
     })
-
-    // console.log({idedit: data?.id, des: valueReject}) 
 
   }
 
@@ -172,8 +165,6 @@ export default function EditTab(idcouesr: any) {
                     aria-label="Dynamic Actions"
                     className={kanit.className}
                     onAction={(key) => {
-                      // const selectedItem = dataEditOne.find(item => item.id.toString() === key.toString());
-                      console.log("Key",key.toString())  
                       openModalWithData(key.toString(), 1);
                     }}
                   >

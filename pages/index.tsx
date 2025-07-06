@@ -22,8 +22,6 @@ export default function Home() {
 
   }, [loading, session, router]);
 
-  console.log(session?.expires)
-
   if (session) {
     return (
       <>

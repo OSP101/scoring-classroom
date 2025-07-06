@@ -7,7 +7,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (req.method === "POST") {
         const { idcourse } = req.body;
-        console.log(idcourse)
         try {
             const promisePool = mysqlPool.promise()
             let rows;
@@ -55,8 +54,6 @@ WHERE edit_point.idcourse = ?`,
             const newData = [dataOne,dataTwo,dataTree]
 
             res.status(200).json(newData);
-
-            // console.log(rows)
 
         } catch (err) {
             res.status(500).json({ error: err });

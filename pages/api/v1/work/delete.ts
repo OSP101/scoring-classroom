@@ -10,7 +10,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const dateNow = "deleted"
         // console.log(data.section);
 
-        console.log(dateNow,id)
 
         try {
             const promisePool = mysqlPool.promise()

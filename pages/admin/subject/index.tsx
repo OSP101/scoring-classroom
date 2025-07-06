@@ -1222,7 +1222,7 @@ export default function App() {
                                         <label className="text-sm font-medium">Course Image</label>
                                         <div className="flex items-center gap-4">
                                             <Avatar
-                                                src={addImagePreview || "/uploads/1750614287730_images-cp.png"}
+                                                src={addImagePreview || "/uploads/logo-cp.png"}
                                                 className="w-20 h-20 text-large"
                                                 showFallback
                                                 name="Course"

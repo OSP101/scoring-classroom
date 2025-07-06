@@ -7,7 +7,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (req.method === "POST") {
         const { stdid, idcourse } = req.body;
-        console.log(stdid, idcourse)
         try {
         const promisePool = mysqlPool.promise()
         let rows; 
@@ -18,8 +17,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         );
 
             res.status(200).json(rows);
-
-        // console.log(rows)
 
         } catch (err) {
             res.status(500).json({ error: err });

@@ -29,7 +29,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 }
                 await promisePool.query('INSERT INTO enllo (idopen, stdid, type) VALUES (?, ?, ?)',
                 [idopen, stdid, type]);
-                console.log(idopen, stdid, type);
 
             res.status(200).json({message: 'Enllo added successfully'});
             }

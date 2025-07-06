@@ -9,8 +9,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { enlloall } = req.query;
     const data = [];
 
-    console.log(enlloall)
-
     try {
         const promisePool = mysqlPool.promise()
         const [ResultCourse] = await promisePool.query(
@@ -23,7 +21,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 'SELECT * FROM enllo JOIN users ON users.stdid = enllo.stdid WHERE enllo.idopen = ?',
                 [EnlloCourse.id]
             );
-            console.log({name:EnlloCourse.name ,data:ResultEnllo})
             data.push({name:EnlloCourse.name ,data:ResultEnllo});
         }
 

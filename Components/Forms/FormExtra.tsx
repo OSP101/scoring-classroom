@@ -87,9 +87,9 @@ export default function FormExtra(idcourse: any) {
             setInputData("");
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                console.log(error.message);
+                // console.log(error.message);
             } else {
-                console.log('An unexpected error occurred');
+                // console.log('An unexpected error occurred');
             }
         }
 

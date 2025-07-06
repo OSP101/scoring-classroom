@@ -22,6 +22,20 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
 
     };
   }, [router.events]);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // คำเตือนสีเหลืองพื้นแดง
+      console.log(
+        '%cคำเตือน!',
+        'background: yellow; color: red; font-size: 2rem; font-weight: bold; padding: 4px 12px;'
+      );
+      // ข้อความเตือนหลัก
+      console.log(
+        '%cการใช้คอนโซลนี้อาจทำให้ผู้โจมตีสามารถแอบอ้างตัวเป็นคุณและขโมยข้อมูลของคุณได้โดยใช้การโจมตีที่เรียกว่า Self-XSS\nอย่าป้อนหรือวางโค้ดที่คุณไม่เข้าใจ',
+        'font-size: 1.2rem; color: white; background: black; padding: 4px 8px;'
+      );
+    }
+  }, []);
   return (
     <>
       <Script
