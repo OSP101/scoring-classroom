@@ -8,9 +8,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!stdid || typeof stdid !== 'string') {
         return res.status(400).json({ message: 'Student ID is required.' });
     }
-    if (!idcourse || typeof idcourse !== 'string') {
-        return res.status(400).json({ message: 'Course offering ID (idcourse) is required.' });
-    }
+    // if (!idcourse || typeof idcourse !== 'string') {
+    //     return res.status(400).json({ message: 'Course offering ID (idcourse) is required.' });
+    // }
 
     try {
         const promisePool = mysqlPool.promise();
