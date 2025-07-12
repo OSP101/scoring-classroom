@@ -34,6 +34,7 @@ interface AssignmentStats {
     improvementFromPrevious: number | null;
     notSubmittedCount: number;
     submissionTrendFromPrevious: number | null;
+    teachid: string;
 }
 
 interface CourseStats {
@@ -533,6 +534,7 @@ export default function OverviewTab({ idcouesr }: OverviewTabProps) {
                                                     <TableColumn className="text-left ">งาน</TableColumn>
                                                     <TableColumn className="text-center ">คะแนนที่ได้</TableColumn>
                                                     <TableColumn className="text-center ">คะแนนเต็ม</TableColumn>
+                                                    <TableColumn className="text-center ">ผู้ตรวจ</TableColumn>
                                                     <TableColumn className="text-center ">สถานะ</TableColumn>
                                             </TableHeader>
                                             <TableBody>
@@ -540,11 +542,14 @@ export default function OverviewTab({ idcouesr }: OverviewTabProps) {
                                                     // ใช้ studentDetail.assignments จาก backend (assignmentId, score)
                                                     const studentScore = studentDetail.assignments?.find((a: any) => a.assignmentId === assignment.id);
                                                     const score = studentScore ? studentScore.score : 0;
+                                                    const teachid = studentScore ? studentScore.teachid : '-';
+
                                                     return (
                                                         <TableRow key={assignment.id}>
                                                             <TableCell className="">{assignment.name}</TableCell>
                                                             <TableCell className=" text-center font-bold">{score}</TableCell>
                                                             <TableCell className=" text-center">{assignment.maxpoint}</TableCell>
+                                                            <TableCell className=" text-center">{teachid}</TableCell>
                                                             <TableCell className=" text-center">
                                                                 {score > 0 ? (
                                                                     <span className="text-green-600 font-medium">ส่งแล้ว</span>

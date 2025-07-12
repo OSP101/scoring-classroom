@@ -110,7 +110,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 tw.id AS assignmentId,
                 tw.name,
                 tw.maxpoint,
-                COALESCE(p.point, 0) AS score
+                COALESCE(p.point, 0) AS score,
+                p.teachid
             FROM titelwork tw
             LEFT JOIN points p ON tw.id = p.idtitelwork AND p.stdid = ?
             WHERE tw.idcourse = ?
