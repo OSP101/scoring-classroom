@@ -73,7 +73,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             
             // Get all points for this assignment (including 0 scores for non-submitted work)
             const [allPoints]: [any[], any] = await promisePool.query(
-                'SELECT point FROM points WHERE idtitelwork = ? AND delete_at = "1998-12-31 17:00:00"',
+                'SELECT point FROM points WHERE idtitelwork = ? AND delete_at = "1999-01-01 00:00:00"',
                 [assignment.id]
             );
 
@@ -179,7 +179,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
              WHERE e.idcourse = ? 
              AND u.type = 2 
              AND t.idcourse = ?
-             AND p.delete_at = "1998-12-31 17:00:00"
+             AND p.delete_at = "1999-01-01 00:00:00"
              AND p.point > 0
              GROUP BY u.stdid, u.name
              HAVING submittedCount >= 2
@@ -207,7 +207,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
              FROM users u
              JOIN enllo e ON u.stdid = e.stdid
              CROSS JOIN titelwork t
-             LEFT JOIN points p ON u.stdid = p.stdid AND p.idtitelwork = t.id AND p.delete_at = "1998-12-31 17:00:00"
+             LEFT JOIN points p ON u.stdid = p.stdid AND p.idtitelwork = t.id AND p.delete_at = "1999-01-01 00:00:00"
              WHERE e.idcourse = ? 
              AND u.type = 2 
              AND t.idcourse = ?
