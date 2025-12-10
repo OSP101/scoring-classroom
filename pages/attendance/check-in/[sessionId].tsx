@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { Card, CardBody, CardHeader, Input, Button, Chip, Spinner } from '@heroui/react';
 import { Prompt } from 'next/font/google';
-import { BsClock, BsGeoAlt, BsCheckCircle, BsXCircle, BsPinMap, BsPerson, BsKey, BsCalendar } from 'react-icons/bs';
+import { BsClock, BsGeoAlt, BsCheckCircle, BsXCircle, BsPinMap, BsPerson, BsKey, BsCalendar, BsPeople } from 'react-icons/bs';
 import CircularProgress from '@mui/material/CircularProgress';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
@@ -44,6 +44,8 @@ export default function StudentCheckIn() {
     const [gpsError, setGpsError] = useState<string | null>(null);
     const [timeRemaining, setTimeRemaining] = useState<{ hours: number; minutes: number; seconds: number } | null>(null);
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
+    const [totalStudents, setTotalStudents] = useState<number>(0);
+    const [attendanceStats, setAttendanceStats] = useState<{ present: number; total: number } | null>(null);
 
     // ดึงข้อมูล session
     const fetchSessionData = async () => {
@@ -71,11 +73,76 @@ export default function StudentCheckIn() {
 
             const sessionData = await sessionResponse.json();
             setAttendanceSession(sessionData);
+            
+            // ดึงข้อมูลจำนวนนักศึกษาทั้งหมดและสถิติการเช็คชื่อ
+            if (sessionData.course_offering_id) {
+                await Promise.all([
+                    fetchTotalStudents(sessionData.course_offering_id),
+                    fetchAttendanceStats(sessionId as string)
+                ]);
+            }
         } catch (error) {
             console.error('Error fetching session data:', error);
             showSnackbar('เกิดข้อผิดพลาดในการโหลดข้อมูล', 'error');
         } finally {
             setLoading(false);
+        }
+    };
+
+    // ดึงข้อมูลจำนวนนักศึกษาทั้งหมด (ใช้ API เดียวกับ PersonTab)
+    const fetchTotalStudents = async (courseId: string | number) => {
+        try {
+            const headers = new Headers({
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ''
+            });
+
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/enllo/person/${courseId}`,
+                {
+                    method: 'GET',
+                    headers: headers
+                }
+            );
+            
+            if (response.ok) {
+                const data = await response.json();
+                // นับจำนวนนักศึกษาจาก array ที่ได้ (กรองเฉพาะ type = 2)
+                const studentCount = Array.isArray(data) 
+                    ? data.filter((person: any) => person.type === 2).length 
+                    : 0;
+                setTotalStudents(studentCount);
+            }
+        } catch (error) {
+            console.error('Error fetching total students:', error);
+        }
+    };
+
+    // ดึงสถิติการเช็คชื่อ
+    const fetchAttendanceStats = async (sessionId: string) => {
+        try {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/attendance/records?session_id=${sessionId}&stdid=&user_type=0`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ''
+                    }
+                }
+            );
+            
+            if (response.ok) {
+                const records = await response.json();
+                if (Array.isArray(records)) {
+                    const presentCount = records.filter((r: any) => r.status === 'present').length;
+                    setAttendanceStats({
+                        present: presentCount,
+                        total: records.length
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching attendance stats:', error);
         }
     };
 
@@ -476,6 +543,37 @@ export default function StudentCheckIn() {
                                             <p className="text-3xl font-bold">{String(timeRemaining.seconds).padStart(2, '0')}</p>
                                             <p className="text-xs text-blue-100">วินาที</p>
                                         </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Attendance Statistics */}
+                            {attendanceStats && totalStudents > 0 && (
+                                <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-xl border border-purple-200">
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <div className="p-2 bg-purple-500 rounded-lg">
+                                            <BsPeople className="text-white text-lg" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="text-xs text-gray-500 mb-1">สถิติการเช็คชื่อ</p>
+                                            <div className="flex items-baseline gap-2">
+                                                <span className="text-2xl font-bold text-purple-600">
+                                                    {attendanceStats.present}
+                                                </span>
+                                                <span className="text-sm text-gray-600">/ {totalStudents}</span>
+                                            </div>
+                                            <p className="text-xs text-gray-500 mt-1">
+                                                {Math.round((attendanceStats.present / totalStudents) * 100)}% ของนักศึกษาทั้งหมด
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="w-full bg-gray-200 rounded-full h-2">
+                                        <div 
+                                            className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-500"
+                                            style={{ 
+                                                width: `${(attendanceStats.present / totalStudents) * 100}%` 
+                                            }}
+                                        />
                                     </div>
                                 </div>
                             )}

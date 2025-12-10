@@ -5,7 +5,7 @@ import {
     useDisclosure, Chip, Spinner, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
     DatePicker, Select, SelectItem, Tabs, Tab
 } from "@heroui/react";
-import { BsPlusLg, BsCheckCircle, BsXCircle, BsClock, BsGeoAlt, BsPeople, BsEye, BsCalendar, BsPinMap } from "react-icons/bs";
+import { BsPlusLg, BsCheckCircle, BsXCircle, BsClock, BsGeoAlt, BsPeople, BsEye, BsCalendar, BsPinMap, BsPencil, BsGeoAltFill, BsMap } from "react-icons/bs";
 import { Prompt } from "next/font/google";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
@@ -65,6 +65,9 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
     const [isInstructor, setIsInstructor] = useState(false);
     const [selectedSession, setSelectedSession] = useState<AttendanceSession | null>(null);
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
+    const [totalStudents, setTotalStudents] = useState<number>(0);
+    const [isCreating, setIsCreating] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
 
     // Modal states
     const { isOpen: isOpenCreate, onOpen: onOpenCreate, onClose: onCloseCreate } = useDisclosure();
@@ -93,27 +96,64 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
         longitude: ''
     });
 
-    // สร้าง PIN Code อัตโนมัติ (6 หลัก)
+    // สร้าง PIN Code อัตโนมัติ (ไม่ซ้ำกัน - ใช้ timestamp + random)
     const generatePinCode = () => {
-        return Math.floor(100000 + Math.random() * 900000).toString();
+        // ใช้ timestamp (6 หลักสุดท้าย) + random (4 หลัก) = 10 หลัก แต่แสดงแค่ 6 หลักสุดท้าย
+        const timestamp = Date.now().toString().slice(-6);
+        const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+        const combined = (timestamp + random).slice(-6);
+        return combined;
     };
 
     useEffect(() => {
         if (idcourse && session?.user?.stdid) {
             checkUserRole();
             fetchSessions();
+            fetchTotalStudents();
         }
     }, [idcourse, session]);
 
-    // สร้าง PIN Code เมื่อเปิด modal
+    // ดึงข้อมูลจำนวนนักศึกษาทั้งหมด (ใช้ API เดียวกับ PersonTab)
+    const fetchTotalStudents = async () => {
+        if (!idcourse) return;
+        
+        try {
+            const headers = new Headers({
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ''
+            });
+
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/enllo/person/${idcourse}`,
+                {
+                    method: 'GET',
+                    headers: headers
+                }
+            );
+            
+            if (response.ok) {
+                const data = await response.json();
+                // นับจำนวนนักศึกษาจาก array ที่ได้ (กรองเฉพาะ type = 2)
+                const studentCount = Array.isArray(data) 
+                    ? data.filter((person: any) => person.type === 2).length 
+                    : 0;
+                setTotalStudents(studentCount);
+            }
+        } catch (error) {
+            console.error('Error fetching total students:', error);
+        }
+    };
+
+    // สร้าง PIN Code เมื่อเปิด modal (สร้างแบบลับๆ ไม่แสดง)
     useEffect(() => {
-        if (isOpenCreate) {
+        if (isOpenCreate && !isEditing) {
+            const newPin = generatePinCode();
             setCreateForm(prev => ({
                 ...prev,
-                pin_code: generatePinCode()
+                pin_code: newPin
             }));
         }
-    }, [isOpenCreate]);
+    }, [isOpenCreate, isEditing]);
 
 
     const checkUserRole = async () => {
@@ -195,14 +235,25 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
     };
 
     const handleCreateSession = async () => {
-        if (!createForm.session_name || !createForm.pin_code) {
-            showSnackbar('กรุณากรอกข้อมูลให้ครบถ้วน', 'error');
+        if (!createForm.session_name) {
+            showSnackbar('กรุณากรอกชื่อรอบเช็คชื่อ', 'error');
+            return;
+        }
+
+        if (!createForm.latitude || !createForm.longitude) {
+            showSnackbar('กรุณาระบุตำแหน่ง GPS', 'error');
+            return;
+        }
+
+        if (!createForm.radius || parseFloat(createForm.radius) <= 0) {
+            showSnackbar('กรุณาระบุรัศมี (ต้องมากกว่า 0)', 'error');
             return;
         }
 
         const startDateTime = `${createForm.start_date.year}-${String(createForm.start_date.month).padStart(2, '0')}-${String(createForm.start_date.day).padStart(2, '0')} ${createForm.start_time}:00`;
         const endDateTime = `${createForm.end_date.year}-${String(createForm.end_date.month).padStart(2, '0')}-${String(createForm.end_date.day).padStart(2, '0')} ${createForm.end_time}:00`;
 
+        setIsCreating(true);
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/attendance/create`, {
                 method: 'POST',
@@ -214,10 +265,10 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
                     course_offering_id: idcourse,
                     created_by: session?.user?.stdid,
                     session_name: createForm.session_name,
-                    pin_code: createForm.pin_code,
+                    pin_code: createForm.pin_code || generatePinCode(),
                     latitude: createForm.latitude,
                     longitude: createForm.longitude,
-                    radius: createForm.radius ? parseFloat(createForm.radius) : null,
+                    radius: parseFloat(createForm.radius),
                     start_time: startDateTime,
                     end_time: endDateTime,
                     section_filter: null
@@ -228,6 +279,7 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
                 showSnackbar('สร้างรอบเช็คชื่อสำเร็จ', 'success');
                 onCloseCreate();
                 setMapModalOpen(false);
+                setIsEditing(false);
                 setCreateForm({
                     session_name: '',
                     pin_code: generatePinCode(),
@@ -247,7 +299,103 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
         } catch (error) {
             console.error('Error creating session:', error);
             showSnackbar('เกิดข้อผิดพลาดในการสร้างรอบเช็คชื่อ', 'error');
+        } finally {
+            setIsCreating(false);
         }
+    };
+
+    // ฟังก์ชันแก้ไข session
+    const handleEditSession = (session: AttendanceSession) => {
+        const startDate = new Date(session.start_time);
+        const endDate = new Date(session.end_time);
+        
+        setCreateForm({
+            session_name: session.session_name,
+            pin_code: session.pin_code,
+            latitude: session.latitude || null,
+            longitude: session.longitude || null,
+            radius: session.radius?.toString() || '',
+            start_date: parseDate(`${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}-${String(startDate.getDate()).padStart(2, '0')}`),
+            start_time: `${String(startDate.getHours()).padStart(2, '0')}:${String(startDate.getMinutes()).padStart(2, '0')}`,
+            end_date: parseDate(`${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, '0')}-${String(endDate.getDate()).padStart(2, '0')}`),
+            end_time: `${String(endDate.getHours()).padStart(2, '0')}:${String(endDate.getMinutes()).padStart(2, '0')}`
+        });
+        setSelectedSession(session);
+        setIsEditing(true);
+        onOpenCreate(); // ใช้ modal เดียวกัน
+    };
+
+    const handleUpdateSession = async () => {
+        if (!selectedSession) return;
+
+        if (!createForm.session_name) {
+            showSnackbar('กรุณากรอกชื่อรอบเช็คชื่อ', 'error');
+            return;
+        }
+
+        if (!createForm.latitude || !createForm.longitude) {
+            showSnackbar('กรุณาระบุตำแหน่ง GPS', 'error');
+            return;
+        }
+
+        if (!createForm.radius || parseFloat(createForm.radius) <= 0) {
+            showSnackbar('กรุณาระบุรัศมี (ต้องมากกว่า 0)', 'error');
+            return;
+        }
+
+        const startDateTime = `${createForm.start_date.year}-${String(createForm.start_date.month).padStart(2, '0')}-${String(createForm.start_date.day).padStart(2, '0')} ${createForm.start_time}:00`;
+        const endDateTime = `${createForm.end_date.year}-${String(createForm.end_date.month).padStart(2, '0')}-${String(createForm.end_date.day).padStart(2, '0')} ${createForm.end_time}:00`;
+
+        setIsCreating(true);
+        try {
+            // ต้องสร้าง API endpoint สำหรับ update session ก่อน
+            // สำหรับตอนนี้ใช้วิธีสร้างใหม่ (ต้องสร้าง API update ก่อน)
+            showSnackbar('ฟังก์ชันแก้ไขกำลังพัฒนา', 'error');
+        } catch (error) {
+            console.error('Error updating session:', error);
+            showSnackbar('เกิดข้อผิดพลาดในการแก้ไขรอบเช็คชื่อ', 'error');
+        } finally {
+            setIsCreating(false);
+        }
+    };
+
+    // ดึงตำแหน่งจากอุปกรณ์
+    const getCurrentLocation = () => {
+        if (!navigator.geolocation) {
+            showSnackbar('เบราว์เซอร์ของคุณไม่รองรับการเข้าถึงตำแหน่ง GPS', 'error');
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                setCreateForm({
+                    ...createForm,
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                });
+                showSnackbar('รับตำแหน่ง GPS สำเร็จ', 'success');
+            },
+            (error) => {
+                let errorMessage = 'ไม่สามารถรับตำแหน่ง GPS ได้';
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage = 'คุณไม่อนุญาตให้เข้าถึงตำแหน่ง GPS';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage = 'ไม่สามารถระบุตำแหน่งได้';
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage = 'หมดเวลารอการรับตำแหน่ง GPS';
+                        break;
+                }
+                showSnackbar(errorMessage, 'error');
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
     };
 
     const handleSubmitAttendance = async () => {
@@ -520,7 +668,7 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
                                                             <span className="text-3xl font-bold text-purple-600">
                                                                 {session.present_count || 0}
                                                             </span>
-                                                            <span className="text-sm text-gray-500">/ {session.total_records || 0}</span>
+                                                            <span className="text-sm text-gray-500">/ {totalStudents || session.total_records || 0}</span>
                                                         </div>
                                                         <p className="text-xs text-gray-500 mt-1">ผู้เช็คชื่อสำเร็จ</p>
                                                     </div>
@@ -529,12 +677,12 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
                                                             <div 
                                                                 className="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full transition-all duration-500"
                                                                 style={{ 
-                                                                    width: `${session.total_records ? ((session.present_count || 0) / session.total_records * 100) : 0}%` 
+                                                                    width: `${totalStudents ? ((session.present_count || 0) / totalStudents * 100) : 0}%` 
                                                                 }}
                                                             />
                                                         </div>
                                                         <p className="text-xs text-gray-500 mt-1">
-                                                            {session.total_records ? Math.round(((session.present_count || 0) / session.total_records * 100)) : 0}% ของทั้งหมด
+                                                            {totalStudents ? Math.round(((session.present_count || 0) / totalStudents * 100)) : 0}% ของทั้งหมด ({totalStudents || 0} คน)
                                                         </p>
                                                     </div>
                                                 </div>
@@ -557,6 +705,15 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
                                                     }}
                                                 >
                                                     ดูรายชื่อ
+                                                </Button>
+                                                <Button
+                                                    size="md"
+                                                    variant="flat"
+                                                    color="warning"
+                                                    startContent={<BsPencil />}
+                                                    onClick={() => handleEditSession(session)}
+                                                >
+                                                    แก้ไข
                                                 </Button>
                                                 <Button
                                                     size="md"
@@ -615,10 +772,14 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
                 )}
             </div>
 
-            {/* Create Session Modal */}
-            <Modal isOpen={isOpenCreate} onClose={onCloseCreate} size="2xl" className={kanit.className}>
+            {/* Create/Edit Session Modal */}
+            <Modal isOpen={isOpenCreate} onClose={() => {
+                onCloseCreate();
+                setIsEditing(false);
+                setSelectedSession(null);
+            }} size="2xl" className={kanit.className}>
                 <ModalContent>
-                    <ModalHeader>สร้างรอบเช็คชื่อ</ModalHeader>
+                    <ModalHeader>{isEditing ? 'แก้ไขรอบเช็คชื่อ' : 'สร้างรอบเช็คชื่อ'}</ModalHeader>
                     <ModalBody>
                         <Input
                             label="ชื่อรอบเช็คชื่อ"
@@ -627,23 +788,12 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
                             onChange={(e) => setCreateForm({ ...createForm, session_name: e.target.value })}
                             isRequired
                         />
-                        <div className="flex items-end gap-2">
+                        {/* PIN Code - สร้างแบบลับๆ ไม่แสดง */}
+                        <div className="hidden">
                             <Input
-                                label="PIN Code"
-                                placeholder="รหัส PIN สำหรับเช็คชื่อ"
-                                value={createForm.pin_code}
+                                value={createForm.pin_code || generatePinCode()}
                                 onChange={(e) => setCreateForm({ ...createForm, pin_code: e.target.value })}
-                                isRequired
-                                readOnly
-                                className="flex-1"
                             />
-                            <Button
-                                size="md"
-                                variant="flat"
-                                onClick={() => setCreateForm({ ...createForm, pin_code: generatePinCode() })}
-                            >
-                                สร้างใหม่
-                            </Button>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <DatePicker
@@ -671,51 +821,84 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
                                 onChange={(e) => setCreateForm({ ...createForm, end_time: e.target.value })}
                             />
                         </div>
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                             <div className="flex items-center justify-between">
-                                <label className="text-sm font-medium">ตำแหน่ง GPS (ไม่บังคับ)</label>
-                                <Button
-                                    size="sm"
-                                    variant="flat"
-                                    onClick={() => setMapModalOpen(true)}
-                                >
-                                    <BsGeoAlt className="mr-1" />
-                                    เลือกตำแหน่งบนแผนที่
-                                </Button>
+                                <label className="text-sm font-medium">
+                                    ตำแหน่ง GPS <span className="text-red-500">*</span>
+                                </label>
+                                <div className="flex gap-2">
+                                    <Button
+                                        size="sm"
+                                        variant="flat"
+                                        color="success"
+                                        onClick={getCurrentLocation}
+                                        startContent={<BsGeoAltFill />}
+                                    >
+                                        ดึงจากอุปกรณ์
+                                    </Button>
+                                    <Button
+                                        size="sm"
+                                        variant="flat"
+                                        onClick={() => setMapModalOpen(true)}
+                                        startContent={<BsMap />}
+                                    >
+                                        ปักหมุดบนแผนที่
+                                    </Button>
+                                </div>
                             </div>
-                            {createForm.latitude && createForm.longitude && (
-                                <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
-                                    <p>Latitude: {createForm.latitude !== null ? (typeof createForm.latitude === 'number' ? createForm.latitude.toFixed(6) : parseFloat(createForm.latitude as any)?.toFixed(6) || createForm.latitude) : '-'}</p>
-                                    <p>Longitude: {createForm.longitude !== null ? (typeof createForm.longitude === 'number' ? createForm.longitude.toFixed(6) : parseFloat(createForm.longitude as any)?.toFixed(6) || createForm.longitude) : '-'}</p>
+                            {createForm.latitude && createForm.longitude ? (
+                                <div className="text-sm text-gray-600 bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-lg border-2 border-green-200">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <BsCheckCircle className="text-green-600" />
+                                        <span className="font-semibold text-green-700">ตำแหน่งที่เลือก</span>
+                                    </div>
+                                    <p className="font-mono text-sm">
+                                        Latitude: {createForm.latitude !== null ? (typeof createForm.latitude === 'number' ? createForm.latitude.toFixed(6) : parseFloat(createForm.latitude as any)?.toFixed(6) || createForm.latitude) : '-'}
+                                    </p>
+                                    <p className="font-mono text-sm">
+                                        Longitude: {createForm.longitude !== null ? (typeof createForm.longitude === 'number' ? createForm.longitude.toFixed(6) : parseFloat(createForm.longitude as any)?.toFixed(6) || createForm.longitude) : '-'}
+                                    </p>
                                     <Button
                                         size="sm"
                                         variant="light"
                                         color="danger"
-                                        onClick={() => setCreateForm({ ...createForm, latitude: null, longitude: null })}
-                                        className="mt-2"
+                                        onClick={() => setCreateForm({ ...createForm, latitude: null, longitude: null, radius: '' })}
+                                        className="mt-3"
                                     >
                                         ลบตำแหน่ง
                                     </Button>
                                 </div>
+                            ) : (
+                                <div className="bg-yellow-50 border-2 border-yellow-200 p-3 rounded-lg">
+                                    <p className="text-sm text-yellow-700">
+                                        ⚠️ กรุณาเลือกตำแหน่ง GPS โดยกดปุ่ม "ดึงจากอุปกรณ์" หรือ "ปักหมุดบนแผนที่"
+                                    </p>
+                                </div>
                             )}
                         </div>
                         <Input
-                            label="Radius (เมตร) (ไม่บังคับ)"
+                            label="Radius (เมตร)"
                             placeholder="เช่น 100"
                             type="number"
                             value={createForm.radius}
                             onChange={(e) => setCreateForm({ ...createForm, radius: e.target.value })}
-                            description="รัศมีสำหรับตรวจสอบตำแหน่ง (ต้องระบุตำแหน่ง GPS ก่อน)"
+                            description="รัศมีสำหรับตรวจสอบตำแหน่ง (ต้องมากกว่า 0)"
+                            isRequired
                             isDisabled={!createForm.latitude || !createForm.longitude}
+                            classNames={{
+                                label: "after:content-['*'] after:text-red-500"
+                            }}
                         />
                     </ModalBody>
                     <ModalFooter>
-                        <Button variant="light" onPress={onCloseCreate}>ยกเลิก</Button>
+                        <Button variant="light" onPress={onCloseCreate} isDisabled={isCreating}>ยกเลิก</Button>
                         <Button
                             className="bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white"
                             onPress={handleCreateSession}
+                            isLoading={isCreating}
+                            isDisabled={isCreating}
                         >
-                            สร้าง
+                            {isCreating ? 'กำลังสร้าง...' : isEditing ? 'บันทึกการแก้ไข' : 'สร้าง'}
                         </Button>
                     </ModalFooter>
                 </ModalContent>
