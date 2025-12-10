@@ -5,7 +5,7 @@ import {
     useDisclosure, Chip, Spinner, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
     DatePicker, Select, SelectItem, Tabs, Tab
 } from "@heroui/react";
-import { BsPlusLg, BsCheckCircle, BsXCircle, BsClock, BsGeoAlt } from "react-icons/bs";
+import { BsPlusLg, BsCheckCircle, BsXCircle, BsClock, BsGeoAlt, BsPeople, BsEye, BsCalendar, BsPinMap } from "react-icons/bs";
 import { Prompt } from "next/font/google";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
@@ -176,7 +176,7 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
 
     const fetchRecords = async (sessionId: number) => {
         try {
-            const userType = session?.user?.usertype || 2;
+            const userType = session?.user?.usertype;
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/attendance/records?session_id=${sessionId}&stdid=${session?.user?.stdid || ''}&user_type=${userType}`,
                 {
@@ -358,6 +358,23 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
         return session.is_active === 1 && now >= start && now <= end;
     };
 
+    const getSessionStatus = (session: AttendanceSession): { text: string; color: 'success' | 'warning' | 'default' | 'danger' | 'primary' | 'secondary'; variant: 'flat' } => {
+        const now = new Date();
+        const start = new Date(session.start_time);
+        const end = new Date(session.end_time);
+        
+        if (session.is_active === 0) {
+            return { text: 'ปิดแล้ว', color: 'default', variant: 'flat' };
+        }
+        if (now < start) {
+            return { text: 'รอเปิด', color: 'warning', variant: 'flat' };
+        }
+        if (now >= start && now <= end) {
+            return { text: 'เปิดอยู่', color: 'success', variant: 'flat' };
+        }
+        return { text: 'หมดเวลา', color: 'default', variant: 'flat' };
+    };
+
     if (loading) {
         return (
             <div className="flex justify-center items-center min-h-screen">
@@ -385,71 +402,165 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
             {/* Sessions List */}
             <div className="px-4 py-4 space-y-4">
                 {sessions.length === 0 ? (
-                    <Card>
-                        <CardBody>
-                            <p className="text-center text-gray-400">ยังไม่มีรอบเช็คชื่อ</p>
+                    <Card className="border-2 border-dashed">
+                        <CardBody className="py-12">
+                            <div className="text-center">
+                                <BsCalendar className="text-6xl text-gray-300 mx-auto mb-4" />
+                                <p className="text-gray-400 text-lg">ยังไม่มีรอบเช็คชื่อ</p>
+                                {isInstructor && (
+                                    <p className="text-gray-400 text-sm mt-2">กดปุ่ม "สร้างรอบเช็คชื่อ" เพื่อเริ่มต้น</p>
+                                )}
+                            </div>
                         </CardBody>
                     </Card>
                 ) : (
-                    sessions.map((session) => (
-                        <Card key={session.id} className="hover:shadow-lg transition">
-                            <CardHeader className="flex justify-between items-start">
-                                <div className="flex-1">
-                                    <h3 className="text-lg font-semibold">{session.session_name}</h3>
-                                    <div className="flex flex-wrap gap-2 mt-2">
-                                        <Chip
-                                            size="sm"
-                                            color={isSessionOpen(session) ? 'success' : session.is_active === 1 ? 'warning' : 'default'}
-                                        >
-                                            {isSessionOpen(session) ? 'เปิดอยู่' : session.is_active === 1 ? 'รอเปิด' : 'ปิดแล้ว'}
-                                        </Chip>
-                                    </div>
-                                </div>
-                                {isInstructor && (
-                                    <Button
-                                        size="sm"
-                                        variant="light"
-                                        onClick={() => handleToggleSession(session.id, session.is_active)}
-                                    >
-                                        {session.is_active === 1 ? 'ปิด' : 'เปิด'}
-                                    </Button>
-                                )}
-                            </CardHeader>
-                            <CardBody>
-                                <div className="space-y-2 text-sm">
-                                    <div className="flex items-center gap-2">
-                                        <BsClock />
-                                        <span>{formatDateTime(session.start_time)} - {formatDateTime(session.end_time)}</span>
-                                    </div>
-                                    {session.latitude && session.longitude && (
-                                        <div className="flex items-center gap-2">
-                                            <BsGeoAlt />
-                                            <span>GPS: {session.latitude}, {session.longitude} (รัศมี: {session.radius}m)</span>
-                                        </div>
-                                    )}
-                                    {isInstructor && (
-                                        <>
-                                            <div>PIN Code: <strong>{session.pin_code}</strong></div>
-                                            <div>จำนวนผู้เช็คชื่อ: {session.present_count || 0} / {session.total_records || 0}</div>
-                                        </>
-                                    )}
-                                </div>
-                                <div className="flex gap-2 mt-4">
-                                    {isInstructor ? (
-                                        <>
-                                            <Button
+                    sessions.map((session) => {
+                        const status = getSessionStatus(session);
+                        const sessionOpen = isSessionOpen(session);
+                        const now = new Date();
+                        const start = new Date(session.start_time);
+                        const end = new Date(session.end_time);
+                        const notStarted = now < start;
+                        const expired = now > end;
+                        
+                        return (
+                            <Card 
+                                key={session.id} 
+                                className="hover:shadow-xl transition-all duration-300 border-l-4"
+                                style={{
+                                    borderLeftColor: status.color === 'success' ? '#22c55e' : 
+                                                   status.color === 'warning' ? '#f59e0b' : 
+                                                   status.color === 'default' ? '#6b7280' : '#3b82f6'
+                                }}
+                            >
+                                <CardHeader className="flex justify-between items-start pb-2">
+                                    <div className="flex-1">
+                                        <h3 className="text-xl font-bold text-gray-800 mb-2">{session.session_name}</h3>
+                                        <div className="flex flex-wrap gap-2">
+                                            <Chip
                                                 size="sm"
-                                                onClick={() => {
-                                                    setSelectedSession(session);
-                                                    fetchRecords(session.id);
-                                                    onOpenView();
-                                                }}
+                                                color={status.color as 'success' | 'warning' | 'default' | 'danger' | 'primary' | 'secondary'}
+                                                variant={status.variant}
+                                                className="font-medium"
                                             >
-                                                ดูรายชื่อ
-                                            </Button>
-                                            {isSessionOpen(session) && (
-                                                <Button
+                                                {status.text}
+                                            </Chip>
+                                            {isInstructor && (
+                                                <Chip
                                                     size="sm"
+                                                    variant="flat"
+                                                    color="secondary"
+                                                >
+                                                    PIN: {session.pin_code}
+                                                </Chip>
+                                            )}
+                                        </div>
+                                    </div>
+                                    {isInstructor && (
+                                        <Button
+                                            size="sm"
+                                            variant="light"
+                                            color={session.is_active === 1 ? 'danger' : 'success'}
+                                            onClick={() => handleToggleSession(session.id, session.is_active)}
+                                        >
+                                            {session.is_active === 1 ? 'ปิด' : 'เปิด'}
+                                        </Button>
+                                    )}
+                                </CardHeader>
+                                <CardBody className="pt-2">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        {/* Time Info */}
+                                        <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-4 rounded-lg">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <BsClock className="text-blue-600" />
+                                                <span className="font-semibold text-gray-700">ช่วงเวลา</span>
+                                            </div>
+                                            <p className="text-sm text-gray-600 mb-1">
+                                                <span className="font-medium">เริ่ม:</span> {formatDateTime(session.start_time)}
+                                            </p>
+                                            <p className="text-sm text-gray-600">
+                                                <span className="font-medium">สิ้นสุด:</span> {formatDateTime(session.end_time)}
+                                            </p>
+                                        </div>
+
+                                        {/* Location Info */}
+                                        {session.latitude && session.longitude ? (
+                                            <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-lg">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <BsPinMap className="text-green-600" />
+                                                    <span className="font-semibold text-gray-700">ตำแหน่ง GPS</span>
+                                                </div>
+                                                <p className="text-sm text-gray-600 mb-1">
+                                                    Lat: {typeof session.latitude === 'number' ? session.latitude.toFixed(6) : parseFloat(session.latitude as any)?.toFixed(6) || session.latitude}
+                                                </p>
+                                                <p className="text-sm text-gray-600">
+                                                    Lng: {typeof session.longitude === 'number' ? session.longitude.toFixed(6) : parseFloat(session.longitude as any)?.toFixed(6) || session.longitude} (รัศมี: {session.radius}m)
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            <div className="bg-gray-50 p-4 rounded-lg">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <BsGeoAlt className="text-gray-400" />
+                                                    <span className="font-semibold text-gray-500">ไม่กำหนดตำแหน่ง</span>
+                                                </div>
+                                                <p className="text-xs text-gray-400">เช็คชื่อได้ทุกที่</p>
+                                            </div>
+                                        )}
+
+                                        {/* Statistics (Instructor only) */}
+                                        {isInstructor && (
+                                            <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-lg md:col-span-2">
+                                                <div className="flex items-center gap-2 mb-3">
+                                                    <BsPeople className="text-purple-600" />
+                                                    <span className="font-semibold text-gray-700">สถิติการเช็คชื่อ</span>
+                                                </div>
+                                                <div className="flex items-center gap-6">
+                                                    <div className="flex-1">
+                                                        <div className="flex items-baseline gap-2">
+                                                            <span className="text-3xl font-bold text-purple-600">
+                                                                {session.present_count || 0}
+                                                            </span>
+                                                            <span className="text-sm text-gray-500">/ {session.total_records || 0}</span>
+                                                        </div>
+                                                        <p className="text-xs text-gray-500 mt-1">ผู้เช็คชื่อสำเร็จ</p>
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <div className="w-full bg-gray-200 rounded-full h-3">
+                                                            <div 
+                                                                className="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full transition-all duration-500"
+                                                                style={{ 
+                                                                    width: `${session.total_records ? ((session.present_count || 0) / session.total_records * 100) : 0}%` 
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <p className="text-xs text-gray-500 mt-1">
+                                                            {session.total_records ? Math.round(((session.present_count || 0) / session.total_records * 100)) : 0}% ของทั้งหมด
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Action Buttons */}
+                                    <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-200">
+                                        {isInstructor ? (
+                                            <>
+                                                <Button
+                                                    size="md"
+                                                    className="bg-gradient-to-tr from-blue-500 to-cyan-500 text-white"
+                                                    startContent={<BsEye />}
+                                                    onClick={() => {
+                                                        setSelectedSession(session);
+                                                        fetchRecords(session.id);
+                                                        onOpenView();
+                                                    }}
+                                                >
+                                                    ดูรายชื่อ
+                                                </Button>
+                                                <Button
+                                                    size="md"
+                                                    variant="flat"
                                                     color="secondary"
                                                     onClick={() => {
                                                         window.open(`/attendance/${session.id}`, '_blank');
@@ -457,26 +568,50 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
                                                 >
                                                     เปิดหน้าจอแสดง
                                                 </Button>
-                                            )}
-                                        </>
-                                    ) : (
-                                        isSessionOpen(session) && (
-                                            <Button
-                                                size="sm"
-                                                color="primary"
-                                                onClick={() => {
-                                                    setSubmitForm({ ...submitForm, session_id: session.id });
-                                                    onOpenSubmit();
-                                                }}
-                                            >
-                                                เช็คชื่อ
-                                            </Button>
-                                        )
-                                    )}
-                                </div>
-                            </CardBody>
-                        </Card>
-                    ))
+                                            </>
+                                        ) : (
+                                            <>
+                                                {sessionOpen && (
+                                                    <>
+                                                        <Button
+                                                            size="md"
+                                                            className="bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white"
+                                                            onClick={() => {
+                                                                setSubmitForm({ ...submitForm, session_id: session.id });
+                                                                onOpenSubmit();
+                                                            }}
+                                                        >
+                                                            เช็คชื่อ
+                                                        </Button>
+                                                        <Button
+                                                            size="md"
+                                                            variant="flat"
+                                                            color="primary"
+                                                            onClick={() => {
+                                                                window.open(`/attendance/check-in/${session.id}`, '_blank');
+                                                            }}
+                                                        >
+                                                            เปิดหน้าจอเช็คชื่อ
+                                                        </Button>
+                                                    </>
+                                                )}
+                                                {!sessionOpen && (
+                                                    <Button
+                                                        size="md"
+                                                        variant="flat"
+                                                        color="default"
+                                                        isDisabled
+                                                    >
+                                                        {notStarted ? 'ยังไม่ถึงเวลาเช็คชื่อ' : expired ? 'หมดเวลาเช็คชื่อแล้ว' : 'ปิดการเช็คชื่อ'}
+                                                    </Button>
+                                                )}
+                                            </>
+                                        )}
+                                    </div>
+                                </CardBody>
+                            </Card>
+                        );
+                    })
                 )}
             </div>
 
@@ -550,8 +685,8 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
                             </div>
                             {createForm.latitude && createForm.longitude && (
                                 <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
-                                    <p>Latitude: {createForm.latitude.toFixed(6)}</p>
-                                    <p>Longitude: {createForm.longitude.toFixed(6)}</p>
+                                    <p>Latitude: {createForm.latitude !== null ? (typeof createForm.latitude === 'number' ? createForm.latitude.toFixed(6) : parseFloat(createForm.latitude as any)?.toFixed(6) || createForm.latitude) : '-'}</p>
+                                    <p>Longitude: {createForm.longitude !== null ? (typeof createForm.longitude === 'number' ? createForm.longitude.toFixed(6) : parseFloat(createForm.longitude as any)?.toFixed(6) || createForm.longitude) : '-'}</p>
                                     <Button
                                         size="sm"
                                         variant="light"
@@ -587,57 +722,185 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
             </Modal>
 
             {/* View Records Modal (Instructor) */}
-            <Modal isOpen={isOpenView} onClose={onCloseView} size="4xl" className={kanit.className}>
+            <Modal isOpen={isOpenView} onClose={onCloseView} size="5xl" className={kanit.className} scrollBehavior="inside">
                 <ModalContent>
-                    <ModalHeader>
-                        รายชื่อผู้เช็คชื่อ: {selectedSession?.session_name}
+                    <ModalHeader className="flex flex-col gap-1 pb-4 border-b">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg">
+                                <BsPeople className="text-white text-xl" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-800">รายชื่อผู้เช็คชื่อ</h2>
+                                <p className="text-sm text-gray-500 mt-1">{selectedSession?.session_name}</p>
+                            </div>
+                        </div>
+                        {selectedSession && (
+                            <div className="flex flex-wrap gap-4 mt-4 pt-4 border-t">
+                                <div className="flex items-center gap-2">
+                                    <BsPeople className="text-purple-600" />
+                                    <span className="text-sm text-gray-600">
+                                        <span className="font-semibold">ทั้งหมด:</span> {records.length} คน
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <BsCheckCircle className="text-green-600" />
+                                    <span className="text-sm text-gray-600">
+                                        <span className="font-semibold">มา:</span> {records.filter(r => r.status === 'present').length} คน
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <BsXCircle className="text-red-600" />
+                                    <span className="text-sm text-gray-600">
+                                        <span className="font-semibold">ไม่มา:</span> {records.filter(r => r.status !== 'present').length} คน
+                                    </span>
+                                </div>
+                            </div>
+                        )}
                     </ModalHeader>
-                    <ModalBody>
-                        <Table aria-label="Attendance records">
-                            <TableHeader>
-                                <TableColumn>รหัสนักศึกษา</TableColumn>
-                                <TableColumn>ชื่อ</TableColumn>
-                                <TableColumn>สถานะ</TableColumn>
-                                <TableColumn>PIN</TableColumn>
-                                <TableColumn>ตำแหน่ง</TableColumn>
-                                <TableColumn>เวลา</TableColumn>
-                            </TableHeader>
-                            <TableBody>
+                    <ModalBody className="pt-6">
+                        {records.length === 0 ? (
+                            <div className="text-center py-12">
+                                <BsPeople className="text-6xl text-gray-300 mx-auto mb-4" />
+                                <p className="text-gray-400 text-lg">ยังไม่มีผู้เช็คชื่อ</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-3">
                                 {records.map((record) => (
-                                    <TableRow key={record.id}>
-                                        <TableCell>{record.stdid}</TableCell>
-                                        <TableCell>{record.student_name || '-'}</TableCell>
-                                        <TableCell>
-                                            <Chip
-                                                size="sm"
-                                                color={record.status === 'present' ? 'success' : 'danger'}
-                                            >
-                                                {record.status === 'present' ? 'มา' : 'ไม่มา'}
-                                            </Chip>
-                                        </TableCell>
-                                        <TableCell>
-                                            {record.is_valid_pin === 1 ? (
-                                                <BsCheckCircle className="text-green-500" />
-                                            ) : (
-                                                <BsXCircle className="text-red-500" />
-                                            )}
-                                        </TableCell>
-                                        <TableCell>
-                                            {record.is_valid_location === 1 ? (
-                                                <BsCheckCircle className="text-green-500" />
-                                            ) : (
-                                                <BsXCircle className="text-red-500" />
-                                            )}
-                                            {record.distance && ` (${record.distance.toFixed(2)}m)`}
-                                        </TableCell>
-                                        <TableCell>{formatDateTime(record.submitted_at)}</TableCell>
-                                    </TableRow>
+                                    <Card 
+                                        key={record.id} 
+                                        className={`border-l-4 ${
+                                            record.status === 'present' 
+                                                ? 'border-green-500 bg-green-50/50' 
+                                                : 'border-red-500 bg-red-50/50'
+                                        }`}
+                                    >
+                                        <CardBody className="p-4">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-4 flex-1">
+                                                    {/* Avatar/Icon */}
+                                                    <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                                                        record.status === 'present' 
+                                                            ? 'bg-green-100' 
+                                                            : 'bg-red-100'
+                                                    }`}>
+                                                        {record.status === 'present' ? (
+                                                            <BsCheckCircle className="text-green-600 text-2xl" />
+                                                        ) : (
+                                                            <BsXCircle className="text-red-600 text-2xl" />
+                                                        )}
+                                                    </div>
+
+                                                    {/* Student Info */}
+                                                    <div className="flex-1 min-w-0">
+                                                        <h4 className="font-semibold text-gray-800 text-lg">
+                                                            {record.student_name || 'ไม่ระบุชื่อ'}
+                                                        </h4>
+                                                        <p className="text-sm text-gray-500">{record.stdid}</p>
+                                                        {record.student_section && (
+                                                            <p className="text-xs text-gray-400 mt-1">
+                                                                Section: {record.student_section}
+                                                            </p>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Status Badge */}
+                                                    <Chip
+                                                        size="md"
+                                                        color={record.status === 'present' ? 'success' : 'danger'}
+                                                        variant="flat"
+                                                        className="font-medium"
+                                                    >
+                                                        {record.status === 'present' ? 'มา' : 'ไม่มา'}
+                                                    </Chip>
+                                                </div>
+                                            </div>
+
+                                            {/* Validation Details */}
+                                            <div className="mt-4 pt-4 border-t border-gray-200 grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                {/* PIN Validation */}
+                                                <div className="flex items-center gap-2">
+                                                    <div className={`p-2 rounded-lg ${
+                                                        record.is_valid_pin === 1 ? 'bg-green-100' : 'bg-red-100'
+                                                    }`}>
+                                                        {record.is_valid_pin === 1 ? (
+                                                            <BsCheckCircle className="text-green-600" />
+                                                        ) : (
+                                                            <BsXCircle className="text-red-600" />
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-xs text-gray-500">PIN Code</p>
+                                                        <p className={`text-sm font-medium ${
+                                                            record.is_valid_pin === 1 ? 'text-green-700' : 'text-red-700'
+                                                        }`}>
+                                                            {record.is_valid_pin === 1 ? 'ถูกต้อง' : 'ไม่ถูกต้อง'}
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                {/* Location Validation */}
+                                                <div className="flex items-center gap-2">
+                                                    <div className={`p-2 rounded-lg ${
+                                                        record.is_valid_location === 1 ? 'bg-green-100' : 'bg-red-100'
+                                                    }`}>
+                                                        {record.is_valid_location === 1 ? (
+                                                            <BsCheckCircle className="text-green-600" />
+                                                        ) : (
+                                                            <BsXCircle className="text-red-600" />
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-xs text-gray-500">ตำแหน่ง GPS</p>
+                                                        <p className={`text-sm font-medium ${
+                                                            record.is_valid_location === 1 ? 'text-green-700' : 'text-red-700'
+                                                        }`}>
+                                                            {record.is_valid_location === 1 
+                                                                ? record.distance 
+                                                                    ? `ถูกต้อง (${typeof record.distance === 'number' ? record.distance.toFixed(2) : parseFloat(record.distance as any)?.toFixed(2) || record.distance}m)` 
+                                                                    : 'ถูกต้อง'
+                                                                : 'ไม่ถูกต้อง'}
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                {/* Time */}
+                                                <div className="flex items-center gap-2">
+                                                    <div className="p-2 rounded-lg bg-blue-100">
+                                                        <BsClock className="text-blue-600" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-xs text-gray-500">เวลาเช็คชื่อ</p>
+                                                        <p className="text-sm font-medium text-gray-700">
+                                                            {formatDateTime(record.submitted_at)}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </CardBody>
+                                    </Card>
                                 ))}
-                            </TableBody>
-                        </Table>
+                            </div>
+                        )}
                     </ModalBody>
-                    <ModalFooter>
-                        <Button onPress={onCloseView}>ปิด</Button>
+                    <ModalFooter className="border-t pt-4">
+                        <Button 
+                            variant="light" 
+                            onPress={onCloseView}
+                            size="lg"
+                        >
+                            ปิด
+                        </Button>
+                        <Button 
+                            className="bg-gradient-to-tr from-[#FF1CF7] to-[#b249f8] text-white"
+                            onPress={() => {
+                                if (selectedSession) {
+                                    window.open(`/attendance/${selectedSession.id}`, '_blank');
+                                }
+                            }}
+                            size="lg"
+                        >
+                            เปิดหน้าจอแสดง
+                        </Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
@@ -693,8 +956,8 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
                             {createForm.latitude && createForm.longitude && (
                                 <div className="bg-gray-50 p-3 rounded-lg">
                                     <p className="text-sm font-medium">ตำแหน่งที่เลือก:</p>
-                                    <p className="text-sm">Latitude: {createForm.latitude.toFixed(6)}</p>
-                                    <p className="text-sm">Longitude: {createForm.longitude.toFixed(6)}</p>
+                                    <p className="text-sm">Latitude: {createForm.latitude !== null ? (typeof createForm.latitude === 'number' ? createForm.latitude.toFixed(6) : parseFloat(createForm.latitude as any)?.toFixed(6) || createForm.latitude) : '-'}</p>
+                                    <p className="text-sm">Longitude: {createForm.longitude !== null ? (typeof createForm.longitude === 'number' ? createForm.longitude.toFixed(6) : parseFloat(createForm.longitude as any)?.toFixed(6) || createForm.longitude) : '-'}</p>
                                 </div>
                             )}
                         </div>

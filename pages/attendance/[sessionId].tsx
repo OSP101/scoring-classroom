@@ -45,12 +45,11 @@ export default function AttendanceDisplay() {
     const [loading, setLoading] = useState(true);
     const [timeRemaining, setTimeRemaining] = useState<{ hours: number; minutes: number; seconds: number } | null>(null);
 
-    // ดึงข้อมูล session และ records
-    const fetchSessionData = async () => {
+    // ดึงข้อมูล session
+    const fetchSession = async () => {
         if (!sessionId) return;
 
         try {
-            // ดึงข้อมูล session โดยตรง
             const sessionResponse = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/attendance/session/${sessionId}`,
                 {
@@ -65,8 +64,16 @@ export default function AttendanceDisplay() {
                 const sessionData = await sessionResponse.json();
                 setAttendanceSession(sessionData);
             }
+        } catch (error) {
+            console.error('Error fetching session:', error);
+        }
+    };
 
-            // ดึงข้อมูล records
+    // ดึงข้อมูล records
+    const fetchRecords = async () => {
+        if (!sessionId) return;
+
+        try {
             const recordsResponse = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/attendance/records?session_id=${sessionId}&stdid=${session?.user?.stdid || ''}&user_type=0`,
                 {
@@ -76,14 +83,29 @@ export default function AttendanceDisplay() {
                     }
                 }
             );
-            const recordsData = await recordsResponse.json();
-            // เรียงลำดับตามเวลาที่เช็คชื่อ (ใหม่สุดก่อน)
-            const sortedRecords = Array.isArray(recordsData) 
-                ? recordsData.sort((a: AttendanceRecord, b: AttendanceRecord) => {
-                    return new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime();
-                })
-                : [];
-            setRecords(sortedRecords);
+            
+            if (recordsResponse.ok) {
+                const recordsData = await recordsResponse.json();
+                // เรียงลำดับตามเวลาที่เช็คชื่อ (ใหม่สุดก่อน)
+                const sortedRecords = Array.isArray(recordsData) 
+                    ? recordsData.sort((a: AttendanceRecord, b: AttendanceRecord) => {
+                        return new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime();
+                    })
+                    : [];
+                setRecords(sortedRecords);
+            }
+        } catch (error) {
+            console.error('Error fetching records:', error);
+        }
+    };
+
+    // ดึงข้อมูลทั้งหมด
+    const fetchSessionData = async () => {
+        if (!sessionId) return;
+
+        setLoading(true);
+        try {
+            await Promise.all([fetchSession(), fetchRecords()]);
         } catch (error) {
             console.error('Error fetching session data:', error);
         } finally {
@@ -125,16 +147,20 @@ export default function AttendanceDisplay() {
         }
     }, [sessionId]);
 
-    // Auto-refresh records ทุก 3 วินาที
+    // Auto-refresh records ทุก 2 วินาที (ไม่ต้อง refresh session)
     useEffect(() => {
         if (!sessionId) return;
 
+        // ดึง records ครั้งแรก
+        fetchRecords();
+
+        // Auto-refresh records ทุก 2 วินาที
         const interval = setInterval(() => {
-            fetchSessionData();
-        }, 3000); // Refresh ทุก 3 วินาที
+            fetchRecords();
+        }, 2000); // Refresh ทุก 2 วินาที
 
         return () => clearInterval(interval);
-    }, [sessionId]);
+    }, [sessionId, session]);
 
     if (loading) {
         return (

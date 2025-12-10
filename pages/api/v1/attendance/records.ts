@@ -70,7 +70,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     u.email as student_email,
                     u.section as student_section
                  FROM attendance_records r
-                 LEFT JOIN users u ON r.stdid = u.stdid
+                 LEFT JOIN users u ON r.stdid COLLATE utf8mb4_unicode_ci = u.stdid COLLATE utf8mb4_unicode_ci
                  WHERE r.session_id = ?
                  ORDER BY r.submitted_at DESC`,
                 [session_id]
@@ -97,7 +97,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     r.submitted_at,
                     r.verified_at
                  FROM attendance_records r
-                 WHERE r.session_id = ? AND r.stdid = ?
+                 WHERE r.session_id = ? AND r.stdid COLLATE utf8mb4_unicode_ci = ? COLLATE utf8mb4_unicode_ci
                  ORDER BY r.submitted_at DESC`,
                 [session_id, stdid]
             );
