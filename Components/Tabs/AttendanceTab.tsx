@@ -9,7 +9,7 @@ import { BsPlusLg, BsCheckCircle, BsXCircle, BsClock, BsGeoAlt, BsPeople, BsEye,
 import { Prompt } from "next/font/google";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import { parseDate, DateValue, today, getLocalTimeZone } from "@internationalized/date";
+import { parseDate, DateValue, today, getLocalTimeZone, CalendarDate } from "@internationalized/date";
 import CircularProgress from '@mui/material/CircularProgress';
 import dynamic from 'next/dynamic';
 
@@ -525,8 +525,8 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center min-h-screen">
-                <CircularProgress />
+            <div className="flex justify-center items-center h-64">
+                <Spinner size="lg" variant="wave" label="Loading..." />
             </div>
         );
     }
@@ -799,7 +799,7 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
                             <DatePicker
                                 label="วันเริ่มต้น"
                                 value={createForm.start_date}
-                                onChange={(date) => setCreateForm({ ...createForm, start_date: date as DateValue })}
+                                onChange={(date) => setCreateForm({ ...createForm, start_date: date as unknown as CalendarDate })}
                             />
                             <Input
                                 label="เวลาเริ่มต้น"
@@ -812,7 +812,7 @@ export default function AttendanceTab({ idcourse }: { idcourse: string | string[
                             <DatePicker
                                 label="วันสิ้นสุด"
                                 value={createForm.end_date}
-                                onChange={(date) => setCreateForm({ ...createForm, end_date: date as DateValue })}
+                                onChange={(date) => setCreateForm({ ...createForm, end_date: date as unknown as CalendarDate })}
                             />
                             <Input
                                 label="เวลาสิ้นสุด"

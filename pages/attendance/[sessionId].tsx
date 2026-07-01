@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
-import { Card, CardBody, CardHeader, Chip } from '@heroui/react';
+import { Card, CardBody, CardHeader, Chip, Spinner } from '@heroui/react';
 import { Prompt } from 'next/font/google';
 import dynamic from 'next/dynamic';
 import {
@@ -16,7 +16,6 @@ import {
 } from 'react-icons/bs';
 import CircularProgress from '@mui/material/CircularProgress';
 
-// Dynamic import สำหรับ QRCodeSVG เพื่อหลีกเลี่ยง SSR issues และแสดง Placeholder
 const QRCodeSVG = dynamic(() => import('qrcode.react').then(mod => mod.QRCodeSVG), {
     ssr: false,
     loading: () => (
@@ -26,10 +25,8 @@ const QRCodeSVG = dynamic(() => import('qrcode.react').then(mod => mod.QRCodeSVG
     ),
 });
 
-// Font
 const kanit = Prompt({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] });
 
-// Interfaces
 interface AttendanceRecord {
     id: number;
     stdid: string;
@@ -57,10 +54,23 @@ interface TimeRemaining {
     seconds: number;
 }
 
-// Utility Functions
+interface CourseStats {
+    totalStudents: number;
+    totalTeachers: number;
+    totalAssignments: number;
+    overallAvgScore: number;
+    overallSubmissionRate: number;
+    recentTrend: 'improving' | 'declining' | 'stable';
+    topPerformers: Array<{ stdid: string; name: string; avgScore: number }>;
+    needsAttention: Array<{ stdid: string; name: string; submissionRate: number }>;
+    subjectName: string;
+    subjectCode: string;
+    year: number;
+    semester: string;
+}
+
 const formatTime = (value: number) => String(value).padStart(2, '0');
 
-// Components
 const StatCard: React.FC<{
     icon: React.ReactNode;
     title: string;
@@ -107,6 +117,10 @@ export default function AttendanceDisplay() {
     const [timeRemaining, setTimeRemaining] = useState<TimeRemaining | null>(null);
     const [totalStudents, setTotalStudents] = useState<number>(0);
     const [isRecordsLoading, setIsRecordsLoading] = useState(false);
+    const [statsC, setStatsC] = useState<CourseStats | null>(null);
+        const [error, setError] = useState<string | null>(null);
+    
+    
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const apiKey = process.env.NEXT_PUBLIC_API_KEY || '';
@@ -124,10 +138,35 @@ export default function AttendanceDisplay() {
                 setAttendanceSession(sessionData);
                 if (sessionData.course_offering_id) {
                     await fetchTotalStudents(sessionData.course_offering_id);
+                    await fetchCourseStats(sessionData.course_offering_id);
                 }
             }
         } catch (error) {
             console.error('Error fetching session:', error);
+        }
+    };
+
+    const fetchCourseStats = async (courseId: string | number) => {
+        try {
+            setLoading(true);
+            const response = await fetch(`/api/v2/admin/course-offerings/${courseId}/overview`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch course statistics');
+            }
+
+            const data = await response.json();
+            setStatsC(data);
+            console.log('Course Stats:', data);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'An error occurred');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -230,9 +269,8 @@ export default function AttendanceDisplay() {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center min-h-screen">
-                <CircularProgress color="primary" />
-                <span className={`ml-3 text-lg text-gray-600 ${kanit.className}`}>กำลังโหลดข้อมูล...</span>
+            <div className="flex justify-center items-center h-64">
+                <Spinner size="lg" variant="wave" label="Loading..." />
             </div>
         );
     }
@@ -283,6 +321,15 @@ export default function AttendanceDisplay() {
                                     <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight leading-snug">
                                         {attendanceSession.session_name}
                                     </h1>
+                                    {/* แสดงรหัสวิชา ชื่อวิชา ปีการศึกษา ภาคเรียน จาก statsC */}
+                                    {statsC && (
+                                        <div className="mt-2 text-sm text-gray-600 flex flex-wrap gap-4">
+                                            {statsC.subjectCode && <span className="font-medium">รหัสวิชา: {statsC.subjectCode}</span>}
+                                            {statsC.subjectName && <span>ชื่อวิชา: {statsC.subjectName}</span>}
+                                            {statsC.year && <span>ปีการศึกษา: {statsC.year}</span>}
+                                            {statsC.semester && <span>ภาคเรียน: {statsC.semester}</span>}
+                                        </div>
+                                    )}
                                 </div>
                                 {/* === ฝั่งขวา: สถานะ, วันที่/เวลา === */}
                                 <div className="flex-shrink-0 flex flex-col items-start lg:items-end space-y-3">
@@ -334,7 +381,7 @@ export default function AttendanceDisplay() {
                                             <p className="text-sm text-gray-500 mb-2">QR CODE</p>
                                             <div className="bg-white p-2 rounded-xl shadow-lg inline-block border-4 border-gray-100">
                                                 <QRCodeSVG
-                                                    value={attendanceSession.pin_code}
+                                                    value={`http://localhost:3000/attendance/check-in/${attendanceSession.id}`}
                                                     size={160}
                                                     level="H"
                                                     includeMargin={false}
@@ -413,7 +460,7 @@ export default function AttendanceDisplay() {
                                 <CardHeader className="flex items-center justify-between p-5 border-b border-gray-200 bg-blue-50/50">
                                     <h2 className="text-2xl font-bold text-gray-800 flex items-center">
                                         <BsListCheck className="text-blue-600 mr-3 text-2xl" />
-                                        รายชื่อผู้เช็คชื่อ (Real-time Feed)
+                                        รายชื่อผู้เช็คชื่อ
                                     </h2>
                                     <div className="flex items-center gap-2 bg-white rounded-full px-3 py-1 text-sm shadow-inner border border-green-200">
                                         <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></div>
@@ -422,12 +469,7 @@ export default function AttendanceDisplay() {
                                 </CardHeader>
 
                                 <CardBody className="p-0">
-                                    {isRecordsLoading && records.length === 0 ? (
-                                        <div className="flex justify-center items-center py-12">
-                                            <CircularProgress size={30} className="text-blue-500" />
-                                            <span className="ml-3 text-lg text-gray-500">กำลังดึงข้อมูลล่าสุด...</span>
-                                        </div>
-                                    ) : records.length === 0 ? (
+                                    {records.length === 0 ? (
                                         <p className="text-center text-gray-400 py-12 text-lg">
                                             <BsListCheck className="text-5xl mx-auto mb-3 text-gray-300" />
                                             ยังไม่มีการส่งข้อมูลการเช็คชื่อเข้ามาในขณะนี้
@@ -488,13 +530,6 @@ export default function AttendanceDisplay() {
                                                     </div>
                                                 </div>
                                             ))}
-
-                                            {isRecordsLoading && records.length > 0 && (
-                                                <div className="flex justify-center items-center p-4 bg-gray-50/70 border-t">
-                                                    <BsArrowRepeat className="animate-spin text-blue-500 mr-2" />
-                                                    <span className="text-sm text-gray-500">กำลังอัปเดตข้อมูล...</span>
-                                                </div>
-                                            )}
                                         </div>
                                     )}
                                 </CardBody>

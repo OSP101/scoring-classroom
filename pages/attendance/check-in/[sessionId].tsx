@@ -46,6 +46,7 @@ export default function StudentCheckIn() {
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
     const [totalStudents, setTotalStudents] = useState<number>(0);
     const [attendanceStats, setAttendanceStats] = useState<{ present: number; total: number } | null>(null);
+    const [courseInfo, setCourseInfo] = useState<{ subjectName?: string; subjectCode?: string } | null>(null);
 
     // ดึงข้อมูล session
     const fetchSessionData = async () => {
@@ -73,12 +74,12 @@ export default function StudentCheckIn() {
 
             const sessionData = await sessionResponse.json();
             setAttendanceSession(sessionData);
-            
-            // ดึงข้อมูลจำนวนนักศึกษาทั้งหมดและสถิติการเช็คชื่อ
+            // ดึงข้อมูลรายวิชา
             if (sessionData.course_offering_id) {
                 await Promise.all([
                     fetchTotalStudents(sessionData.course_offering_id),
-                    fetchAttendanceStats(sessionId as string)
+                    fetchAttendanceStats(sessionId as string),
+                    fetchCourseInfo(sessionData.course_offering_id)
                 ]);
             }
         } catch (error) {
@@ -143,6 +144,31 @@ export default function StudentCheckIn() {
             }
         } catch (error) {
             console.error('Error fetching attendance stats:', error);
+        }
+    };
+
+    // ดึงข้อมูลรายวิชา
+    const fetchCourseInfo = async (courseId: number) => {
+        try {
+            const response = await fetch(
+                `/api/v2/admin/course-offerings/${courseId}/overview`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': process.env.NEXT_PUBLIC_API_KEY || ''
+                    }
+                }
+            );
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Course Info Data:', data);
+                setCourseInfo({
+                    subjectName: data?.subjectName || data?.name,
+                    subjectCode: data?.subjectCode || data?.code
+                });
+            }
+        } catch (error) {
+            setCourseInfo(null);
         }
     };
 
@@ -271,6 +297,16 @@ export default function StudentCheckIn() {
 
     // ส่งการเช็คชื่อ
     const handleSubmit = async () => {
+        // ตรวจสอบข้อมูลครบถ้วนก่อนส่ง
+        if (!studentId.trim() || !pinCode.trim()) {
+            showSnackbar('กรุณากรอกข้อมูลให้ครบถ้วน (รหัสนักศึกษาและ PIN Code)', 'error');
+            return;
+        }
+        if (attendanceSession?.latitude && attendanceSession?.longitude && attendanceSession?.radius && !gpsLocation) {
+            showSnackbar('กรุณาระบุตำแหน่ง GPS ก่อนเช็คชื่อ', 'error');
+            return;
+        }
+
         if (!pinCode.trim()) {
             showSnackbar('กรุณากรอก PIN Code', 'error');
             return;
@@ -284,6 +320,21 @@ export default function StudentCheckIn() {
         if (!attendanceSession) {
             showSnackbar('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง', 'error');
             return;
+        }
+
+        // ตรวจสอบตำแหน่งก่อนส่ง ถ้ามีเงื่อนไข
+        if (attendanceSession.latitude && attendanceSession.longitude && attendanceSession.radius && gpsLocation) {
+            const toRad = (v: number) => v * Math.PI / 180;
+            const R = 6371000; // m
+            const dLat = toRad(gpsLocation.lat - attendanceSession.latitude);
+            const dLng = toRad(gpsLocation.lng - attendanceSession.longitude);
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(toRad(attendanceSession.latitude)) * Math.cos(toRad(gpsLocation.lat)) * Math.sin(dLng/2) * Math.sin(dLng/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const dist = R * c;
+            if (dist > attendanceSession.radius) {
+                showSnackbar('ตำแหน่งของคุณอยู่นอกรัศมีที่กำหนด กรุณาอยู่ในพื้นที่ที่กำหนดเพื่อเช็คชื่อ', 'error');
+                return;
+            }
         }
 
         setSubmitting(true);
@@ -432,6 +483,7 @@ export default function StudentCheckIn() {
                         <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
                             {attendanceSession.session_name}
                         </h1>
+                        
                         <p className="text-gray-500">ระบบเช็คชื่อออนไลน์</p>
                     </div>
 
@@ -439,7 +491,13 @@ export default function StudentCheckIn() {
                     <Card className="mb-6 shadow-xl border-0 overflow-hidden">
                         <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-white">
                             <h2 className="text-2xl font-bold mb-1">ข้อมูลการเช็คชื่อ</h2>
-                            <p className="text-purple-100 text-sm">รายละเอียดรอบเช็คชื่อ</p>
+                            {/* เพิ่มรายละเอียดวิชา */}
+                            {courseInfo && (
+                                <div className="mt-2 text-base text-white font-medium">
+                                    <span className="mr-4">รหัสวิชา: {courseInfo.subjectCode}</span>
+                                    <span>ชื่อวิชา: {courseInfo.subjectName}</span>
+                                </div>
+                            )}
                         </div>
                         <CardBody className="p-6 space-y-4">
                             {/* Time Info */}
@@ -460,37 +518,7 @@ export default function StudentCheckIn() {
                                 </div>
                             </div>
 
-                            {/* Location Info */}
-                            {attendanceSession.latitude && attendanceSession.longitude ? (
-                                <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-xl border border-green-100">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <div className="p-2 bg-green-500 rounded-lg">
-                                            <BsPinMap className="text-white text-lg" />
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="text-xs text-gray-500 mb-1">ตำแหน่ง GPS</p>
-                                            <p className="text-sm font-semibold text-gray-800">
-                                                ต้องเช็คชื่อในตำแหน่งที่กำหนด
-                                            </p>
-                                            <p className="text-xs text-gray-600 mt-1">
-                                                รัศมี: {attendanceSession.radius}m
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                                    <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-gray-400 rounded-lg">
-                                            <BsGeoAlt className="text-white text-lg" />
-                                        </div>
-                                        <div>
-                                            <p className="text-xs text-gray-500 mb-1">ตำแหน่ง GPS</p>
-                                            <p className="text-sm font-semibold text-gray-600">ไม่กำหนดตำแหน่ง</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
+                            
 
                             {/* Status */}
                             <div className="flex items-center justify-center gap-3 pt-2">
@@ -547,36 +575,7 @@ export default function StudentCheckIn() {
                                 </div>
                             )}
 
-                            {/* Attendance Statistics */}
-                            {attendanceStats && totalStudents > 0 && (
-                                <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-xl border border-purple-200">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <div className="p-2 bg-purple-500 rounded-lg">
-                                            <BsPeople className="text-white text-lg" />
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="text-xs text-gray-500 mb-1">สถิติการเช็คชื่อ</p>
-                                            <div className="flex items-baseline gap-2">
-                                                <span className="text-2xl font-bold text-purple-600">
-                                                    {attendanceStats.present}
-                                                </span>
-                                                <span className="text-sm text-gray-600">/ {totalStudents}</span>
-                                            </div>
-                                            <p className="text-xs text-gray-500 mt-1">
-                                                {Math.round((attendanceStats.present / totalStudents) * 100)}% ของนักศึกษาทั้งหมด
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="w-full bg-gray-200 rounded-full h-2">
-                                        <div 
-                                            className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-500"
-                                            style={{ 
-                                                width: `${(attendanceStats.present / totalStudents) * 100}%` 
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                            )}
+                            
                         </CardBody>
                     </Card>
 
@@ -665,7 +664,7 @@ export default function StudentCheckIn() {
                                         isDisabled={!sessionOpen || submitting}
                                         size="lg"
                                         classNames={{
-                                            input: "text-lg font-mono",
+                                            input: "text-lg",
                                             inputWrapper: "border-2 border-gray-200 hover:border-purple-300 focus-within:border-purple-500"
                                         }}
                                     />
