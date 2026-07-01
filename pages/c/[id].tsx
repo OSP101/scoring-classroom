@@ -44,6 +44,9 @@ const PointTab = dynamic(() => import('@/Components/Tabs/PointTab'), {
 const EditTab = dynamic(() => import('@/Components/Tabs/EditTab'), {
     loading: () => <LinearProgress color="secondary" />,
 });
+const AttendanceTab = dynamic(() => import('@/Components/Tabs/AttendanceTab'), {
+    loading: () => <LinearProgress color="secondary" />,
+});
 
 
 const kanit = Prompt({ subsets: ["latin"], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] });
@@ -136,6 +139,19 @@ export default function CourseDetail() {
                             className='py-0'
                         >
                             <WorkspaceTab idcourse={id} />
+                        </Tab>
+                        <Tab
+                            key="Checking"
+                            title={
+                                <div className="flex items-center space-x-2">
+                                    <span>เช็คชื่อ</span>
+                                </div>
+                            }
+                            className='py-0'
+                        >
+                            <div className='overflow-y-scroll custom-h-screen-minus-16'>
+                                <AttendanceTab idcourse={id} />
+                            </div>
                         </Tab>
                         <Tab
                             key="peplo"
